@@ -1,10 +1,9 @@
-import { AmbientLight, AxesHelper, DoubleSide, Group, Mesh, MeshBasicMaterial, PointLight, Scene, ShapeGeometry } from "three"
+import { AmbientLight, PointLight, Scene } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
+import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader";
 
 import { ThreeJSApp } from "./threejs-app"
 import { SVGShape } from "three-svg-js";
-import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader";
 
 export class GettingStartedExample {
 
@@ -68,6 +67,7 @@ export class GettingStartedExample {
     //   <text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text>
 
     // </svg>`);
+    //     showSVG(scene, svg.paths)
 
 
 
