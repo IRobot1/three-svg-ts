@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ThreeJSApp } from './threejs-app';
 import { GettingStartedExample } from './getting-started-example';
 import { BasicShapesExample } from './basic-shapes';
+import { PathsExample } from './paths-example';
 
 
 @Component({
@@ -16,7 +17,8 @@ export class AppComponent {
 
     app.router.add('/', () => { return new GettingStartedExample(app) })
     app.router.add('basic', () => { return new BasicShapesExample(app) })
+    app.router.add('paths', () => { return new PathsExample(app) })
 
-    app.navigateto('basic')
+    app.navigateto('paths')
   }
 }

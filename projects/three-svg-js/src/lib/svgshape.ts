@@ -217,15 +217,22 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const shape = new Shape();
     shape.absarc(x, y, r, 0, Math.PI * 2, true);
 
-    const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
     const divisions = 32
-    const points = shape.getPoints(divisions)
-    const geometry = SVGLoader.pointsToStroke(points, style, divisions)
+    let geometry: BufferGeometry;
+    if (strokeWidth) {
+      const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
+      const points = shape.getPoints(divisions)
+      geometry = SVGLoader.pointsToStroke(points, style, divisions)
+    }
+    else {
+      geometry = new ShapeGeometry(shape, divisions)
+    }
 
     const color = new Color()
     if (params.stroke)
       color.setStyle(params.stroke, SRGBColorSpace);
-    // TODO: handle fill
+    else if (params.fill)
+      color.setStyle(params.fill, SRGBColorSpace);
 
     const material = new MeshBasicMaterial({ color })
 
@@ -247,7 +254,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
     const divisions = 32
     const points = shape.getPoints(divisions)
-    const geometry = SVGLoader.pointsToStroke(points, style,divisions)
+    const geometry = SVGLoader.pointsToStroke(points, style, divisions)
 
     const color = new Color()
     if (params.stroke)
@@ -511,7 +518,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
           for (let j = 0, jl = numbers.length; j < jl; j++) {
 
-            point.y = numbers[j];
+            point.y = -numbers[j];
             control.x = point.x;
             control.y = point.y;
             shape.lineTo(point.x, point.y);
@@ -528,7 +535,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
           for (let j = 0, jl = numbers.length; j < jl; j += 2) {
 
             point.x = numbers[j + 0];
-            point.y = numbers[j + 1];
+            point.y = -numbers[j + 1];
             control.x = point.x;
             control.y = point.y;
             shape.lineTo(point.x, point.y);
@@ -546,16 +553,16 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
             shape.bezierCurveTo(
               numbers[j + 0],
-              numbers[j + 1],
+              -numbers[j + 1],
               numbers[j + 2],
-              numbers[j + 3],
+              -numbers[j + 3],
               numbers[j + 4],
-              numbers[j + 5]
+              -numbers[j + 5]
             );
             control.x = numbers[j + 2];
             control.y = numbers[j + 3];
             point.x = numbers[j + 4];
-            point.y = numbers[j + 5];
+            point.y = -numbers[j + 5];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -572,14 +579,14 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
               this.getReflection(point.x, control.x),
               this.getReflection(point.y, control.y),
               numbers[j + 0],
-              numbers[j + 1],
+              -numbers[j + 1],
               numbers[j + 2],
-              numbers[j + 3]
+              -numbers[j + 3]
             );
             control.x = numbers[j + 0];
             control.y = numbers[j + 1];
             point.x = numbers[j + 2];
-            point.y = numbers[j + 3];
+            point.y = -numbers[j + 3];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -643,11 +650,11 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
             const start = point.clone();
             point.x = numbers[j + 5];
-            point.y = numbers[j + 6];
+            point.y = -numbers[j + 6];
             control.x = point.x;
             control.y = point.y;
             this.parseArcCommand(
-              shape, numbers[j], numbers[j + 1], numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
+              shape, numbers[j], -numbers[j + 1], -numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
             );
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
@@ -703,7 +710,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
           for (let j = 0, jl = numbers.length; j < jl; j++) {
 
-            point.y += numbers[j];
+            point.y += -numbers[j];
             control.x = point.x;
             control.y = point.y;
             shape.lineTo(point.x, point.y);
@@ -720,7 +727,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
           for (let j = 0, jl = numbers.length; j < jl; j += 2) {
 
             point.x += numbers[j + 0];
-            point.y += numbers[j + 1];
+            point.y += -numbers[j + 1];
             control.x = point.x;
             control.y = point.y;
             shape.lineTo(point.x, point.y);
@@ -738,16 +745,16 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
             shape.bezierCurveTo(
               point.x + numbers[j + 0],
-              point.y + numbers[j + 1],
+              point.y - numbers[j + 1],
               point.x + numbers[j + 2],
-              point.y + numbers[j + 3],
+              point.y - numbers[j + 3],
               point.x + numbers[j + 4],
-              point.y + numbers[j + 5]
+              point.y - numbers[j + 5]
             );
             control.x = point.x + numbers[j + 2];
             control.y = point.y + numbers[j + 3];
             point.x += numbers[j + 4];
-            point.y += numbers[j + 5];
+            point.y += -numbers[j + 5];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -764,14 +771,14 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
               this.getReflection(point.x, control.x),
               this.getReflection(point.y, control.y),
               point.x + numbers[j + 0],
-              point.y + numbers[j + 1],
+              point.y - numbers[j + 1],
               point.x + numbers[j + 2],
-              point.y + numbers[j + 3]
+              point.y - numbers[j + 3]
             );
             control.x = point.x + numbers[j + 0];
-            control.y = point.y + numbers[j + 1];
+            control.y = point.y - numbers[j + 1];
             point.x += numbers[j + 2];
-            point.y += numbers[j + 3];
+            point.y += -numbers[j + 3];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -835,11 +842,11 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
             const start = point.clone();
             point.x += numbers[j + 5];
-            point.y += numbers[j + 6];
+            point.y += -numbers[j + 6];
             control.x = point.x;
             control.y = point.y;
             this.parseArcCommand(
-              shape, numbers[j], numbers[j + 1], numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
+              shape, numbers[j], -numbers[j + 1], -numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
             );
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
@@ -850,17 +857,17 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
         case 'Z':
         case 'z':
-            shape.autoClose = true;
+          shape.autoClose = true;
 
-            if (shape.curves.length > 0) {
+          if (shape.curves.length > 0) {
 
-              // Reset point to beginning of Path
-              point.copy(firstPoint);
-              shape.currentPoint.copy(point);
-              isFirstPoint = true;
+            // Reset point to beginning of Path
+            point.copy(firstPoint);
+            shape.currentPoint.copy(point);
+            isFirstPoint = true;
 
-            }
-          
+          }
+
 
           break;
 
@@ -875,20 +882,41 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
     }
 
-    const strokeWidth = this.parseFloatWithUnits(params.strokeWidth || 0);
-
-    const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
-
-    const color = new Color()
-    if (params.stroke)
-      color.setStyle(params.stroke, SRGBColorSpace);
-
-    const material = new MeshBasicMaterial({ color })
+    let strokeWidth = this.parseFloatWithUnits(params.strokeWidth || 0);
+    if (!strokeWidth && params.fill == 'transparent') strokeWidth = 1
 
     const divisions = 32
-    const points = shape.getPoints(divisions);
-    const geometry = SVGLoader.pointsToStroke(points, style, divisions)
+    if (strokeWidth) {
+      const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
+      const points = shape.getPoints(divisions);
+      const geometry = SVGLoader.pointsToStroke(points, style, divisions)
 
+
+      const material = new MeshBasicMaterial()
+      if (params.stroke)
+        material.color.setStyle(params.stroke, SRGBColorSpace);
+
+      const polyline = new Mesh(geometry, material);
+      this.addMesh(polyline);
+    }
+
+    const geometry = new ShapeGeometry(shape, divisions)
+    const material = new MeshBasicMaterial({ color: 0 })
+    if (params.fill === 'transparent') {
+      material.transparent = true;
+      material.opacity = 0;
+      if (params.fillOpacity) {
+        material.opacity = params.fillOpacity;
+      }
+    }
+    else if (params.fill) {
+      material.color.setStyle(params.fill, SRGBColorSpace);
+
+      if (params.fillOpacity) {
+        material.transparent = true;
+        material.opacity = params.fillOpacity;
+      }
+    }
     const polyline = new Mesh(geometry, material);
     this.addMesh(polyline);
 
@@ -1281,7 +1309,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const theta = this.svgAngle(1, 0, (x1p - cxp) / rx, (y1p - cyp) / ry);
     const delta = this.svgAngle((x1p - cxp) / rx, (y1p - cyp) / ry, (- x1p - cxp) / rx, (- y1p - cyp) / ry) % (Math.PI * 2);
 
-    path.absellipse(cx, cy, rx, ry, theta, theta + delta, sweep_flag === 0, x_axis_rotation);
+    path.absellipse(cx, cy, rx, ry, theta, theta + delta, sweep_flag !== 0, x_axis_rotation);
 
   }
 }

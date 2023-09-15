@@ -14,7 +14,7 @@ export interface PresentationAttributes {
   // cursor?: string;
   // display?: string;
   fill?: string;
-  // fillOpacity?: string;
+  fillOpacity?: number;
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
@@ -52,7 +52,7 @@ export class RectParams implements PresentationAttributes {
   // cursor?: string;
   // display?: string;
   fill?: string;
-  // fillOpacity?: string;
+  fillOpacity?: number;
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
@@ -87,7 +87,7 @@ export class CircleParams implements PresentationAttributes {
   // cursor?: string;
   // display?: string;
   fill?: string;
-  // fillOpacity?: string;
+  fillOpacity?: number;
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
@@ -123,7 +123,7 @@ export class EllipseParams implements PresentationAttributes {
   // cursor?: string;
   // display?: string;
   fill?: string;
-  // fillOpacity?: string;
+  fillOpacity?: number;
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
@@ -171,7 +171,7 @@ export class TextParams implements PresentationAttributes {
   // cursor?: string;
   // display?: string;
   fill?: string;
-  // fillOpacity?: string;
+  fillOpacity?: number;
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
@@ -208,7 +208,7 @@ export class LineParams implements PresentationAttributes {
   // cursor?: string;
   // display?: string;
   //fill?: string;
-  // fillOpacity?: string;
+  fillOpacity?: number;
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
@@ -241,7 +241,7 @@ export class PolylineParams implements PresentationAttributes {
   // cursor?: string;
   // display?: string;
   fill?: string;
-  // fillOpacity?: string;
+  fillOpacity?: number;
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
@@ -274,7 +274,7 @@ export class PolygonParams implements PresentationAttributes {
   // cursor?: string;
   // display?: string;
   fill?: string;
-  // fillOpacity?: string;
+  fillOpacity?: number;
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
@@ -308,7 +308,7 @@ export class PathParams implements PresentationAttributes {
   // cursor?: string;
   // display?: string;
   fill?: string;
-  // fillOpacity?: string;
+  fillOpacity?: number;
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
