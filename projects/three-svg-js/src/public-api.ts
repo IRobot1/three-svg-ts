@@ -3,3 +3,4 @@
  */
 
 export * from './lib/svgshape';
+export * from './lib/types';
