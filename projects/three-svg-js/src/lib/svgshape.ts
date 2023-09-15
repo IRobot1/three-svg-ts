@@ -470,7 +470,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
           for (let j = 0, jl = numbers.length; j < jl; j += 2) {
 
             point.x = numbers[j + 0];
-            point.y = numbers[j + 1];
+            point.y = -numbers[j + 1];
             control.x = point.x;
             control.y = point.y;
 
@@ -594,14 +594,14 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
             shape.quadraticCurveTo(
               numbers[j + 0],
-              numbers[j + 1],
+              -numbers[j + 1],
               numbers[j + 2],
-              numbers[j + 3]
+              -numbers[j + 3]
             );
             control.x = numbers[j + 0];
-            control.y = numbers[j + 1];
+            control.y = -numbers[j + 1];
             point.x = numbers[j + 2];
-            point.y = numbers[j + 3];
+            point.y = -numbers[j + 3];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -620,12 +620,12 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
               rx,
               ry,
               numbers[j + 0],
-              numbers[j + 1]
+              -numbers[j + 1]
             );
             control.x = rx;
-            control.y = ry;
+            control.y = -ry;
             point.x = numbers[j + 0];
-            point.y = numbers[j + 1];
+            point.y = -numbers[j + 1];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -662,7 +662,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
           for (let j = 0, jl = numbers.length; j < jl; j += 2) {
 
             point.x += numbers[j + 0];
-            point.y += numbers[j + 1];
+            point.y += -numbers[j + 1];
             control.x = point.x;
             control.y = point.y;
 
@@ -786,14 +786,14 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
             shape.quadraticCurveTo(
               point.x + numbers[j + 0],
-              point.y + numbers[j + 1],
+              point.y - numbers[j + 1],
               point.x + numbers[j + 2],
-              point.y + numbers[j + 3]
+              point.y - numbers[j + 3]
             );
             control.x = point.x + numbers[j + 0];
-            control.y = point.y + numbers[j + 1];
+            control.y = point.y - numbers[j + 1];
             point.x += numbers[j + 2];
-            point.y += numbers[j + 3];
+            point.y += -numbers[j + 3];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -812,12 +812,12 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
               rx,
               ry,
               point.x + numbers[j + 0],
-              point.y + numbers[j + 1]
+              point.y - numbers[j + 1]
             );
             control.x = rx;
-            control.y = ry;
+            control.y = -ry;
             point.x = point.x + numbers[j + 0];
-            point.y = point.y + numbers[j + 1];
+            point.y = point.y - numbers[j + 1];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
