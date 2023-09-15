@@ -2,6 +2,9 @@ import { Vector2 } from "three";
 
 export type Length = number | string;
 
+export type StrokeLineCap = 'butt' | 'round' | 'square'
+export type StrokeLineJoin = 'arcs' | 'bevel' | 'miter' | 'miter-clip' | 'round'
+
 export interface PresentationAttributes {
   // clipPath?: string;
   // clipRule?: string;
@@ -21,9 +24,9 @@ export interface PresentationAttributes {
   stroke?: string;
   // strokeDashArray?: string;
   // strokeDashOffset?: string;
-  // strokeLineCap?: string;
-  // strokeLineJoin?: string;
-  // strokeMiterLimit?: string;
+  strokeLineCap?: StrokeLineCap;
+  strokeLineJoin?: StrokeLineJoin;
+  strokeMiterLimit?: number;
   // strokeOpacity?: string;
   strokeWidth?: Length;
   // transform?: string;
@@ -59,9 +62,9 @@ export class RectParams implements PresentationAttributes {
   stroke?: string;
   // strokeDashArray?: string;
   // strokeDashOffset?: string;
-  // strokeLineCap?: string;
-  // strokeLineJoin?: string;
-  // strokeMiterLimit?: string;
+  strokeLineCap?: StrokeLineCap;
+  strokeLineJoin?: StrokeLineJoin;
+  strokeMiterLimit?: number;
   // strokeOpacity?: string;
   strokeWidth?: Length;
   // transform?: string;
@@ -94,9 +97,9 @@ export class CircleParams implements PresentationAttributes {
   stroke?: string;
   // strokeDashArray?: string;
   // strokeDashOffset?: string;
-  // strokeLineCap?: string;
-  // strokeLineJoin?: string;
-  // strokeMiterLimit?: string;
+  strokeLineCap?: StrokeLineCap;
+  strokeLineJoin?: StrokeLineJoin;
+  strokeMiterLimit?: number;
   // strokeOpacity?: string;
   strokeWidth?: Length;
   // transform?: string;
@@ -130,9 +133,9 @@ export class EllipseParams implements PresentationAttributes {
   stroke?: string;
   // strokeDashArray?: string;
   // strokeDashOffset?: string;
-  // strokeLineCap?: string;
-  // strokeLineJoin?: string;
-  // strokeMiterLimit?: string;
+  strokeLineCap?: StrokeLineCap;
+  strokeLineJoin?: StrokeLineJoin;
+  strokeMiterLimit?: number;
   // strokeOpacity?: string;
   strokeWidth?: Length;
   // transform?: string;
@@ -178,9 +181,9 @@ export class TextParams implements PresentationAttributes {
   // stroke?: string;
   // strokeDashArray?: string;
   // strokeDashOffset?: string;
-  // strokeLineCap?: string;
-  // strokeLineJoin?: string;
-  // strokeMiterLimit?: string;
+  strokeLineCap?: StrokeLineCap;
+  strokeLineJoin?: StrokeLineJoin;
+  strokeMiterLimit?: number;
   // strokeOpacity?: string;
   // strokeWidth?: Length;
   // transform?: string;
@@ -215,9 +218,9 @@ export class LineParams implements PresentationAttributes {
   stroke?: string;
   // strokeDashArray?: string;
   // strokeDashOffset?: string;
-  // strokeLineCap?: string;
-  // strokeLineJoin?: string;
-  // strokeMiterLimit?: string;
+  strokeLineCap?: StrokeLineCap;
+  strokeLineJoin?: StrokeLineJoin;
+  strokeMiterLimit?: number;
   // strokeOpacity?: string;
   strokeWidth?: Length;
   // transform?: string;
@@ -248,9 +251,9 @@ export class PolylineParams implements PresentationAttributes {
   stroke?: string;
   // strokeDashArray?: string;
   // strokeDashOffset?: string;
-  // strokeLineCap?: string;
-  // strokeLineJoin?: string;
-  // strokeMiterLimit?: string;
+  strokeLineCap?: StrokeLineCap;
+  strokeLineJoin?: StrokeLineJoin;
+  strokeMiterLimit?: number;
   // strokeOpacity?: string;
   strokeWidth?: Length;
   // transform?: string;
@@ -281,9 +284,9 @@ export class PolygonParams implements PresentationAttributes {
   stroke?: string;
   // strokeDashArray?: string;
   // strokeDashOffset?: string;
-  // strokeLineCap?: string;
-  // strokeLineJoin?: string;
-  // strokeMiterLimit?: string;
+   strokeLineCap?: StrokeLineCap;
+  strokeLineJoin?: StrokeLineJoin;
+  strokeMiterLimit?: number;
   // strokeOpacity?: string;
   strokeWidth?: Length;
   // transform?: string;
@@ -315,9 +318,9 @@ export class PathParams implements PresentationAttributes {
   stroke?: string;
   // strokeDashArray?: string;
   // strokeDashOffset?: string;
-  // strokeLineCap?: string;
-  // strokeLineJoin?: string;
-  // strokeMiterLimit?: string;
+   strokeLineCap?: StrokeLineCap;
+  strokeLineJoin?: StrokeLineJoin;
+  strokeMiterLimit?: number;
   // strokeOpacity?: string;
   strokeWidth?: Length;
   // transform?: string;
