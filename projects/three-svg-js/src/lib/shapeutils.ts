@@ -1,5 +1,4 @@
-import { Shape, Vector2 } from "three";
-import { Length } from "./types";
+import { Path, Vector2 } from "three";
 
 // Units
 const units = ["mm", "cm", "in", "pt", "pc", "px"];
@@ -59,7 +58,7 @@ export class SVGShapeUtils {
   // Accepted units: 'mm', 'cm', 'in', 'pt', 'pc', 'px'
   static defaultUnit = "px";
 
-  static parseFloatWithUnits(length: Length | undefined, size = 0): number {
+  static parseFloatWithUnits(length: string | number | undefined | null, size = 0): number {
     if (!length) return 0;
 
     let theUnit = "px";
@@ -100,7 +99,7 @@ export class SVGShapeUtils {
     return scale * parseFloat(value);
   }
 
-  static parsePath(d: string, shape: Shape) {
+  static parsePath(d: string, shape: Path) {
     const point = new Vector2();
     const control = new Vector2();
 
@@ -516,17 +515,16 @@ export class SVGShapeUtils {
 
         case 'Z':
         case 'z':
-          shape.autoClose = true;
+            shape.autoClose = true;
 
-          if (shape.curves.length > 0) {
+            if (shape.curves.length > 0) {
 
-            // Reset point to beginning of Path
-            point.copy(firstPoint);
-            shape.currentPoint.copy(point);
-            isFirstPoint = true;
+              // Reset point to beginning of Path
+              point.copy(firstPoint);
+              shape.currentPoint.copy(point);
+              isFirstPoint = true;
 
-          }
-
+            }
 
           break;
 
@@ -543,7 +541,7 @@ export class SVGShapeUtils {
 
   }
 
-  private static parseFloats(input: string, flags?: any, stride?: any) {
+  static parseFloats(input: string, flags?: any, stride?: any) {
 
     // Character groups
     const RE = {
@@ -798,7 +796,7 @@ export class SVGShapeUtils {
 
   }
 
-  private static parseArcCommand(path: Shape, rx: number, ry: number, x_axis_rotation: number, large_arc_flag: number, sweep_flag: number, start: Vector2, end: Vector2) {
+  private static parseArcCommand(path: Path, rx: number, ry: number, x_axis_rotation: number, large_arc_flag: number, sweep_flag: number, start: Vector2, end: Vector2) {
 
     if (rx == 0 || ry == 0) {
 
