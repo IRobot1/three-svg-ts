@@ -107,18 +107,45 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     this.add(mesh)
   }
 
-  private addShape(path: ShapePath) {
+  private renderStroke(shape: Shape, params: PresentationAttributes) {
+    let strokeWidth = this.parseFloatWithUnits(params.strokeWidth || 0);
+    if (!strokeWidth && params.fill == 'transparent') strokeWidth = 1
 
-    const material = this.createMaterial(path.color)
+    if (strokeWidth) {
+      const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
+      const geometry = SVGLoader.pointsToStroke(shape.getPoints(), style)
 
-    const shapes = SVGLoader.createShapes(path);
+      const material = new MeshBasicMaterial()
+      if (params.stroke)
+        material.color.setStyle(params.stroke, SRGBColorSpace);
 
-    for (let j = 0; j < shapes.length; j++) {
-      const shape = shapes[j];
-      const geometry = this.createGeometry(shape);
-      const mesh = new Mesh(geometry, material);
-      this.addMesh(mesh);
+      const rect = new Mesh(geometry, material);
+      this.addMesh(rect);
     }
+  }
+
+  private renderFill(shape: Shape, params: PresentationAttributes, divisions = 12) {
+    if (params.fill === 'none') return;
+
+    const geometry = new ShapeGeometry(shape, divisions)
+    const material = new MeshBasicMaterial({ color: 0 })
+    if (params.fill === 'transparent') {
+      material.transparent = true;
+      material.opacity = 0;
+      if (params.fillOpacity) {
+        material.opacity = params.fillOpacity;
+      }
+    }
+    else if (params.fill) {
+      material.color.setStyle(params.fill, SRGBColorSpace);
+
+      if (params.fillOpacity) {
+        material.transparent = true;
+        material.opacity = params.fillOpacity;
+      }
+    }
+    const mesh = new Mesh(geometry, material);
+    this.addMesh(mesh);
   }
 
   rect(params: RectParams): this {
@@ -128,7 +155,6 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const ry = this.parseFloatWithUnits(params.ry || params.rx || 0);
     const w = this.parseFloatWithUnits(params.width, this.width);
     const h = this.parseFloatWithUnits(params.height, this.height);
-    const strokeWidth = this.parseFloatWithUnits(params.strokeWidth || 0);
 
     // Ellipse arc to Bezier approximation Coefficient (Inversed). See:
     // https://spencermortensen.com/articles/bezier-circle/
@@ -191,19 +217,8 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
       );
     }
 
-    const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
-    const geometry = SVGLoader.pointsToStroke(shape.getPoints(), style)//, arcDivisions, minDistance)
-
-    const color = new Color()
-    if (params.stroke)
-      color.setStyle(params.stroke, SRGBColorSpace);
-    // TODO: handle fill
-
-    const material = new MeshBasicMaterial({ color })
-
-    const rect = new Mesh(geometry, material);
-    this.addMesh(rect);
-
+    this.renderStroke(shape, params)
+    this.renderFill(shape, params)
     return this;
   }
 
@@ -212,32 +227,13 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const y = -this.parseFloatWithUnits(params.cy || 0);
     const r = this.parseFloatWithUnits(params.r || 0);
 
-    const strokeWidth = this.parseFloatWithUnits(params.strokeWidth || 0);
 
     const shape = new Shape();
     shape.absarc(x, y, r, 0, Math.PI * 2, true);
 
-    const divisions = 32
-    let geometry: BufferGeometry;
-    if (strokeWidth) {
-      const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
-      const points = shape.getPoints(divisions)
-      geometry = SVGLoader.pointsToStroke(points, style, divisions)
-    }
-    else {
-      geometry = new ShapeGeometry(shape, divisions)
-    }
+    this.renderStroke(shape, params)
+    this.renderFill(shape, params)
 
-    const color = new Color()
-    if (params.stroke)
-      color.setStyle(params.stroke, SRGBColorSpace);
-    else if (params.fill)
-      color.setStyle(params.fill, SRGBColorSpace);
-
-    const material = new MeshBasicMaterial({ color })
-
-    const circle = new Mesh(geometry, material);
-    this.addMesh(circle);
     return this;
   }
 
@@ -246,25 +242,12 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const y = -this.parseFloatWithUnits(params.cy || 0);
     const rx = this.parseFloatWithUnits(params.rx || 0);
     const ry = this.parseFloatWithUnits(params.ry || 0);
-    const strokeWidth = this.parseFloatWithUnits(params.strokeWidth || 0);
 
     const shape = new Shape();
     shape.absellipse(x, y, rx, ry, 0, Math.PI * 2, true);
 
-    const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
-    const divisions = 32
-    const points = shape.getPoints(divisions)
-    const geometry = SVGLoader.pointsToStroke(points, style, divisions)
-
-    const color = new Color()
-    if (params.stroke)
-      color.setStyle(params.stroke, SRGBColorSpace);
-    // TODO: handle fill
-
-    const material = new MeshBasicMaterial({ color })
-
-    const ellipse = new Mesh(geometry, material);
-    this.addMesh(ellipse);
+    this.renderStroke(shape, params)
+    this.renderFill(shape, params)
 
     return this;
   }
@@ -312,42 +295,23 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const y1 = -this.parseFloatWithUnits(params.y1 || 0);
     const x2 = this.parseFloatWithUnits(params.x2 || 0);
     const y2 = -this.parseFloatWithUnits(params.y2 || 0);
-    const strokeWidth = this.parseFloatWithUnits(params.strokeWidth || 0);
 
-    const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
-    const geometry = SVGLoader.pointsToStroke([new Vector2(x1, y1), new Vector2(x2, y2)], style)//, arcDivisions, minDistance)
+    const shape = new Shape()
+    shape.moveTo(x1, y1)
+    shape.lineTo(x2, y2)
 
-    const color = new Color()
-    if (params.stroke)
-      color.setStyle(params.stroke, SRGBColorSpace);
-
-    const material = new MeshBasicMaterial({ color })
-
-    const line = new Mesh(geometry, material);
-    this.addMesh(line);
+    this.renderStroke(shape, params)
 
     return this;
   }
 
   polyline(params: PolylineParams) {
-    const strokeWidth = this.parseFloatWithUnits(params.strokeWidth || 0);
-
-    const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
-
-    const color = new Color()
-    if (params.stroke)
-      color.setStyle(params.stroke, SRGBColorSpace);
-
-    const material = new MeshBasicMaterial({ color })
-
-
     let index = 0;
 
     const iterator = (match: string, a: Length, b: Length): string => {
 
       const x = this.parseFloatWithUnits(a);
       const y = -this.parseFloatWithUnits(b);
-
 
       if (index === 0) {
 
@@ -369,35 +333,17 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
     params.points?.replace(regex, iterator);
 
-    //shape.autoClose = false;
-
-    const points = shape.getPoints();
-    const geometry = SVGLoader.pointsToStroke(points, style)//, arcDivisions, minDistance)
-
-    const polyline = new Mesh(geometry, material);
-    this.addMesh(polyline);
+    this.renderStroke(shape, params)
     return this;
   }
 
   polygon(params: PolygonParams) {
-    const strokeWidth = this.parseFloatWithUnits(params.strokeWidth || 0);
-
-    const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
-
-    const color = new Color()
-    if (params.stroke)
-      color.setStyle(params.stroke, SRGBColorSpace);
-
-    const material = new MeshBasicMaterial({ color })
-
-
     let index = 0;
 
     const iterator = (match: string, a: Length, b: Length): string => {
 
       const x = this.parseFloatWithUnits(a);
       const y = -this.parseFloatWithUnits(b);
-
 
       if (index === 0) {
 
@@ -421,11 +367,9 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
     shape.autoClose = true;
 
-    const points = shape.getPoints();
-    const geometry = SVGLoader.pointsToStroke(points, style)
+    this.renderStroke(shape, params)
+    this.renderFill(shape, params)
 
-    const polyline = new Mesh(geometry, material);
-    this.addMesh(polyline);
     return this;
   }
 
@@ -882,67 +826,12 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
     }
 
-    let strokeWidth = this.parseFloatWithUnits(params.strokeWidth || 0);
-    if (!strokeWidth && params.fill == 'transparent') strokeWidth = 1
-
     const divisions = 32
-    if (strokeWidth) {
-      const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
-      const points = shape.getPoints(divisions);
-      const geometry = SVGLoader.pointsToStroke(points, style, divisions)
-
-
-      const material = new MeshBasicMaterial()
-      if (params.stroke)
-        material.color.setStyle(params.stroke, SRGBColorSpace);
-
-      const polyline = new Mesh(geometry, material);
-      this.addMesh(polyline);
-    }
-
-    const geometry = new ShapeGeometry(shape, divisions)
-    const material = new MeshBasicMaterial({ color: 0 })
-    if (params.fill === 'transparent') {
-      material.transparent = true;
-      material.opacity = 0;
-      if (params.fillOpacity) {
-        material.opacity = params.fillOpacity;
-      }
-    }
-    else if (params.fill) {
-      material.color.setStyle(params.fill, SRGBColorSpace);
-
-      if (params.fillOpacity) {
-        material.transparent = true;
-        material.opacity = params.fillOpacity;
-      }
-    }
-    const polyline = new Mesh(geometry, material);
-    this.addMesh(polyline);
+    this.renderStroke(shape, params)
+    this.renderFill(shape, params, divisions)
 
     return this;
   }
-
-  createFatLine(start: Vector2, end: Vector2, width: number): BufferGeometry {
-    const dir = new Vector2().subVectors(end, start).normalize();
-
-    // Create perpendicular vector
-    const perp = new Vector2(-dir.y, dir.x).normalize().multiplyScalar(width / 2);
-
-    // Calculate the four corner points
-    const shape = new Shape()
-    const a = new Vector2().addVectors(start, perp);
-    shape.moveTo(a.x, a.y)
-    const c = new Vector2().addVectors(end, perp);
-    shape.lineTo(c.x, c.y)
-    const d = new Vector2().subVectors(end, perp);
-    shape.lineTo(d.x, d.y)
-    const b = new Vector2().subVectors(start, perp);
-    shape.lineTo(b.x, b.y)
-
-    return this.createGeometry(shape)
-  }
-
 
   private parseFloatWithUnits(length: Length | undefined, size = 0): number {
     if (!length) return 0;
@@ -1235,15 +1124,14 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
   }
 
+  private getReflection(a: number, b: number) {
+
   // http://www.w3.org/TR/SVG11/implnote.html#PathElementImplementationNotes
-
-  getReflection(a: number, b: number) {
-
     return a - (b - a);
 
   }
 
-  svgAngle(ux: number, uy: number, vx: number, vy: number) {
+  private svgAngle(ux: number, uy: number, vx: number, vy: number) {
 
     const dot = ux * vx + uy * vy;
     const len = Math.sqrt(ux * ux + uy * uy) * Math.sqrt(vx * vx + vy * vy);
@@ -1252,7 +1140,8 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     return ang;
 
   }
-  parseArcCommand(path: Shape, rx: number, ry: number, x_axis_rotation: number, large_arc_flag: number, sweep_flag: number, start: Vector2, end: Vector2) {
+
+  private parseArcCommand(path: Shape, rx: number, ry: number, x_axis_rotation: number, large_arc_flag: number, sweep_flag: number, start: Vector2, end: Vector2) {
 
     if (rx == 0 || ry == 0) {
 
