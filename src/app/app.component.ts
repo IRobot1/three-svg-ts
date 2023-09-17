@@ -3,6 +3,7 @@ import { ThreeJSApp } from './threejs-app';
 import { GettingStartedExample } from './getting-started-example';
 import { BasicShapesExample } from './basic-shapes';
 import { PathsExample } from './paths-example';
+import { StrokesExample } from './strokes-example';
 
 
 @Component({
@@ -18,7 +19,8 @@ export class AppComponent {
     app.router.add('/', () => { return new GettingStartedExample(app) })
     app.router.add('basic', () => { return new BasicShapesExample(app) })
     app.router.add('paths', () => { return new PathsExample(app) })
+    app.router.add('strokes', () => { return new StrokesExample(app) })
 
-    app.navigateto('paths')
+    app.navigateto('strokes')
   }
 }

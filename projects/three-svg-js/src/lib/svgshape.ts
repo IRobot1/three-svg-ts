@@ -1,6 +1,7 @@
-import { BoxHelper, BufferGeometry, Color, Material, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, ShapePath, SRGBColorSpace, Vector3 } from "three";
+import { BoxHelper, BufferGeometry, Color, DoubleSide, Material, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, ShapePath, SRGBColorSpace, Vector3 } from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 
 import { CircleParams, EllipseParams, Length, LineParams, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RectParams, TextParams } from './types'
 import { Font } from "three/examples/jsm/loaders/FontLoader";
@@ -12,7 +13,8 @@ export interface SVGShapeOptions {
   viewBox?: Array<number>;
   zfix?: number;
 
-  createMaterial?: (color: Color) => Material;
+  createStrokeMaterial?: () => Material;
+  createFillMaterial?: () => Material;
   createGeometry?: (shapes?: Shape | Shape[], curveSegments?: number) => BufferGeometry;
 }
 
@@ -23,7 +25,8 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
   viewBox = [0, 0, 400, 300]
   zfix = 0.01
 
-  createMaterial = this.defaultCreateMaterial
+  createFillMaterial = this.defaultFillMaterial
+  createStrokeMaterial = this.defaultStrokeMaterial
   createGeometry = this.defaultCreateGeometry
 
   paths: Array<ShapePath> = [];
@@ -36,11 +39,16 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     if (options.viewBox) this.viewBox = options.viewBox
     if (options.zfix) this.zfix = options.zfix
     if (options.createGeometry) this.createGeometry = options.createGeometry
-    if (options.createMaterial) this.createMaterial = options.createMaterial
+    if (options.createStrokeMaterial) this.createStrokeMaterial = options.createStrokeMaterial
+    if (options.createFillMaterial) this.createFillMaterial = options.createFillMaterial
   }
 
-  private defaultCreateMaterial(color: Color): Material {
-    return new MeshBasicMaterial({ color });
+  private defaultStrokeMaterial(): Material {
+    return new MeshBasicMaterial({color:0, side:DoubleSide});
+  }
+
+  private defaultFillMaterial(): Material {
+    return new MeshBasicMaterial({color:0});
   }
 
   private defaultCreateGeometry(shapes?: Shape | Shape[], curveSegments?: number): BufferGeometry {
@@ -58,11 +66,12 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
     if (strokeWidth) {
       const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
+      if (params.strokeLineCap == 'round') divisions *= 2;
       const geometry = SVGLoader.pointsToStroke(shape.getPoints(divisions), style, divisions)
 
-      const material = new MeshBasicMaterial()
+      const material = this.createStrokeMaterial()
       if (params.stroke)
-        material.color.setStyle(params.stroke, SRGBColorSpace);
+        (<any>material).color.setStyle(params.stroke, SRGBColorSpace);
 
       const rect = new Mesh(geometry, material);
       this.addMesh(rect);
@@ -73,7 +82,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     if (params.fill === 'none') return;
 
     const geometry = new ShapeGeometry(shape, divisions)
-    const material = new MeshBasicMaterial({ color: 0 })
+    const material = this.createFillMaterial()
     if (params.fill === 'transparent') {
       material.transparent = true;
       material.opacity = 0;
@@ -82,7 +91,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
       }
     }
     else if (params.fill) {
-      material.color.setStyle(params.fill, SRGBColorSpace);
+      (<any>material).color.setStyle(params.fill, SRGBColorSpace);
 
       if (params.fillOpacity) {
         material.transparent = true;
@@ -223,10 +232,9 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
       }
     }
 
-    const color = new Color()
-    this.applyFill(color, params);
 
-    const material = this.createMaterial(color)
+    const material = this.createFillMaterial()
+    this.applyFill((<any>material).color, params);
 
     const mesh = new Mesh(geometry, material)
     mesh.position.set(x, y + size.y / 2, 0)
