@@ -1,4 +1,4 @@
-import { BufferGeometry, Color, Material, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, ShapePath, SRGBColorSpace, Vector3 } from "three";
+import { BoxHelper, BufferGeometry, Color, Material, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, ShapePath, SRGBColorSpace, Vector3 } from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
@@ -52,13 +52,13 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     this.add(mesh)
   }
 
-  private renderStroke(shape: Shape, params: PresentationAttributes) {
+  private renderStroke(shape: Shape, params: PresentationAttributes, divisions = 12) {
     let strokeWidth = SVGShapeUtils.parseFloatWithUnits(params.strokeWidth || 0);
     if (!strokeWidth && params.fill == 'transparent') strokeWidth = 1
 
     if (strokeWidth) {
       const style = SVGLoader.getStrokeStyle(strokeWidth, params.stroke, params.strokeLineJoin, params.strokeLineCap, params.strokeMiterLimit)
-      const geometry = SVGLoader.pointsToStroke(shape.getPoints(), style)
+      const geometry = SVGLoader.pointsToStroke(shape.getPoints(divisions), style, divisions)
 
       const material = new MeshBasicMaterial()
       if (params.stroke)
@@ -177,7 +177,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     shape.absarc(x, y, r, 0, Math.PI * 2, true);
 
     this.renderStroke(shape, params)
-    this.renderFill(shape, params)
+    this.renderFill(shape, params, 32)
 
     return this;
   }
@@ -192,7 +192,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     shape.absellipse(x, y, rx, ry, 0, Math.PI * 2, true);
 
     this.renderStroke(shape, params)
-    this.renderFill(shape, params)
+    this.renderFill(shape, params, 32)
 
     return this;
   }
@@ -202,7 +202,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const y = -SVGShapeUtils.parseFloatWithUnits(params.y || 0);
     const fontSize = SVGShapeUtils.parseFloatWithUnits(params.fontSize || 0);
 
-    const geometry = new TextGeometry(text, { font, height: 0, size: fontSize })
+    const geometry = new TextGeometry(text, { font, height: 0, size: fontSize * 0.8 })
     geometry.center()
 
     const size = new Vector3()
@@ -229,7 +229,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const material = this.createMaterial(color)
 
     const mesh = new Mesh(geometry, material)
-    mesh.position.set(x, y - size.y / 4, 0)
+    mesh.position.set(x, y + size.y / 2, 0)
     this.addMesh(mesh)
 
     return this;

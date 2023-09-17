@@ -78,6 +78,30 @@ export class PathsExample {
     svgshape3.position.set(1, 0.5,0)
     scene.add(svgshape3);
 
+    const svgshape4 = new SVGShape({ width: 325, height: 325 })
+      .path({
+        d: `M 80 80
+           A 45 45, 0, 0, 0, 125 125
+           L 125 80 Z`, fill:'green'})
+      .path({
+        d: `M 230 80
+           A 45 45, 0, 1, 0, 275 125
+           L 275 80 Z`, fill:'red'})
+      .path({
+        d: `M 80 230
+           A 45 45, 0, 0, 1, 125 275
+           L 125 230 Z`, fill: 'purple'
+      })
+      .path({
+        d: `M 230 230
+           A 45 45, 0, 1, 1, 275 275
+           L 275 230 Z`, fill: 'blue'
+      })
+
+    svgshape4.scale.setScalar(0.005)
+    svgshape4.position.set(-1, 2,0)
+    scene.add(svgshape4);
+
     //     const loader = new SVGLoader();
     //     const svg = loader.parse(`
     //<svg width="200" height="250" version="1.1" xmlns="http://www.w3.org/2000/svg">

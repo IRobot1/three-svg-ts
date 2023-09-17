@@ -841,7 +841,7 @@ export class SVGShapeUtils {
     const dq = (rxs * y1ps + rys * x1ps);
     const pq = (rxs * rys - dq) / dq;
     let q = Math.sqrt(Math.max(0, pq));
-    if (large_arc_flag === sweep_flag) q = - q;
+    if (large_arc_flag !== sweep_flag) q = - q;
     const cxp = q * rx * y1p / ry;
     const cyp = - q * ry * x1p / rx;
 
