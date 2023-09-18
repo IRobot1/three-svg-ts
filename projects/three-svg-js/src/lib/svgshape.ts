@@ -1,4 +1,4 @@
-import { Box3, BufferAttribute, BufferGeometry, CanvasTexture, Color, DoubleSide, Float32BufferAttribute, Material, Mesh, MeshBasicMaterial, Object3D, RepeatWrapping, Shape, ShapeGeometry, ShapePath, SRGBColorSpace, Texture, Vector3 } from "three";
+import { Box3, BufferAttribute, BufferGeometry, CanvasTexture, Color, CurvePath, DoubleSide, Float32BufferAttribute, Material, Mesh, MeshBasicMaterial, Object3D, RepeatWrapping, Shape, ShapeGeometry, ShapePath, SRGBColorSpace, Texture, Vector2, Vector3 } from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
@@ -234,35 +234,38 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const x = SVGShapeUtils.parseFloatWithUnits(params.x || 0);
     const y = -SVGShapeUtils.parseFloatWithUnits(params.y || 0);
     const fontSize = SVGShapeUtils.parseFloatWithUnits(params.fontSize || 0);
-
-    const geometry = new TextGeometry(text, { font, height: 0, size: fontSize * 0.8 })
-    geometry.center()
-
-    const size = new Vector3()
-    if (!geometry.boundingBox) geometry.computeBoundingBox()
-    if (geometry.boundingBox) geometry.boundingBox.getSize(size)
-
-    if (params.textAnchor) {
-      switch (params.textAnchor) {
-        case 'start':
-          geometry.translate(size.x / 2, 0, 0)
-          break;
-        case 'middle':
-          // already centered
-          break;
-        case 'end':
-          geometry.translate(-size.x / 2, 0, 0)
-          break;
-      }
-    }
-
+    const textSpacing = SVGShapeUtils.parseFloatWithUnits(params.textSpacing || fontSize / 4);
 
     const material = this.createFillMaterial()
     this.applyFill((<any>material).color, params);
 
-    const mesh = new Mesh(geometry, material)
-    mesh.position.set(x, y + size.y / 2, 0)
-    this.addMesh(mesh)
+    if (params.textPath) {
+      this.textPath(params.textPath, font, fontSize, textSpacing, text, material)
+    }
+    else {
+      const geometry = new TextGeometry(text, { font, height: 0, size: fontSize * 0.8 })
+      geometry.center() // center and compute bounding box
+      const size = new Vector3()
+      geometry.boundingBox!.getSize(size)
+
+      if (params.textAnchor) {
+        switch (params.textAnchor) {
+          case 'start':
+            geometry.translate(size.x / 2, 0, 0)
+            break;
+          case 'middle':
+            // already centered
+            break;
+          case 'end':
+            geometry.translate(-size.x / 2, 0, 0)
+            break;
+        }
+      }
+
+      const mesh = new Mesh(geometry, material)
+      mesh.position.set(x, y + size.y / 2, 0)
+      this.addMesh(mesh)
+    }
 
     return this;
   }
@@ -356,18 +359,20 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     return svg;
   }
 
+  pathids = new Map<string, Shape>([])
   path(params: PathParams): this {
     if (!params.d) return this
-
     const shape = new Shape();
 
     SVGShapeUtils.parsePath(params.d, shape)
-
-
-    const divisions = 32
-    this.renderStroke(shape, params)
-    this.renderFill(shape, params, divisions)
-
+    if (params.id) {
+      this.pathids.set(params.id, shape)
+    }
+    else {
+      const divisions = 32
+      this.renderStroke(shape, params)
+      this.renderFill(shape, params, divisions)
+    }
     return this;
   }
 
@@ -378,7 +383,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const x1 = SVGShapeUtils.parseFloatWithUnits(params.x1 || 0);
     const y1 = SVGShapeUtils.parseFloatWithUnits(params.y1 || 0);
     const x2 = params.x2 !== undefined ? SVGShapeUtils.parseFloatWithUnits(params.x2) * CANVAS_SIZE : CANVAS_SIZE;
-    const y2 = params.y2 !== undefined ? SVGShapeUtils.parseFloatWithUnits(params.y2)*CANVAS_SIZE : 0;
+    const y2 = params.y2 !== undefined ? SVGShapeUtils.parseFloatWithUnits(params.y2) * CANVAS_SIZE : 0;
 
     const canvas = document.createElement('canvas');
     canvas.width = CANVAS_SIZE
@@ -388,7 +393,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const context = canvas.getContext('2d', options);
     if (!context) return this;
 
-    const gradient = context.createLinearGradient(x1, y1, x2 , y2);
+    const gradient = context.createLinearGradient(x1, y1, x2, y2);
     //console.warn(x1, y1, x2, y2)
     params.stops.forEach(stop => {
       let offset = 0
@@ -407,7 +412,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
     const texture = new CanvasTexture(canvas)
     texture.colorSpace = SRGBColorSpace;
-    texture.wrapS = texture.wrapT= RepeatWrapping
+    texture.wrapS = texture.wrapT = RepeatWrapping
 
     this.gradients.set(params.id, texture)
     return this;
@@ -425,4 +430,59 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     //transformPath( path, currentTransform );
   }
 
+  private textPath(id: string, font: Font, size: number, spacing: number, text: string, material: Material) {
+    if (id.startsWith('#')) id = id.substring(1)
+    const curve = this.pathids.get(id)
+    if (!curve) return
+
+    // Calculate the total length of the text
+    let totalTextLength = 0;
+    let textData: Array<{ geometry?: BufferGeometry, charWidth: number; }> = [];
+
+    Array.from(text).forEach(char => {
+      let charWidth = size / 3
+      let geometry: BufferGeometry | undefined;
+      if (char !== ' ') {
+        geometry = new TextGeometry(char, { font: font, size: size, height: 0 });
+        geometry.computeBoundingBox();
+        const bbox = geometry.boundingBox!;
+        charWidth = bbox.max.x - bbox.min.x;
+      }
+      textData.push({ geometry, charWidth });
+      totalTextLength += charWidth;
+      //console.warn(char, charWidth)
+    });
+
+    const textCurveLength = totalTextLength / curve.getLength()
+    // TODO: align
+
+    let startDistance = 0;  // Initialize the starting distance along the curve
+
+    textData.forEach((char, i) => {
+      let textWidth = char.charWidth
+      textWidth = Math.min(size * 1.1, Math.max(size / 5, textWidth))
+
+      // get the point at current position along curve
+      const point = curve.getPointAt(startDistance / totalTextLength * textCurveLength);
+
+      if (point && char.geometry) {
+        const charMesh = new Mesh(char.geometry, material);
+
+        // Position the text mesh
+        charMesh.position.set(point.x, point.y, 0);
+
+        // Get the tangent and adjust the rotation
+        const tangent = curve.getTangentAt(startDistance / totalTextLength * textCurveLength);
+        const angle = Math.atan2(tangent.y, tangent.x);
+        charMesh.rotation.z = angle
+
+        // Add the character mesh to the scene
+        this.add(charMesh);
+
+      }
+
+      // Update startDistance for the next character
+      startDistance += textWidth + spacing
+    });
+  }
 }

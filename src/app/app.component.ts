@@ -5,6 +5,7 @@ import { BasicShapesExample } from './basic-shapes';
 import { PathsExample } from './paths-example';
 import { StrokesExample } from './strokes-example';
 import { GradientsExample } from './gradient-example';
+import { TextExample } from './text-example';
 
 
 @Component({
@@ -22,7 +23,8 @@ export class AppComponent {
     app.router.add('paths', () => { return new PathsExample(app) })
     app.router.add('strokes', () => { return new StrokesExample(app) })
     app.router.add('gradients', () => { return new GradientsExample(app) })
+    app.router.add('text', () => { return new TextExample(app) })
 
-    app.navigateto('gradients')
+    app.navigateto('text')
   }
 }

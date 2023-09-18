@@ -152,6 +152,9 @@ export class TextParams implements PresentationAttributes {
   lengthAdjust?: "spacing" | "spacingAndGlpyhs";
   textLength?: Length;
 
+  textPath?: string;
+  textSpacing?: number;
+
   // style attributes
   // fontfamiliy?:string;
   fontSize?: number;
@@ -295,6 +298,7 @@ export class PolygonParams implements PresentationAttributes {
 }
 
 export class PathParams implements PresentationAttributes {
+  id?: string;
   d?: string;
   //pathLength?: number | "none";
 
