@@ -1,7 +1,6 @@
-import { BoxHelper, BufferGeometry, CanvasTexture, ClampToEdgeWrapping, Color, DoubleSide, Material, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, RepeatWrapping, Shape, ShapeGeometry, ShapePath, SRGBColorSpace, Texture, Vector2, Vector3 } from "three";
+import { Box3, BufferAttribute, BufferGeometry, CanvasTexture, Color, DoubleSide, Float32BufferAttribute, Material, Mesh, MeshBasicMaterial, Object3D, RepeatWrapping, Shape, ShapeGeometry, ShapePath, SRGBColorSpace, Texture, Vector3 } from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
-import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 
 import { CircleParams, EllipseParams, Length, LinearGradient, LineParams, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RectParams, TextParams } from './types'
 import { Font } from "three/examples/jsm/loaders/FontLoader";
@@ -78,17 +77,27 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     }
   }
 
+  private FixShapeUV(geometry: BufferGeometry) {
+    let pos = geometry.attributes['position'] as BufferAttribute;
+    let b3 = new Box3().setFromBufferAttribute(pos);
+    let b3size = new Vector3();
+    b3.getSize(b3size);
+    let uv = [];
+    for (let i = 0; i < pos.count; i++) {
+      let x = pos.getX(i);
+      let y = pos.getY(i);
+      let u = (x - b3.min.x) / b3size.x;
+      let v = (y - b3.min.y) / b3size.y;
+      uv.push(u, v);
+    }
+    geometry.setAttribute("uv", new Float32BufferAttribute(uv, 2));
+  }
+
   private renderFill(shape: Shape, params: PresentationAttributes, divisions = 12) {
     if (params.fill === 'none') return;
 
     const geometry = new ShapeGeometry(shape, divisions)
-    let box = geometry.boundingBox!
-    if (!box) {
-      geometry.computeBoundingBox()
-      box = geometry.boundingBox!
-    }
-    const size = new Vector3()
-    box.getSize(size)
+    this.FixShapeUV(geometry)
 
     const material = this.createFillMaterial() as MeshBasicMaterial
     if (params.fill === 'transparent') {
@@ -103,11 +112,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
         const id = params.fill.substring(5).replace(')', '');
         material.color.setStyle('white', SRGBColorSpace);
         const texture = this.gradients.get(id)
-        if (texture) {
-          material.map = texture
-          texture.repeat.set(1/size.x, 1/size.y)
-          //texture.offset.set(0.9, 1.2)
-        }
+        if (texture) material.map = texture
       }
       else
         material.color.setStyle(params.fill, SRGBColorSpace);
