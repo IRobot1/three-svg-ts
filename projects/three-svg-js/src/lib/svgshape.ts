@@ -1,9 +1,9 @@
-import { BoxHelper, BufferGeometry, Color, DoubleSide, Material, Mesh, MeshBasicMaterial, Object3D, Shape, ShapeGeometry, ShapePath, SRGBColorSpace, Vector3 } from "three";
+import { BoxHelper, BufferGeometry, CanvasTexture, ClampToEdgeWrapping, Color, DoubleSide, Material, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, RepeatWrapping, Shape, ShapeGeometry, ShapePath, SRGBColorSpace, Texture, Vector2, Vector3 } from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 
-import { CircleParams, EllipseParams, Length, LineParams, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RectParams, TextParams } from './types'
+import { CircleParams, EllipseParams, Length, LinearGradient, LineParams, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RectParams, TextParams } from './types'
 import { Font } from "three/examples/jsm/loaders/FontLoader";
 import { SVGShapeUtils } from "./shapeutils";
 
@@ -44,11 +44,11 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
   }
 
   private defaultStrokeMaterial(): Material {
-    return new MeshBasicMaterial({color:0, side:DoubleSide});
+    return new MeshBasicMaterial({ color: 0, side: DoubleSide });
   }
 
   private defaultFillMaterial(): Material {
-    return new MeshBasicMaterial({color:0});
+    return new MeshBasicMaterial({ color: 0 });
   }
 
   private defaultCreateGeometry(shapes?: Shape | Shape[], curveSegments?: number): BufferGeometry {
@@ -82,7 +82,15 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     if (params.fill === 'none') return;
 
     const geometry = new ShapeGeometry(shape, divisions)
-    const material = this.createFillMaterial()
+    let box = geometry.boundingBox!
+    if (!box) {
+      geometry.computeBoundingBox()
+      box = geometry.boundingBox!
+    }
+    const size = new Vector3()
+    box.getSize(size)
+
+    const material = this.createFillMaterial() as MeshBasicMaterial
     if (params.fill === 'transparent') {
       material.transparent = true;
       material.opacity = 0;
@@ -91,7 +99,18 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
       }
     }
     else if (params.fill) {
-      (<any>material).color.setStyle(params.fill, SRGBColorSpace);
+      if (params.fill.startsWith('url(#')) {
+        const id = params.fill.substring(5).replace(')', '');
+        material.color.setStyle('white', SRGBColorSpace);
+        const texture = this.gradients.get(id)
+        if (texture) {
+          material.map = texture
+          texture.repeat.set(1/size.x, 1/size.y)
+          //texture.offset.set(0.9, 1.2)
+        }
+      }
+      else
+        material.color.setStyle(params.fill, SRGBColorSpace);
 
       if (params.fillOpacity) {
         material.transparent = true;
@@ -347,6 +366,47 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     return this;
   }
 
+  private gradients = new Map<string, Texture>([]);
+
+  linearGradient(params: LinearGradient): this {
+    const CANVAS_SIZE = 100
+    const x1 = SVGShapeUtils.parseFloatWithUnits(params.x1 || 0);
+    const y1 = SVGShapeUtils.parseFloatWithUnits(params.y1 || 0);
+    const x2 = params.x2 !== undefined ? SVGShapeUtils.parseFloatWithUnits(params.x2) * CANVAS_SIZE : CANVAS_SIZE;
+    const y2 = params.y2 !== undefined ? SVGShapeUtils.parseFloatWithUnits(params.y2)*CANVAS_SIZE : 0;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = CANVAS_SIZE
+    canvas.height = CANVAS_SIZE
+
+    const options: CanvasRenderingContext2DSettings = { alpha: true }
+    const context = canvas.getContext('2d', options);
+    if (!context) return this;
+
+    const gradient = context.createLinearGradient(x1, y1, x2 , y2);
+    //console.warn(x1, y1, x2, y2)
+    params.stops.forEach(stop => {
+      let offset = 0
+      if (typeof stop.offset === 'string')
+        offset = parseFloat(stop.offset) / 100
+      else
+        offset = <number>stop.offset
+      let color = 'black'
+      if (stop.stopColor) color = stop.stopColor
+      gradient.addColorStop(offset, color);
+      //console.warn(offset, color)
+    })
+
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+    const texture = new CanvasTexture(canvas)
+    texture.colorSpace = SRGBColorSpace;
+    texture.wrapS = texture.wrapT= RepeatWrapping
+
+    this.gradients.set(params.id, texture)
+    return this;
+  }
 
   private applyFill(color: Color, params: PresentationAttributes) {
     if (params.fill === 'none') return

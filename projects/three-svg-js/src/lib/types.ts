@@ -327,3 +327,19 @@ export class PathParams implements PresentationAttributes {
   // vectorEffect?: string;
   // visibility?: string;
 }
+
+export interface GradientStop {
+  offset?: Length;
+  stopColor?: string;
+  //stopOpacity?: number;
+
+}
+export interface LinearGradient {
+  id: string,
+  x1?: number;
+  x2?: number;
+  y1?: number;
+  y2?: number;
+
+  stops: Array<GradientStop>;
+}
