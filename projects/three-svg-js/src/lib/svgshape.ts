@@ -59,7 +59,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     this.add(mesh)
   }
 
-  private renderStroke(shape: Shape, params: PresentationAttributes, divisions = 12) {
+  private renderStroke(name:string, shape: Shape, params: PresentationAttributes, divisions = 12) {
     let strokeWidth = SVGShapeUtils.parseFloatWithUnits(params.strokeWidth || 0);
     if (!strokeWidth && params.fill == 'transparent') strokeWidth = 1
 
@@ -72,8 +72,9 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
       if (params.stroke)
         (<any>material).color.setStyle(params.stroke, SRGBColorSpace);
 
-      const rect = new Mesh(geometry, material);
-      this.addMesh(rect);
+      const mesh = new Mesh(geometry, material);
+      mesh.name = name
+      this.addMesh(mesh);
     }
   }
 
@@ -93,7 +94,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     geometry.setAttribute("uv", new Float32BufferAttribute(uv, 2));
   }
 
-  private renderFill(shape: Shape, params: PresentationAttributes, divisions = 12) {
+  private renderFill(name: string, shape: Shape, params: PresentationAttributes, divisions = 12) {
     if (params.fill === 'none') return;
 
     const geometry = new ShapeGeometry(shape, divisions)
@@ -123,6 +124,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
       }
     }
     const mesh = new Mesh(geometry, material);
+    mesh.name = name
     this.addMesh(mesh);
   }
 
@@ -195,8 +197,8 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
       );
     }
 
-    this.renderStroke(shape, params)
-    this.renderFill(shape, params)
+    this.renderStroke('rect-stroke', shape, params)
+    this.renderFill('rect-fill', shape, params)
     return this;
   }
 
@@ -209,8 +211,8 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const shape = new Shape();
     shape.absarc(x, y, r, 0, Math.PI * 2, true);
 
-    this.renderStroke(shape, params)
-    this.renderFill(shape, params, 32)
+    this.renderStroke('circle-stroke', shape, params)
+    this.renderFill('circle-fill',shape, params, 32)
 
     return this;
   }
@@ -224,8 +226,8 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     const shape = new Shape();
     shape.absellipse(x, y, rx, ry, 0, Math.PI * 2, true);
 
-    this.renderStroke(shape, params)
-    this.renderFill(shape, params, 32)
+    this.renderStroke('ellipse-stroke',shape, params)
+    this.renderFill('ellipse-fill', shape, params, 32)
 
     return this;
   }
@@ -280,7 +282,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     shape.moveTo(x1, y1)
     shape.lineTo(x2, y2)
 
-    this.renderStroke(shape, params)
+    this.renderStroke('line-stroke', shape, params)
 
     return this;
   }
@@ -313,7 +315,7 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
     params.points?.replace(regex, iterator);
 
-    this.renderStroke(shape, params)
+    this.renderStroke('polyline-stroke', shape, params)
     return this;
   }
 
@@ -347,16 +349,14 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
 
     shape.autoClose = true;
 
-    this.renderStroke(shape, params)
-    this.renderFill(shape, params)
+    this.renderStroke('polygon-stroke', shape, params)
+    this.renderFill('polygon-fill', shape, params)
 
     return this;
   }
 
-  group(): SVGShape {
-    const svg = new SVGShape(this.options)
-    this.add(svg)
-    return svg;
+  group(group: PresentationAttributes): this {
+    return this;
   }
 
   pathids = new Map<string, Shape>([])
@@ -370,8 +370,8 @@ export class SVGShape extends Object3D implements SVGShapeOptions {
     }
     else {
       const divisions = 32
-      this.renderStroke(shape, params)
-      this.renderFill(shape, params, divisions)
+      this.renderStroke('path-stroke', shape, params)
+      this.renderFill('path-fill', shape, params, divisions)
     }
     return this;
   }
