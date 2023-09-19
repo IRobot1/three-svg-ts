@@ -6,6 +6,7 @@ import { PathsExample } from './paths-example';
 import { StrokesExample } from './strokes-example';
 import { GradientsExample } from './gradient-example';
 import { TextExample } from './text-example';
+import { GroupExample } from './group-example';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class AppComponent {
     app.router.add('strokes', () => { return new StrokesExample(app) })
     app.router.add('gradients', () => { return new GradientsExample(app) })
     app.router.add('text', () => { return new TextExample(app) })
+    app.router.add('group', () => { return new GroupExample(app) })
 
-    app.navigateto('text')
+    app.navigateto('group')
   }
 }

@@ -50,8 +50,10 @@ export class GettingStartedExample {
         textAnchor: "middle",
         fill: "white"
       })
-      svgshape.scale.setScalar(0.01)
-      scene.add(svgshape);
+      svgshape.update()
+      console.warn(svgshape.object)
+      svgshape.object.scale.setScalar(0.01)
+      scene.add(svgshape.object);
     })
 
     // const loader = new SVGLoader();

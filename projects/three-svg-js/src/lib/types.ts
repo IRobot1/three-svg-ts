@@ -150,7 +150,7 @@ export class TextParams implements PresentationAttributes {
   dy?: Length;
   rotate?: Array<number>;
   lengthAdjust?: "spacing" | "spacingAndGlpyhs";
-  textLength?: Length;
+  //textLength?: Length;
 
   textPath?: string;
   textSpacing?: number;

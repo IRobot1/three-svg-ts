@@ -6,9 +6,9 @@ import { ThreeJSApp } from "./threejs-app"
 import { SVGShape } from "three-svg-js";
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { showSVG } from "./showsvg";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { RectShape } from "../../projects/three-svg-js/src/lib/rectshape";
 
-export class TextExample {
+export class GroupExample {
 
   dispose = () => { }
 
@@ -40,12 +40,15 @@ export class TextExample {
     const loader = new FontLoader();
     loader.load('assets/helvetiker_regular.typeface.json', (font: Font) => {
       const svgshape1 = new SVGShape({ width: 200, height: 100 })
-        .path({ id: 'my_path', d: "M 20, 20 C 80, 60 100, 40 120, 20" })
-        .text("A curve.", font, {
-          fontSize: 18,
-          textPath: '#my_path',
-          textSpacing: 4,
-        })
+
+      svgshape1.group({ fill: 'red' })
+        .rect({ x: "0", y: "0", width: "10", height: "10" })
+        .rect({ x: "20", y: "0", width: "10", height: "10" })
+
+      .group({ fill: 'green' })
+        .rect({ x: "40", y: "0", width: "10", height: "10" })
+        .rect({ x: "60", y: "0", width: "10", height: "10" })
+
       svgshape1.update()
       svgshape1.object.scale.setScalar(0.01)
       svgshape1.object.position.set(-2, 0.5, 0)
@@ -53,15 +56,15 @@ export class TextExample {
     })
 
 
-    //    const loader = new SVGLoader();
-    //    const svg = loader.parse(`
-    //<svg width: "160", height: "140", xmlns: "http://www.w3.org/2000/svg", version: "1.1">
-    //  <line x1: "40", x2: "120", y1: "20", y2: "20", stroke: "black", stroke-width: "20", stroke-linecap: "butt"/>
-    //  <line x1: "40", x2: "120", y1: "60", y2: "60", stroke: "black", stroke-width: "20", stroke-linecap: "square"/>
-    //  <line x1: "40", x2: "120", y1: "100", y2: "100", stroke: "black", stroke-width: "20", stroke-linecap: "round"/>
-    //</svg>
-    //         `);
-    //    showSVG(scene, svg.paths)
+//    const svg = new SVGLoader().parse(`
+//<svg width="30" height="10"  xmlns="http://www.w3.org/2000/svg">
+//  <g fill="red">
+//    <rect  />
+//    <rect x="20" y="0" width="10" height="10" />
+//  </g>
+//</svg>
+//             `);
+//    showSVG(scene, svg.paths)
 
     this.dispose = () => {
       orbit.dispose()

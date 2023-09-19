@@ -43,9 +43,11 @@ export class PathsExample {
       .circle({ cx: 90, cy: 10, r: 2, fill: 'red'})
       .circle({ cx: 10, cy: 90, r: 2, fill: 'red' })
 
-    svgshape1.scale.setScalar(0.01)
-    svgshape1.position.set(-2, 0.5,0)
-    scene.add(svgshape1);
+    svgshape1.update()
+
+    svgshape1.object.scale.setScalar(0.01)
+    svgshape1.object.position.set(-2, 0.5,0)
+    scene.add(svgshape1.object);
 
     const svgshape2 = new SVGShape({ width: 190, height: 160 })
       .path({ d: "M 10 10 C 20 20, 40 20, 50 10", stroke:'black', fill:'transparent'})
@@ -60,10 +62,11 @@ export class PathsExample {
       //.path({ d: "M 10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80", stroke:'black', fill:'transparent'})
       //.path({ d: "M 10 80 Q 95 10 180 80", stroke:'black', fill:'transparent'})
       //.path({ d: "M 10 80 Q 52.5 10, 95 80 T 180 80", stroke:'black', fill:'transparent'})
+    svgshape2.update()
 
-    svgshape2.scale.setScalar(0.01)
-    svgshape2.position.set(-1, 0.5,0)
-    scene.add(svgshape2);
+    svgshape2.object.scale.setScalar(0.01)
+    svgshape2.object.position.set(-1, 0.5,0)
+    scene.add(svgshape2.object);
 
     const svgshape3 = new SVGShape({ width: 320, height: 320 })
       .path({
@@ -73,10 +76,10 @@ export class PathsExample {
            L 172.55 152.45
            A 30 50 -45 0 1 215.1 109.9
            L 315 10`, stroke:'black', fill:'green', strokeWidth:2, fillOpacity:0.5})
-
-    svgshape3.scale.setScalar(0.005)
-    svgshape3.position.set(1, 0.5,0)
-    scene.add(svgshape3);
+           svgshape3.update()
+    svgshape3.object.scale.setScalar(0.005)
+    svgshape3.object.position.set(1, 0.5,0)
+    scene.add(svgshape3.object);
 
     const svgshape4 = new SVGShape({ width: 325, height: 325 })
       .path({
@@ -97,10 +100,10 @@ export class PathsExample {
            A 45 45, 0, 1, 1, 275 275
            L 275 230 Z`, fill: 'blue'
       })
-
-    svgshape4.scale.setScalar(0.005)
-    svgshape4.position.set(-1, 2,0)
-    scene.add(svgshape4);
+      svgshape4.update()
+    svgshape4.object.scale.setScalar(0.005)
+    svgshape4.object.position.set(-1, 2,0)
+    scene.add(svgshape4.object);
 
     //     const loader = new SVGLoader();
     //     const svg = loader.parse(`

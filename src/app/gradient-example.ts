@@ -44,27 +44,28 @@ export class GradientsExample {
     // shape must be created at origin, 1x1, then scaled and moved, just like plane
 
     const svgshape1 = new SVGShape({ width: 120, height: 240 })
-      .linearGradient({
+    svgshape1.linearGradient({
         id: 'Gradient1', stops: [
           { offset: "0%", stopColor: "red" },
           { offset: "50%", stopColor: "white" },
           { offset: "100%", stopColor: "blue" },
         ]
       })
-      .linearGradient({
+    svgshape1.linearGradient({
         id: 'Gradient2', x1:0, x2:0, y1:0, y2:1, stops: [
           { offset: "0%", stopColor: "red" },
           { offset: "50%", stopColor: "white" },
           { offset: "100%", stopColor: "blue" },
         ]
       })
-      .rect({ x: "10", y: "0", rx: "15", ry: "15", width: "100", height: "100", fill: "url(#Gradient1)" })
-      //.rect({ x: "10", y: "0", rx: "0", ry: "0", width: "100", height: "100", fill: "url(#Gradient1)" })
-      .rect({ x: "10", y: "120", rx: "15", ry: "15", width: "150", height: "150", fill: "url(#Gradient1)" })
 
-    //svgshape1.scale.setScalar(0.01)
-    svgshape1.position.set(0, 1, 0)
-    scene.add(svgshape1);
+    svgshape1.rect({ x: "10", y: "0", rx: "15", ry: "15", width: "100", height: "100", fill: "url(#Gradient1)" })
+      //.rect({ x: "10", y: "0", rx: "0", ry: "0", width: "100", height: "100", fill: "url(#Gradient1)" })
+    svgshape1.rect({ x: "10", y: "120", rx: "15", ry: "15", width: "150", height: "150", fill: "url(#Gradient1)" })
+
+    svgshape1.update()
+    svgshape1.object.position.set(0, 1, 0)
+    scene.add(svgshape1.object);
 
 
     //        const loader = new SVGLoader();
