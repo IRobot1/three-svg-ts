@@ -1,6 +1,6 @@
 import { Mesh, SRGBColorSpace, Shape } from "three";
 import { BaseShape } from "./baseshape";
-import { SVGOptions} from "./svgshape";
+import { SVGOptions } from "./svgshape";
 import { CircleParams } from "./types";
 import { SVGShapeUtils } from "./shapeutils";
 import { GroupShape } from "./groupshape";
@@ -20,17 +20,17 @@ export class CircleShape extends BaseShape implements Circle {
     this.r = SVGShapeUtils.parseFloatWithUnits(params.r || 0);
     this.batch = false
 
-    let mesh = new Mesh()
-    mesh.name = 'circle-stroke'
-    mesh.material = this.svg.createStrokeMaterial()
-    if (this.params.stroke)
-      (<any>mesh.material).color.setStyle(this.params.stroke, SRGBColorSpace);
-    parent.addMesh(mesh);
-    this.strokemesh = mesh
-
+    const strokematerial = this.getStrokeMaterial()
+    if (strokematerial) {
+      const mesh = new Mesh()
+      mesh.name = 'circle-stroke'
+      mesh.material = strokematerial
+      parent.addMesh(mesh);
+      this.strokemesh = mesh
+    }
     const material = this.getFillMaterial()
     if (material) {
-      mesh = new Mesh()
+      const mesh = new Mesh()
       mesh.name = 'circle-fill'
       mesh.material = material
       parent.addMesh(mesh);
@@ -39,7 +39,7 @@ export class CircleShape extends BaseShape implements Circle {
   }
 
   private fillmesh?: Mesh
-  private strokemesh: Mesh
+  private strokemesh?: Mesh
 
   private _x = 0
   get x(): number { return this._x }
@@ -72,7 +72,7 @@ export class CircleShape extends BaseShape implements Circle {
     const shape = new Shape();
     shape.absarc(this.x, this.y, this.r, 0, Math.PI * 2, true);
 
-    this.strokemesh.geometry = this.renderStroke(shape)
+    if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape)
     if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape)
   }
 }

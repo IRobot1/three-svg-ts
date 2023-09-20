@@ -25,26 +25,27 @@ export class RectShape extends BaseShape implements Rect {
     this.h = SVGShapeUtils.parseFloatWithUnits(params.height, svg.height);
     this.batch = false
 
-    let mesh = new Mesh()
-    mesh.name = 'rect-stroke'
-    mesh.material = this.svg.createStrokeMaterial()
-    if (this.params.stroke)
-      (<any>mesh.material).color.setStyle(this.params.stroke, SRGBColorSpace);
-    parent.addMesh(mesh);
-    this.strokemesh = mesh
+    const strokematerial = this.getStrokeMaterial()
+    if (strokematerial) {
+      const mesh = new Mesh()
+      mesh.name = 'rect-stroke'
+      mesh.material = strokematerial
+      parent.addMesh(mesh);
+      this.strokemesh = mesh
+    }
 
-    const material = this.getFillMaterial()
-    if (material) {
-      mesh = new Mesh()
+    const fillmaterial = this.getFillMaterial()
+    if (fillmaterial) {
+      const mesh = new Mesh()
       mesh.name = 'rect-fill'
-      mesh.material = material
+      mesh.material = fillmaterial
       parent.addMesh(mesh);
       this.fillmesh = mesh
     }
   }
 
   private fillmesh?: Mesh
-  private strokemesh: Mesh
+  private strokemesh?: Mesh
 
   private _x = 0
   get x(): number { return this._x }
@@ -163,7 +164,7 @@ export class RectShape extends BaseShape implements Rect {
       );
     }
 
-    this.strokemesh.geometry = this.renderStroke(shape)
+    if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape)
     if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape)
   }
 

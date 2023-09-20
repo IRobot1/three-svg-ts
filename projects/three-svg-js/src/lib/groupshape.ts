@@ -1,8 +1,6 @@
-import { Box3, BufferAttribute, BufferGeometry, Float32BufferAttribute, Group, Mesh, MeshBasicMaterial, Object3D, SRGBColorSpace, Shape, ShapeGeometry, Vector3 } from "three";
+import { Object3D} from "three";
 import { CircleParams, EllipseParams, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RectParams, TextParams } from "./types";
-import { SVGShapeUtils } from "./shapeutils";
-import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
-import { SVGOptions, SVGShape, SVGShapeOptions } from "./svgshape";
+import { SVGOptions } from "./svgshape";
 import { RectShape } from "./rectshape";
 import { CircleShape } from "./circleshape";
 import { EllipseShape } from "./ellipseshape";
@@ -15,7 +13,7 @@ import { PathShape } from "./pathshape";
 import { BaseShape } from "./baseshape";
 
 export class GroupShape extends BaseShape  {
-  protected _object = new Group()
+
   constructor(svg: SVGOptions, params: PresentationAttributes) {
     super(svg, params)
   }
@@ -27,8 +25,8 @@ export class GroupShape extends BaseShape  {
   }
 
   addMesh(mesh: Object3D) {
-    mesh.position.z = this._object.children.length * this.svg.zfix!
-    this._object.add(mesh)
+    mesh.position.z = this.children.length * this.svg.zfix!
+    this.add(mesh)
   }
 
 
@@ -43,7 +41,7 @@ export class GroupShape extends BaseShape  {
 
     const group = new GroupShape(this.svg, params)
     this.addShape(group)
-    this._object.add(group._object)
+    this.add(group)
     return group
   }
 

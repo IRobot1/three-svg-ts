@@ -41,18 +41,18 @@ export class StrokesExample {
       .line({ x1: "40", x2: "120", y1: "60", y2: "60", stroke: "black", strokeWidth: "20", strokeLineCap: "square" })
       .line({ x1: "40", x2: "120", y1: "100", y2: "100", stroke: "black", strokeWidth: "20", strokeLineCap: "round" })
       svgshape1.update()
-    svgshape1.object.scale.setScalar(0.01)
-    svgshape1.object.position.set(-2, 0.5, 0)
-    scene.add(svgshape1.object);
+    svgshape1.scale.setScalar(0.01)
+    svgshape1.position.set(-2, 0.5, 0)
+    scene.add(svgshape1);
 
     const svgshape2 = new SVGShape({ width: 100, height: 100 })
       .polyline({ points: "40 60 80 20 120 60", stroke: "black", strokeWidth: "20", strokeLineCap: "butt", strokeLineJoin: "miter" })
       .polyline({ points: "40 140 80 100 120 140", stroke: "black", strokeWidth: "20", strokeLineCap: "round", strokeLineJoin: "round" })
       .polyline({ points: "40 220 80 180 120 220", stroke: "black", strokeWidth: "20", strokeLineCap: "square", strokeLineJoin: "bevel" })
       svgshape2.update()
-    svgshape2.object.scale.setScalar(0.01)
-    svgshape2.object.position.set(0, 1.2, 0)
-    scene.add(svgshape2.object);
+    svgshape2.scale.setScalar(0.01)
+    svgshape2.position.set(0, 1.2, 0)
+    scene.add(svgshape2);
 
     //    const loader = new SVGLoader();
     //    const svg = loader.parse(`

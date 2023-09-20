@@ -16,15 +16,16 @@ export class PolygonShape extends BaseShape implements Polygon {
     if (params.points) this.points = params.points
     this.batch = false
 
-    let mesh = new Mesh()
-    mesh.name = 'polygon-stroke'
-    mesh.material = this.svg.createStrokeMaterial()
-    if (this.params.stroke)
-      (<any>mesh.material).color.setStyle(this.params.stroke, SRGBColorSpace);
-    parent.addMesh(mesh);
-    this.strokemesh = mesh
+    const strokematerial = this.getStrokeMaterial()
+    if (strokematerial) {
+      const mesh = new Mesh()
+      mesh.name = 'polygon-stroke'
+      mesh.material = strokematerial
+      parent.addMesh(mesh);
+      this.strokemesh = mesh
+    }
   }
-  private strokemesh: Mesh
+  private strokemesh?: Mesh
 
   private _points = ''
   get points(): string { return this._points }
@@ -37,6 +38,8 @@ export class PolygonShape extends BaseShape implements Polygon {
 
 
   override update() {
+    if (!this.strokemesh) return
+
     let index = 0;
 
     const iterator = (match: string, a: Length, b: Length): string => {

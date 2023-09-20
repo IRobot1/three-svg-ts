@@ -51,9 +51,9 @@ export class GettingStartedExample {
         fill: "white"
       })
       svgshape.update()
-      console.warn(svgshape.object)
-      svgshape.object.scale.setScalar(0.01)
-      scene.add(svgshape.object);
+      console.warn(svgshape)
+      svgshape.scale.setScalar(0.01)
+      scene.add(svgshape);
     })
 
     // const loader = new SVGLoader();

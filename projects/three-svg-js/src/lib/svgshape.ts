@@ -1,7 +1,6 @@
 import { BufferGeometry, CanvasTexture, DoubleSide, Material, MeshBasicMaterial, RepeatWrapping, Shape, ShapeGeometry, SRGBColorSpace, Texture } from "three";
 import { LinearGradient } from './types'
 import { SVGShapeUtils } from "./shapeutils";
-import { BaseShape } from "./baseshape";
 import { GroupShape } from "./groupshape";
 
 export interface SVGShapeOptions {
@@ -102,5 +101,5 @@ export class SVGShape extends GroupShape {
     super(new SVGOptions(options), {})
   }
 
-  get object() { return this._object }
+
 }

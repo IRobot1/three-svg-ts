@@ -22,16 +22,17 @@ export class LineShape extends BaseShape implements Line {
     this.y2 = -SVGShapeUtils.parseFloatWithUnits(params.y2 || 0);
     this.batch = false
 
-    let mesh = new Mesh()
-    mesh.name = 'line-stroke'
-    mesh.material = this.svg.createStrokeMaterial()
-    if (this.params.stroke)
-      (<any>mesh.material).color.setStyle(this.params.stroke, SRGBColorSpace);
-    parent.addMesh(mesh);
-    this.strokemesh = mesh
+    const strokematerial = this.getStrokeMaterial()
+    if (strokematerial) {
+      const mesh = new Mesh()
+      mesh.name = 'line-stroke'
+      mesh.material = strokematerial
+      parent.addMesh(mesh);
+      this.strokemesh = mesh
+    }
   }
 
-  private strokemesh: Mesh
+  private strokemesh?: Mesh
 
   private _x1 = 0
   get x1(): number { return this._x1 }
@@ -70,6 +71,8 @@ export class LineShape extends BaseShape implements Line {
   }
 
   override update() {
+    if (!this.strokemesh) return
+
     const shape = new Shape()
     shape.moveTo(this.x1, this.y1)
     shape.lineTo(this.x2, this.y2)

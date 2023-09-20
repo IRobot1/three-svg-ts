@@ -14,22 +14,23 @@ export class PathShape extends BaseShape implements Path {
     super(svg, params)
     this.batch = true
     if (params.d) this.d = params.d
-    this.id = params.id
+    this.pathid = params.id
     this.batch = false
 
-    if (this.id) return
+    if (this.pathid) return
 
-    let mesh = new Mesh()
-    mesh.name = 'path-stroke'
-    mesh.material = this.svg.createStrokeMaterial()
-    if (this.params.stroke)
-      (<any>mesh.material).color.setStyle(this.params.stroke, SRGBColorSpace);
-    parent.addMesh(mesh);
-    this.strokemesh = mesh
+    const strokematerial = this.getStrokeMaterial()
+    if (strokematerial) {
+      const mesh = new Mesh()
+      mesh.name = 'path-stroke'
+      mesh.material = strokematerial
+      parent.addMesh(mesh);
+      this.strokemesh = mesh
+    }
 
     const material = this.getFillMaterial()
     if (material) {
-      mesh = new Mesh()
+      const mesh = new Mesh()
       mesh.name = 'path-fill'
       mesh.material = material
       parent.addMesh(mesh);
@@ -40,7 +41,7 @@ export class PathShape extends BaseShape implements Path {
   private fillmesh?: Mesh
   private strokemesh?: Mesh
 
-  private id: string | undefined
+  private pathid: string | undefined
 
   private _d = ''
   get d(): string { return this._d }
@@ -57,8 +58,8 @@ export class PathShape extends BaseShape implements Path {
     const shape = new Shape();
 
     SVGShapeUtils.parsePath(this.d, shape)
-    if (this.id) {
-      this.svg.pathids.set(this.id, shape)
+    if (this.pathid) {
+      this.svg.pathids.set(this.pathid, shape)
     }
     else {
       const divisions = 32

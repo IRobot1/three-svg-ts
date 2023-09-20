@@ -1,20 +1,13 @@
-import { Box3, BufferAttribute, BufferGeometry, Float32BufferAttribute, Material, Mesh, MeshBasicMaterial, Object3D, SRGBColorSpace, Shape, ShapeGeometry, Vector3 } from "three";
-import { CircleParams, EllipseParams, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RectParams, TextParams } from "./types";
+import { Box3, BufferAttribute, BufferGeometry, Float32BufferAttribute, Material, MeshBasicMaterial, Object3D, SRGBColorSpace, Shape, ShapeGeometry, Vector3 } from "three";
+import { PresentationAttributes } from "./types";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
-import { SVGOptions, SVGShape, SVGShapeOptions } from "./svgshape";
-import { RectShape } from "./rectshape";
-import { CircleShape } from "./circleshape";
-import { EllipseShape } from "./ellipseshape";
-import { TextShape } from "./textshape";
-import { Font } from "three/examples/jsm/loaders/FontLoader";
-import { LineShape } from "./lineshape";
-import { PolylineShape } from "./polylineshape";
-import { PolygonShape } from "./polygonshape";
-import { PathShape } from "./pathshape";
+import { SVGOptions } from "./svgshape";
 
-export abstract class BaseShape {
-  constructor(protected svg: SVGOptions, protected params: PresentationAttributes) { }
+export abstract class BaseShape extends Object3D {
+  constructor(protected svg: SVGOptions, protected params: PresentationAttributes) {
+    super()
+  }
 
   protected batch = false
   startChanges() { this.batch = true }
@@ -36,6 +29,13 @@ export abstract class BaseShape {
       uv.push(u, v);
     }
     geometry.setAttribute("uv", new Float32BufferAttribute(uv, 2));
+  }
+
+  protected getStrokeMaterial(): Material | undefined {
+    if (!this.params.stroke) return undefined
+    const material = this.svg.createStrokeMaterial() as MeshBasicMaterial
+    material.color.setStyle(this.params.stroke, SRGBColorSpace);
+    return material
   }
 
   protected getFillMaterial(): Material | undefined {

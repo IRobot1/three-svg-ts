@@ -49,9 +49,9 @@ export class BasicShapesExample {
 
     svgshape.update()
 
-    svgshape.object.scale.setScalar(0.01)
-    svgshape.object.position.y = 1.3
-    scene.add(svgshape.object);
+    svgshape.scale.setScalar(0.01)
+    svgshape.position.y = 1.3
+    scene.add(svgshape);
 
     //     const loader = new SVGLoader();
     //     const svg = loader.parse(`
