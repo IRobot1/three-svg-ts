@@ -5,6 +5,13 @@ import { GroupShape } from "./groupshape";
 import { ShapeSchema, ShapeTypes } from "./schema";
 import { RectShape } from "./rectshape";
 import { BaseShape } from "./baseshape";
+import { TextShape } from "./textshape";
+import { PolylineShape } from "./polylineshape";
+import { PolygonShape } from "./polygonshape";
+import { PathShape } from "./pathshape";
+import { LineShape } from "./lineshape";
+import { EllipseShape } from "./ellipseshape";
+import { CircleShape } from "./circleshape";
 
 export interface SVGShapeOptions {
   width?: number;
@@ -135,6 +142,14 @@ export class SVGShape extends GroupShape {
   private loadElements(group: GroupShape, elements: Array<ShapeTypes>) {
     elements.forEach(item => {
       if (item.rect) group.rect(item.rect)
+      if (item.circle) group.circle(item.circle)
+      if (item.ellipse) group.ellipse(item.ellipse)
+      if (item.line) group.line(item.line)
+      if (item.path) group.path(item.path)
+      if (item.polygon) group.polygon(item.polygon)
+      if (item.polyline) group.polyline(item.polyline)
+      if (item.text) group.text(item.text)
+
       if (item.group) {
         let options = item.group.options ?? {}
         const group = this.group(options)
@@ -148,8 +163,20 @@ export class SVGShape extends GroupShape {
     shapes.forEach(shape => {
       switch (shape.shapetype) {
         case 'circle':
+          const circle = shape as CircleShape
+          elements.push({
+            circle: {
+              cx: circle.cx, cy: circle.cy, r: circle.r, ...circle.params
+            }
+          })
           break;
         case 'ellipse':
+          const ellipse = shape as EllipseShape
+          elements.push({
+            ellipse: {
+              cx: ellipse.cx, cy: ellipse.cy, rx: ellipse.rx, ry: ellipse.ry, ...ellipse.params
+            }
+          })
           break;
         case 'group': {
           const group = shape as GroupShape
@@ -162,12 +189,36 @@ export class SVGShape extends GroupShape {
         }
           break;
         case 'line':
+          const line = shape as LineShape
+          elements.push({
+            line: {
+              x1: line.x1, y1: line.y1, x2:line.x2, y2:line.y2, ...line.params
+            }
+          })
           break;
         case 'path':
+          const path = shape as PathShape
+          elements.push({
+            path: {
+              id: path.pathid, d: path.d, ...path.params
+            }
+          })
           break;
         case 'polygon':
+          const polygon = shape as PolygonShape
+          elements.push({
+            polygon: {
+              points: polygon.points, ...polygon.params
+            }
+          })
           break;
         case 'polyline':
+          const polyline = shape as PolylineShape
+          elements.push({
+            polyline: {
+              points: polyline.points, ...polyline.params
+            }
+          })
           break;
         case 'rect': {
           const rect = shape as RectShape
@@ -179,6 +230,12 @@ export class SVGShape extends GroupShape {
         }
           break;
         case 'text':
+          const text = shape as TextShape
+          elements.push({
+            text: {
+              x: text.x, y: text.y, dx: text.dx, dy: text.dy, ...text.params
+            }
+          })
           break;
       }
     })
@@ -187,6 +244,11 @@ export class SVGShape extends GroupShape {
 
   load(schema: ShapeSchema) {
     if (schema.options) this.svg = new SVGOptions(schema.options)
+    if (schema.gradients) {
+      schema.gradients.forEach(gradient =>
+        this.svg.linearGradient(gradient)
+      )
+    }
     this.loadElements(this, schema.elements)
   }
 

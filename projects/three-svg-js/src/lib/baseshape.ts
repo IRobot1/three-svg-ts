@@ -1,4 +1,4 @@
-import { Box3, BufferAttribute, BufferGeometry, Float32BufferAttribute, Material, MeshBasicMaterial, Object3D, SRGBColorSpace, Shape, ShapeGeometry, Vector3 } from "three";
+import { Box3, BufferAttribute, BufferGeometry, Float32BufferAttribute, Material, Mesh, MeshBasicMaterial, Object3D, SRGBColorSpace, Shape, ShapeGeometry, Vector3 } from "three";
 import { PresentationAttributes } from "./types";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
@@ -7,7 +7,7 @@ import { ShapeTypes } from "./schema";
 
 export type ShapeType = 'circle' | 'ellipse' | 'group' | 'line' | 'path' | 'polygon' | 'polyline' | 'rect' | 'text' 
 
-export abstract class BaseShape extends Object3D {
+export abstract class BaseShape extends Mesh {
   
   constructor(readonly shapetype: ShapeType, protected svg: SVGOptions, public params: PresentationAttributes) {
     super()
@@ -36,7 +36,8 @@ export abstract class BaseShape extends Object3D {
   }
 
   protected getStrokeMaterial(): Material | undefined {
-    if (!this.params.stroke) return undefined
+    if (!this.params.stroke) this.params.stroke = 'black'
+
     const material = this.svg.createStrokeMaterial() as MeshBasicMaterial
     material.color.setStyle(this.params.stroke, SRGBColorSpace);
     return material
@@ -55,7 +56,7 @@ export abstract class BaseShape extends Object3D {
     }
     else if (this.params.fill) {
       if (this.params.fill.startsWith('url(#')) {
-        const id = this.params.fill.substring(5).replace(')', '');
+        const id = this.params.fill.substring(5).replace(')', '')
         material.color.setStyle('white', SRGBColorSpace);
         const texture = this.svg.getGradientById(id)
         if (texture) material.map = texture
@@ -73,7 +74,7 @@ export abstract class BaseShape extends Object3D {
 
   protected renderStroke(shape: Shape, divisions = 12): BufferGeometry {
     let strokeWidth = SVGShapeUtils.parseFloatWithUnits(this.params.strokeWidth || 0);
-    if (!strokeWidth && this.params.fill == 'transparent') strokeWidth = 1
+    if (!strokeWidth && (this.params.fill == 'none' || this.params.fill == 'transparent')) strokeWidth = 1
 
     if (strokeWidth) {
       const style = SVGLoader.getStrokeStyle(strokeWidth, this.params.stroke, this.params.strokeLineJoin, this.params.strokeLineCap, this.params.strokeMiterLimit)

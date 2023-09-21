@@ -3,7 +3,7 @@ import { BaseShape } from "./baseshape";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGOptions } from "./svgshape";
 import { PresentationAttributes, TextParams } from "./types";
-import { BufferGeometry, Color, Material, Mesh, SRGBColorSpace, Vector3 } from "three";
+import { BufferGeometry, Color, Material, Mesh, MeshBasicMaterial, SRGBColorSpace, Vector3 } from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { GroupShape } from "./groupshape";
 
@@ -13,29 +13,28 @@ export interface Text {
 }
 
 export class TextShape extends BaseShape implements Text {
-  constructor(svg: SVGOptions, parent: GroupShape, text: string, protected font: Font, params: TextParams) {
+  constructor(svg: SVGOptions, parent: GroupShape, params: TextParams) {
     super('text', svg, params)
     this.batch = true
     this.x = SVGShapeUtils.parseFloatWithUnits(params.x || 0);
     this.y = -SVGShapeUtils.parseFloatWithUnits(params.y || 0);
-    this.fontSize = SVGShapeUtils.parseFloatWithUnits(params.fontSize || 0);
+    this.dx = SVGShapeUtils.parseFloatWithUnits(params.dx || 0);
+    this.dy = -SVGShapeUtils.parseFloatWithUnits(params.dy || 0);
+    this.fontSize = SVGShapeUtils.parseFloatWithUnits(params.fontSize || 18);
     this.textSpacing = SVGShapeUtils.parseFloatWithUnits(params.textSpacing || this.fontSize / 4);
     this.textPath = params.textPath
-    this.text = text
+    this.text = params.content
+    this.font = params.font
     this.batch = false
 
-    const material = this.svg.createFillMaterial()
-    this.applyFill((<any>material).color, params);
-
-    const mesh = new Mesh()
-    mesh.name = 'text-fill'
-    mesh.material = material
-    mesh.position.set(this.x, this.y, 0)
-    parent.addMesh(mesh)
-    this.textMesh = mesh
+    const material = this.svg.createFillMaterial() as MeshBasicMaterial
+    this.applyFill(material.color, params);
+    
+    this.name = 'text-fill'
+    this.material = material
+    this.position.set(this.x, this.y, 0)
+    parent.addMesh(this)
   }
-
-  private textMesh: Mesh
 
   private applyFill(color: Color, params: PresentationAttributes) {
     if (params.fill === 'none') return
@@ -49,9 +48,9 @@ export class TextShape extends BaseShape implements Text {
     //transformPath( path, currentTransform );
   }
 
-  private _text = ''
-  get text(): string { return this._text }
-  set text(newvalue: string) {
+  private _text : string | undefined
+  get text(): string | undefined { return this._text }
+  set text(newvalue: string | undefined) {
     if (newvalue != this._text) {
       this._text = newvalue
       if (!this.batch) this.update()
@@ -71,6 +70,33 @@ export class TextShape extends BaseShape implements Text {
   set y(newvalue: number) {
     if (newvalue != this._y) {
       this._y = newvalue
+      if (!this.batch) this.update()
+    }
+  }
+
+  private _dx = 0
+  get dx(): number { return this._dx }
+  set dx(newvalue: number) {
+    if (newvalue != this._dx) {
+      this._dx = newvalue
+      if (!this.batch) this.update()
+    }
+  }
+
+  private _dy = 0
+  get dy(): number { return this._dy }
+  set dy(newvalue: number) {
+    if (newvalue != this._dy) {
+      this._dy = newvalue
+      if (!this.batch) this.update()
+    }
+  }
+
+  private _font : Font|undefined
+  get font(): Font | undefined { return this._font }
+  set font(newvalue: Font | undefined) {
+    if (newvalue != this._font) {
+      this._font = newvalue
       if (!this.batch) this.update()
     }
   }
@@ -103,10 +129,10 @@ export class TextShape extends BaseShape implements Text {
   }
 
   update() {
-    if (!this.text) return
-
+    if (!this.text || !this.font) return
+    
     if (this.textPath) {
-      this.textMesh.children.length = 0;
+      this.children.length = 0;
       this.updatePath(this.textPath, this.font, this.fontSize, this.textSpacing, this.text)
     }
     else {
@@ -129,8 +155,8 @@ export class TextShape extends BaseShape implements Text {
       //  }
       //}
 
-      this.textMesh.geometry = geometry
-      this.textMesh.position.y = this.y + size.y / 2
+      this.geometry = geometry
+      this.position.y = this.y + size.y / 2
     }
 
 
@@ -164,7 +190,7 @@ export class TextShape extends BaseShape implements Text {
 
     let startDistance = 0;  // Initialize the starting distance along the curve
 
-    const material = this.textMesh.material
+    const material = this.material
     textData.forEach((char, i) => {
       let textWidth = char.charWidth
       textWidth = Math.min(size * 1.1, Math.max(size / 5, textWidth))
@@ -184,7 +210,7 @@ export class TextShape extends BaseShape implements Text {
         charMesh.rotation.z = angle
 
         // Add the character mesh to the scene
-        this.textMesh.add(charMesh);
+        this.add(charMesh);
 
       }
 

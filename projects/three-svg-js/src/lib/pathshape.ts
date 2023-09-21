@@ -11,13 +11,14 @@ export interface Path {
 
 export class PathShape extends BaseShape implements Path {
   constructor(svg: SVGOptions, parent: GroupShape, params: PathParams) {
-    super('path',svg, params)
+    super('path', svg, params)
     this.batch = true
     if (params.d) this.d = params.d
-    this.pathid = params.id
     this.batch = false
 
+    this.pathid = params.id
     if (this.pathid) return
+
 
     const strokematerial = this.getStrokeMaterial()
     if (strokematerial) {
@@ -41,7 +42,14 @@ export class PathShape extends BaseShape implements Path {
   private fillmesh?: Mesh
   private strokemesh?: Mesh
 
-  private pathid: string | undefined
+  private _pathid: string | undefined
+  get pathid(): string | undefined { return this._pathid }
+  set pathid(newvalue: string | undefined) {
+    if (newvalue != this._pathid) {
+      this._pathid = newvalue
+      if (!this.batch) this.update()
+    }
+  }
 
   private _d = ''
   get d(): string { return this._d }
@@ -55,13 +63,18 @@ export class PathShape extends BaseShape implements Path {
 
   override update() {
     if (!this.d) return this
-    const shape = new Shape();
 
-    SVGShapeUtils.parsePath(this.d, shape)
     if (this.pathid) {
-      this.svg.addPathId(this.pathid, shape)
+      if (!this.svg.getPathById(this.pathid)) {
+        const shape = new Shape();
+        SVGShapeUtils.parsePath(this.d, shape)
+        this.svg.addPathId(this.pathid, shape)
+      }
     }
     else {
+      const shape = new Shape();
+      SVGShapeUtils.parsePath(this.d, shape)
+
       const divisions = 32
       if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape, divisions)
       if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape, divisions)

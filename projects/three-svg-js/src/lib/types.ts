@@ -1,4 +1,5 @@
 import { Vector2 } from "three";
+import { Font } from "three/examples/jsm/loaders/FontLoader";
 
 export type Length = number | string;
 
@@ -27,7 +28,7 @@ export interface PresentationAttributes {
   strokeLineCap?: StrokeLineCap;
   strokeLineJoin?: StrokeLineJoin;
   strokeMiterLimit?: number;
-  // strokeOpacity?: string;
+  strokeOpacity?: number;
   strokeWidth?: Length;
   // transform?: string;
   // vectorEffect?: string;
@@ -144,6 +145,8 @@ export class EllipseParams implements PresentationAttributes {
 }
 
 export class TextParams implements PresentationAttributes {
+  content?: string;
+
   x?: Length;
   y?: Length;
   dx?: Length;
@@ -156,6 +159,7 @@ export class TextParams implements PresentationAttributes {
   textSpacing?: number;
 
   // style attributes
+  font?: Font;
   // fontfamiliy?:string;
   fontSize?: number;
   // fontSizeAdjust?:number;
@@ -340,10 +344,10 @@ export interface GradientStop {
 }
 export interface LinearGradient {
   id: string,
-  x1?: number;
-  x2?: number;
-  y1?: number;
-  y2?: number;
+  x1?: Length;
+  x2?: Length;
+  y1?: Length;
+  y2?: Length;
 
   stops: Array<GradientStop>;
 }

@@ -55,7 +55,6 @@ export class GroupExample {
 
     let schema: ShapeSchema = svgshape1.save()
     console.warn(schema)
-    console.warn(JSON.stringify(schema))
 
     //schema = {
     //  elements: [

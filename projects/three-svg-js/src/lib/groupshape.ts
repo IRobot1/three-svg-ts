@@ -73,11 +73,11 @@ export class GroupShape extends BaseShape  {
     return this
   }
 
-  text(text: string, font: Font, params: TextParams): this {
+  text(params: TextParams): this {
     if (!params.fill) params.fill = this.params.fill
     //if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
 
-    const shape = new TextShape(this.svg, this, text, font, params)
+    const shape = new TextShape(this.svg, this, params)
     this.addShape(shape)
     return this
   }

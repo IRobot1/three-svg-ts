@@ -1,4 +1,4 @@
-import { Mesh, SRGBColorSpace, Shape } from "three";
+import { Mesh, Shape } from "three";
 import { BaseShape } from "./baseshape";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGOptions } from "./svgshape";
@@ -6,8 +6,8 @@ import { EllipseParams } from "./types";
 import { GroupShape } from "./groupshape";
 
 export interface Ellipse {
-  x: number,
-  y: number,
+  cx: number,
+  cy: number,
   rx: number,
   ry: number,
 }
@@ -16,8 +16,8 @@ export class EllipseShape extends BaseShape implements Ellipse {
   constructor(svg: SVGOptions, parent: GroupShape, params: EllipseParams) {
     super('ellipse',svg, params)
     this.batch = true
-    this.x = SVGShapeUtils.parseFloatWithUnits(params.cx || 0);
-    this.y = -SVGShapeUtils.parseFloatWithUnits(params.cy || 0);
+    this.cx = SVGShapeUtils.parseFloatWithUnits(params.cx || 0);
+    this.cy = -SVGShapeUtils.parseFloatWithUnits(params.cy || 0);
     this.rx = SVGShapeUtils.parseFloatWithUnits(params.rx || 0);
     this.ry = SVGShapeUtils.parseFloatWithUnits(params.ry || 0);
     this.batch = false
@@ -44,23 +44,25 @@ export class EllipseShape extends BaseShape implements Ellipse {
   private fillmesh?: Mesh
   private strokemesh?: Mesh
 
-  private _x = 0
-  get x(): number { return this._x }
-  set x(newvalue: number) {
-    if (newvalue != this._x) {
-      this._x = newvalue
+  private _cx = 0
+  get cx(): number { return this._cx }
+  set cx(newvalue: number) {
+    if (newvalue != this._cx) {
+      this._cx = newvalue
       if (!this.batch) this.update()
     }
   }
 
-  private _y = 0
-  get y(): number { return this._y }
-  set y(newvalue: number) {
-    if (newvalue != this._y) {
-      this._y = newvalue
+
+  private _cy = 0
+  get cy(): number { return this._cy }
+  set cy(newvalue: number) {
+    if (newvalue != this._cy) {
+      this._cy = newvalue
       if (!this.batch) this.update()
     }
   }
+
 
   private _rx = 0
   get rx(): number { return this._rx }
@@ -82,7 +84,7 @@ export class EllipseShape extends BaseShape implements Ellipse {
 
   override update() {
     const shape = new Shape();
-    shape.absellipse(this.x, this.y, this.rx, this.ry, 0, Math.PI * 2, true);
+    shape.absellipse(this.cx, this.cy, this.rx, this.ry, 0, Math.PI * 2, true);
 
     if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape)
     if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape)

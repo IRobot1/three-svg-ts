@@ -41,7 +41,9 @@ export class TextExample {
     loader.load('assets/helvetiker_regular.typeface.json', (font: Font) => {
       const svgshape1 = new SVGShape({ width: 200, height: 100 })
         .path({ id: 'my_path', d: "M 20, 20 C 80, 60 100, 40 120, 20" })
-        .text("A curve.", font, {
+        .text({
+          content: "A curve.",
+          font, 
           fontSize: 18,
           textPath: '#my_path',
           textSpacing: 4,

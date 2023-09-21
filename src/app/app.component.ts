@@ -7,6 +7,7 @@ import { StrokesExample } from './strokes-example';
 import { GradientsExample } from './gradient-example';
 import { TextExample } from './text-example';
 import { GroupExample } from './group-example';
+import { SVGParseExample } from './parse-example';
 
 
 @Component({
@@ -26,7 +27,8 @@ export class AppComponent {
     app.router.add('gradients', () => { return new GradientsExample(app) })
     app.router.add('text', () => { return new TextExample(app) })
     app.router.add('group', () => { return new GroupExample(app) })
+    app.router.add('parse', () => { return new SVGParseExample(app) })
 
-    app.navigateto('group')
+    app.navigateto('parse')
   }
 }

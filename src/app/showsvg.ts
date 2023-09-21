@@ -1,7 +1,7 @@
 import { DoubleSide, Group, Mesh, MeshBasicMaterial, Scene, ShapeGeometry, ShapePath } from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 
-export function showSVG(scene: Scene, paths: Array<ShapePath>) {
+export function showSVG(scene: Scene, paths: Array<ShapePath>): Group {
   const group = new Group();
 
   for (let i = 0; i < paths.length; i++) {
@@ -28,4 +28,5 @@ export function showSVG(scene: Scene, paths: Array<ShapePath>) {
   }
 
   scene.add(group);
+  return group
 }

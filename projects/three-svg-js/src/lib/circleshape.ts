@@ -6,8 +6,8 @@ import { SVGShapeUtils } from "./shapeutils";
 import { GroupShape } from "./groupshape";
 
 export interface Circle {
-  x: number,
-  y: number,
+  cx: number,
+  cy: number,
   r: number,
 }
 
@@ -15,8 +15,8 @@ export class CircleShape extends BaseShape implements Circle {
   constructor(svg: SVGOptions, parent: GroupShape, params: CircleParams) {
     super('circle', svg, params)
     this.batch = true
-    this.x = SVGShapeUtils.parseFloatWithUnits(params.cx || 0);
-    this.y = -SVGShapeUtils.parseFloatWithUnits(params.cy || 0);
+    this.cx = SVGShapeUtils.parseFloatWithUnits(params.cx || 0);
+    this.cy = -SVGShapeUtils.parseFloatWithUnits(params.cy || 0);
     this.r = SVGShapeUtils.parseFloatWithUnits(params.r || 0);
     this.batch = false
 
@@ -41,20 +41,20 @@ export class CircleShape extends BaseShape implements Circle {
   private fillmesh?: Mesh
   private strokemesh?: Mesh
 
-  private _x = 0
-  get x(): number { return this._x }
-  set x(newvalue: number) {
-    if (newvalue != this._x) {
-      this._x = newvalue
+  private _cx = 0
+  get cx(): number { return this._cx }
+  set cx(newvalue: number) {
+    if (newvalue != this._cx) {
+      this._cx = newvalue
       if (!this.batch) this.update()
     }
   }
 
-  private _y = 0
-  get y(): number { return this._y }
-  set y(newvalue: number) {
-    if (newvalue != this._y) {
-      this._y = newvalue
+  private _cy = 0
+  get cy(): number { return this._cy }
+  set cy(newvalue: number) {
+    if (newvalue != this._cy) {
+      this._cy = newvalue
       if (!this.batch) this.update()
     }
   }
@@ -70,7 +70,7 @@ export class CircleShape extends BaseShape implements Circle {
 
   override update() {
     const shape = new Shape();
-    shape.absarc(this.x, this.y, this.r, 0, Math.PI * 2, true);
+    shape.absarc(this.cx, this.cy, this.r, 0, Math.PI * 2, true);
 
     if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape)
     if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape)
