@@ -11,7 +11,7 @@ export interface Polygon {
 
 export class PolygonShape extends BaseShape implements Polygon {
   constructor(svg: SVGOptions, parent: GroupShape, params: PolygonParams) {
-    super(svg, params)
+    super('polygon',svg, params)
     this.batch = true
     if (params.points) this.points = params.points
     this.batch = false

@@ -11,7 +11,7 @@ export interface Path {
 
 export class PathShape extends BaseShape implements Path {
   constructor(svg: SVGOptions, parent: GroupShape, params: PathParams) {
-    super(svg, params)
+    super('path',svg, params)
     this.batch = true
     if (params.d) this.d = params.d
     this.pathid = params.id
@@ -59,7 +59,7 @@ export class PathShape extends BaseShape implements Path {
 
     SVGShapeUtils.parsePath(this.d, shape)
     if (this.pathid) {
-      this.svg.pathids.set(this.pathid, shape)
+      this.svg.addPathId(this.pathid, shape)
     }
     else {
       const divisions = 32

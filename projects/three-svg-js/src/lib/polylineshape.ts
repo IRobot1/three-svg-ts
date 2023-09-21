@@ -11,7 +11,7 @@ export interface Polyline {
 
 export class PolylineShape extends BaseShape implements Polyline {
   constructor(svg: SVGOptions, parent: GroupShape, params: PolylineParams) {
-    super(svg, params)
+    super('polyline', svg, params)
     this.batch = true
     if (params.points) this.points = params.points
     this.batch = false

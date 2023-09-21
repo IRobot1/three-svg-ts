@@ -15,7 +15,7 @@ import { BaseShape } from "./baseshape";
 export class GroupShape extends BaseShape  {
 
   constructor(svg: SVGOptions, params: PresentationAttributes) {
-    super(svg, params)
+    super('group', svg, params)
   }
 
   shapes: Array<BaseShape> = [];

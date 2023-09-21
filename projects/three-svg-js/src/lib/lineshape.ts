@@ -14,7 +14,7 @@ export interface Line {
 
 export class LineShape extends BaseShape implements Line {
   constructor(svg: SVGOptions, parent:GroupShape, params: LineParams) {
-    super(svg, params)
+    super('line', svg, params)
     this.batch = true
     this.x1 = SVGShapeUtils.parseFloatWithUnits(params.x1 || 0);
     this.y1 = -SVGShapeUtils.parseFloatWithUnits(params.y1 || 0);

@@ -13,7 +13,7 @@ export interface Circle {
 
 export class CircleShape extends BaseShape implements Circle {
   constructor(svg: SVGOptions, parent: GroupShape, params: CircleParams) {
-    super(svg, params)
+    super('circle', svg, params)
     this.batch = true
     this.x = SVGShapeUtils.parseFloatWithUnits(params.cx || 0);
     this.y = -SVGShapeUtils.parseFloatWithUnits(params.cy || 0);

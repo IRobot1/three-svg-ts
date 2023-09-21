@@ -3,9 +3,13 @@ import { PresentationAttributes } from "./types";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { SVGOptions } from "./svgshape";
+import { ShapeTypes } from "./schema";
+
+export type ShapeType = 'circle' | 'ellipse' | 'group' | 'line' | 'path' | 'polygon' | 'polyline' | 'rect' | 'text' 
 
 export abstract class BaseShape extends Object3D {
-  constructor(protected svg: SVGOptions, protected params: PresentationAttributes) {
+  
+  constructor(readonly shapetype: ShapeType, protected svg: SVGOptions, public params: PresentationAttributes) {
     super()
   }
 
@@ -53,7 +57,7 @@ export abstract class BaseShape extends Object3D {
       if (this.params.fill.startsWith('url(#')) {
         const id = this.params.fill.substring(5).replace(')', '');
         material.color.setStyle('white', SRGBColorSpace);
-        const texture = this.svg.gradients.get(id)
+        const texture = this.svg.getGradientById(id)
         if (texture) material.map = texture
       }
       else

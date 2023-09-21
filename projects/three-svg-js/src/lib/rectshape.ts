@@ -15,7 +15,7 @@ export interface Rect {
 }
 export class RectShape extends BaseShape implements Rect {
   constructor(svg: SVGOptions, parent: GroupShape, params: RectParams) {
-    super(svg, params)
+    super('rect',svg, params)
     this.batch = true
     this.x = SVGShapeUtils.parseFloatWithUnits(params.x || 0);
     this.y = -SVGShapeUtils.parseFloatWithUnits(params.y || 0);

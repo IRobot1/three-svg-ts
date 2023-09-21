@@ -14,7 +14,7 @@ export interface Ellipse {
 
 export class EllipseShape extends BaseShape implements Ellipse {
   constructor(svg: SVGOptions, parent: GroupShape, params: EllipseParams) {
-    super(svg, params)
+    super('ellipse',svg, params)
     this.batch = true
     this.x = SVGShapeUtils.parseFloatWithUnits(params.cx || 0);
     this.y = -SVGShapeUtils.parseFloatWithUnits(params.cy || 0);

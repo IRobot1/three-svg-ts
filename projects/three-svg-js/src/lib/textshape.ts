@@ -14,7 +14,7 @@ export interface Text {
 
 export class TextShape extends BaseShape implements Text {
   constructor(svg: SVGOptions, parent: GroupShape, text: string, protected font: Font, params: TextParams) {
-    super(svg, params)
+    super('text', svg, params)
     this.batch = true
     this.x = SVGShapeUtils.parseFloatWithUnits(params.x || 0);
     this.y = -SVGShapeUtils.parseFloatWithUnits(params.y || 0);
@@ -138,7 +138,7 @@ export class TextShape extends BaseShape implements Text {
 
   private updatePath(id: string, font: Font, size: number, spacing: number, text: string) {
     if (id.startsWith('#')) id = id.substring(1)
-    const curve = this.svg.pathids.get(id)
+    const curve = this.svg.getPathById(id)
     if (!curve) return
 
     // Calculate the total length of the text

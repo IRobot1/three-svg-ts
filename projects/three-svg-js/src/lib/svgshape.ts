@@ -2,6 +2,9 @@ import { BufferGeometry, CanvasTexture, DoubleSide, Material, MeshBasicMaterial,
 import { LinearGradient } from './types'
 import { SVGShapeUtils } from "./shapeutils";
 import { GroupShape } from "./groupshape";
+import { ShapeSchema, ShapeTypes } from "./schema";
+import { RectShape } from "./rectshape";
+import { BaseShape } from "./baseshape";
 
 export interface SVGShapeOptions {
   width?: number;
@@ -15,8 +18,23 @@ export interface SVGShapeOptions {
 }
 
 export class SVGOptions implements SVGShapeOptions {
-  width = 400
-  height = 300
+  private _width = 400
+  get width() { return this._width }
+  set width(newvalue: number) {
+    if (newvalue != this._width) {
+      this._width = newvalue
+      this.viewBox = [this.viewBox[0], this.viewBox[1], newvalue, this.viewBox[3]]
+    }
+  }
+
+  private _height = 300
+  get height() { return this._height }
+  set height(newvalue: number) {
+    if (newvalue != this._height) {
+      this._height = newvalue;
+      this.viewBox = [this.viewBox[0], this.viewBox[1], this.viewBox[2], newvalue]
+    }
+  }
   viewBox: Array<number> = [0, 0, 400, 300]
   zfix = 0.01
 
@@ -50,8 +68,21 @@ export class SVGOptions implements SVGShapeOptions {
     return new ShapeGeometry(shapes)
   }
 
-  pathids = new Map<string, Shape>([])
-  gradients = new Map<string, Texture>([]);
+  private pathids = new Map<string, Shape>([])
+  addPathId(id: string, shape: Shape) {
+    this.pathids.set(id, shape)
+  }
+  getPathById(id: string): Shape | undefined {
+    return this.pathids.get(id)
+  }
+
+  private gradients = new Map<string, Texture>([]);
+  addGradientId(id: string, texture: Texture) {
+    this.gradients.set(id, texture)
+  }
+  getGradientById(id: string): Texture | undefined {
+    return this.gradients.get(id)
+  }
 
   linearGradient(params: LinearGradient): this {
     const CANVAS_SIZE = 100
@@ -97,9 +128,76 @@ export class SVGOptions implements SVGShapeOptions {
 
 export class SVGShape extends GroupShape {
 
-  constructor(options: SVGShapeOptions) {
-    super(new SVGOptions(options), {})
+  constructor(options?: SVGShapeOptions) {
+    super(new SVGOptions(options ?? {}), {})
   }
 
+  private loadElements(group: GroupShape, elements: Array<ShapeTypes>) {
+    elements.forEach(item => {
+      if (item.rect) group.rect(item.rect)
+      if (item.group) {
+        let options = item.group.options ?? {}
+        const group = this.group(options)
+        this.loadElements(group, item.group.elements)
+      }
+    })
+  }
 
+  private saveElements(shapes: Array<BaseShape>): Array<ShapeTypes> {
+    const elements: Array<ShapeTypes> = []
+    shapes.forEach(shape => {
+      switch (shape.shapetype) {
+        case 'circle':
+          break;
+        case 'ellipse':
+          break;
+        case 'group': {
+          const group = shape as GroupShape
+          elements.push({
+            group: {
+              options: group.params,
+              elements: this.saveElements(group.shapes)
+            }
+          })
+        }
+          break;
+        case 'line':
+          break;
+        case 'path':
+          break;
+        case 'polygon':
+          break;
+        case 'polyline':
+          break;
+        case 'rect': {
+          const rect = shape as RectShape
+          elements.push({
+            rect: {
+              x: rect.x, y: rect.y, rx: rect.rx, ry: rect.ry, width: rect.w, height: rect.h, ...rect.params
+            }
+          })
+        }
+          break;
+        case 'text':
+          break;
+      }
+    })
+    return elements
+  }
+
+  load(schema: ShapeSchema) {
+    if (schema.options) this.svg = new SVGOptions(schema.options)
+    this.loadElements(this, schema.elements)
+  }
+
+  save(): ShapeSchema {
+    const s = this.svg as SVGShapeOptions
+    const schema: ShapeSchema = {
+      options: { width: s.width, height: s.height, viewBox: s.viewBox },
+      elements: this.saveElements(this.shapes)
+    }
+
+
+    return schema
+  }
 }
