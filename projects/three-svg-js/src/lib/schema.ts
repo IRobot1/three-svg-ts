@@ -1,5 +1,5 @@
 import { SVGShapeOptions } from "./svgshape";
-import { CircleParams, EllipseParams, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RectParams, TextParams } from "./types";
+import { CircleParams, EllipseParams, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RadialGradient, RectParams, TextParams } from "./types";
 
 export interface GroupShapeType {
   options?: PresentationAttributes,
@@ -19,7 +19,7 @@ export interface ShapeTypes {
 }
 export interface ShapeSchema {
   options?: SVGShapeOptions
-  gradients?: Array<LinearGradient>
+  gradients?: Array<LinearGradient | RadialGradient>
   elements: Array<ShapeTypes>
 }
 

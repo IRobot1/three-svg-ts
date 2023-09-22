@@ -1,5 +1,5 @@
 import { Object3D} from "three";
-import { CircleParams, EllipseParams, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RectParams, TextParams } from "./types";
+import { CircleParams, EllipseParams, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RadialGradient, RectParams, TextParams } from "./types";
 import { SVGOptions } from "./svgshape";
 import { RectShape } from "./rectshape";
 import { CircleShape } from "./circleshape";
@@ -122,6 +122,11 @@ export class GroupShape extends BaseShape  {
 
   linearGradient(params: LinearGradient): this {
     this.svg.linearGradient(params)
+    return this
+  }
+
+  radialGradient(params: RadialGradient): this {
+    this.svg.radialGradient(params)
     return this
   }
 }

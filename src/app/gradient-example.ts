@@ -45,14 +45,14 @@ export class GradientsExample {
 
     const svgshape1 = new SVGShape({ width: 120, height: 240 })
     svgshape1.linearGradient({
-        id: 'Gradient1', stops: [
+        type: 'linear', id: 'Gradient1', stops: [
           { offset: "0%", stopColor: "red" },
           { offset: "50%", stopColor: "white" },
           { offset: "100%", stopColor: "blue" },
         ]
       })
     svgshape1.linearGradient({
-        id: 'Gradient2', x1:0, x2:0, y1:0, y2:1, stops: [
+      type: 'linear', id: 'Gradient2', x1:0, x2:0, y1:0, y2:1, stops: [
           { offset: "0%", stopColor: "red" },
           { offset: "50%", stopColor: "white" },
           { offset: "100%", stopColor: "blue" },

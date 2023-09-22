@@ -25,7 +25,18 @@ export class PolygonShape extends BaseShape implements Polygon {
       this.strokemesh = mesh
       if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
+
+    const material = this.getFillMaterial()
+    if (material) {
+      const mesh = new Mesh()
+      mesh.name = 'polygon-fill'
+      mesh.material = material
+      parent.addMesh(mesh);
+      this.fillmesh = mesh
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
+    }
   }
+  private fillmesh?: Mesh
   private strokemesh?: Mesh
 
   private _points = ''
@@ -70,6 +81,7 @@ export class PolygonShape extends BaseShape implements Polygon {
 
     shape.autoClose = true
 
-    this.strokemesh.geometry = this.renderStroke(shape)
+    if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape)
+    if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape)
   }
 }

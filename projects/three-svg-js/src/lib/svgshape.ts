@@ -1,5 +1,5 @@
 import { BufferGeometry, CanvasTexture, DoubleSide, Material, MeshBasicMaterial, RepeatWrapping, Shape, ShapeGeometry, SRGBColorSpace, Texture } from "three";
-import { LinearGradient, PresentationAttributes } from './types'
+import { LinearGradient, PresentationAttributes, RadialGradient } from './types'
 import { SVGShapeUtils } from "./shapeutils";
 import { GroupShape } from "./groupshape";
 import { ShapeSchema, ShapeTypes } from "./schema";
@@ -93,6 +93,9 @@ export class SVGOptions implements SVGShapeOptions {
   }
 
   linearGradient(params: LinearGradient): this {
+    if (params.gradientTransform) {
+      console.warn('gradientTransform not implemented');
+    }
     const CANVAS_SIZE = 100
     const x1 = SVGShapeUtils.parseFloatWithUnits(params.x1 || 0);
     const y1 = SVGShapeUtils.parseFloatWithUnits(params.y1 || 0);
@@ -131,8 +134,56 @@ export class SVGOptions implements SVGShapeOptions {
     this.gradients.set(params.id, texture)
     return this;
   }
-}
 
+  radialGradient(params: RadialGradient): this {
+    if (params.gradientUnits != 'objectBoundingBox') {
+      console.warn('radial gradient userSpaceOnUse not supported')
+      return this
+    }
+    if (params.gradientTransform) {
+      console.warn('gradientTransform not implemented');
+    }
+
+    const CANVAS_SIZE = 100
+    const cx = SVGShapeUtils.parseFloatWithUnits(params.cx, 1) || 0.5
+    const cy = SVGShapeUtils.parseFloatWithUnits(params.cy, 1) || 0.5
+    const r = SVGShapeUtils.parseFloatWithUnits(params.r, 1) || 0.5
+    const fx = SVGShapeUtils.parseFloatWithUnits(params.fx, 1) || cx
+    const fy = SVGShapeUtils.parseFloatWithUnits(params.fy, 1) || cy
+    //console.warn(params, cx, cy, r, fx, fy)
+
+    const canvas = document.createElement('canvas');
+    canvas.width = CANVAS_SIZE
+    canvas.height = CANVAS_SIZE
+
+    const options: CanvasRenderingContext2DSettings = { alpha: true }
+    const context = canvas.getContext('2d', options);
+    if (!context) return this;
+
+    const gradient = context.createRadialGradient(CANVAS_SIZE * cx, CANVAS_SIZE * cy, 0, CANVAS_SIZE * r, CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+    params.stops.forEach(stop => {
+      let offset = 0
+      if (typeof stop.offset === 'string')
+        offset = parseFloat(stop.offset) / 100
+      else
+        offset = <number>stop.offset
+      let color = 'black'
+      if (stop.stopColor) color = stop.stopColor
+      gradient.addColorStop(offset, color);
+      //console.warn(offset, color)
+    })
+
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+    const texture = new CanvasTexture(canvas)
+    texture.colorSpace = SRGBColorSpace;
+    //texture.wrapS = texture.wrapT = RepeatWrapping
+
+    this.gradients.set(params.id, texture)
+    return this;
+  }
+}
 
 export class SVGShape extends GroupShape {
 
@@ -194,7 +245,7 @@ export class SVGShape extends GroupShape {
           const line = shape as LineShape
           elements.push({
             line: {
-              x1: line.x1, y1: line.y1, x2:line.x2, y2:line.y2, ...line.params
+              x1: line.x1, y1: line.y1, x2: line.x2, y2: line.y2, ...line.params
             }
           })
           break;
@@ -247,9 +298,12 @@ export class SVGShape extends GroupShape {
   load(schema: ShapeSchema) {
     if (schema.options) this.svg = new SVGOptions(schema.options)
     if (schema.gradients) {
-      schema.gradients.forEach(gradient =>
-        this.svg.linearGradient(gradient)
-      )
+      schema.gradients.forEach(gradient => {
+        if (gradient.type == 'linear')
+          this.svg.linearGradient(gradient)
+        else if (gradient.type == 'radial')
+          this.svg.radialGradient(gradient)
+      })
     }
     this.loadElements(this, schema.elements)
   }

@@ -1,24 +1,23 @@
 import { GroupShapeType, ShapeSchema, ShapeTypes } from "./schema";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGShapeOptions } from "./svgshape";
-import { CircleParams, EllipseParams, GradientStop, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RectParams, TextParams } from "./types";
+import { CircleParams, EllipseParams, GradientStop, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RadialGradient, RectParams, TextParams } from "./types";
 
 export class SVGParser {
 
   parse(text: string | ArrayBuffer): ShapeSchema {
     const options: SVGShapeOptions = {
-      fill: '#000',
       fillOpacity: 1,
       strokeOpacity: 1,
       strokeLineJoin: 'miter',
       strokeLineCap: 'butt',
       strokeMiterLimit: 4
-}
+    }
     const elements: Array<ShapeTypes> = []
     const schema: ShapeSchema = { options, elements }
 
     const stylesheets = {};
-    
+
     const xml = new DOMParser().parseFromString(<string>text, 'image/svg+xml'); // application/xml
 
     const stylenode = xml.documentElement.querySelector('style')
@@ -125,13 +124,20 @@ export class SVGParser {
         if (!schema.gradients) schema.gradients = []
         schema.gradients.push(stylesheets.gradient)
         break;
+
+      case 'radialGradient':
+        stylesheets.gradient = this.parseRadialGradientNode(node, elements);
+        if (!schema.gradients) schema.gradients = []
+        schema.gradients.push(stylesheets.gradient)
+        break;
+
       case 'stop':
         const stop = this.parseGradientStopNode(node, stylesheets.gradient);
         this.parseStyle(node, stop, stylesheets);
         break;
 
       case 'clipPath':
-      case 'radialGradient':
+      case 'mask':
       case 'filter':
       case 'feGaussianBlur':
       case 'animate':
@@ -364,12 +370,30 @@ export class SVGParser {
   parseLinearGradientNode(node: Element, elements: Array<ShapeTypes>): LinearGradient {
     const id = node.getAttribute('id') || ''
     const stops: Array<GradientStop> = []
-    const gradient: LinearGradient = { id, stops }
+    const gradient: LinearGradient = { type: 'linear', id, stops }
 
     gradient.x1 = node.getAttribute('x1') || 0
     gradient.y1 = node.getAttribute('y1') || 0
     gradient.x2 = node.getAttribute('x2') || 1
     gradient.y2 = node.getAttribute('y2') || 0
+    gradient.gradientUnits = node.getAttribute('gradientUnits') || undefined
+    gradient.gradientTransform = node.getAttribute('gradientTransform') || undefined
+
+    return gradient
+  }
+
+  parseRadialGradientNode(node: Element, elements: Array<ShapeTypes>): RadialGradient {
+    const id = node.getAttribute('id') || ''
+    const stops: Array<GradientStop> = []
+    const gradient: RadialGradient = { type: 'radial', id, stops }
+
+    gradient.cx = node.getAttribute('cx') || undefined
+    gradient.cy = node.getAttribute('cy') || undefined
+    gradient.r = node.getAttribute('r') || undefined
+    gradient.fx = node.getAttribute('fx') || undefined
+    gradient.fy = node.getAttribute('fy') || undefined
+    gradient.gradientUnits = node.getAttribute('gradientUnits') || undefined
+    gradient.gradientTransform = node.getAttribute('gradientTransform') || undefined
 
     return gradient
   }

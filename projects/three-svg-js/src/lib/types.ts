@@ -291,7 +291,7 @@ export class PolygonParams implements PresentationAttributes {
   stroke?: string;
   // strokeDashArray?: string;
   // strokeDashOffset?: string;
-   strokeLineCap?: StrokeLineCap;
+  strokeLineCap?: StrokeLineCap;
   strokeLineJoin?: StrokeLineJoin;
   strokeMiterLimit?: number;
   // strokeopacity?: number;
@@ -326,7 +326,7 @@ export class PathParams implements PresentationAttributes {
   stroke?: string;
   // strokeDashArray?: string;
   // strokeDashOffset?: string;
-   strokeLineCap?: StrokeLineCap;
+  strokeLineCap?: StrokeLineCap;
   strokeLineJoin?: StrokeLineJoin;
   strokeMiterLimit?: number;
   // strokeopacity?: number;
@@ -342,12 +342,30 @@ export interface GradientStop {
   //stopOpacity?: number;
 
 }
-export interface LinearGradient {
+
+export type GradientType = 'linear' | 'radial'
+export type GradientUnits = 'objectBoundingBox'|'userSpaceOnUse'|string
+export interface Gradient {
+  type: GradientType,
   id: string,
+  gradientUnits?: GradientUnits
+  gradientTransform?: string
+}
+
+export interface LinearGradient extends Gradient {
   x1?: Length;
   x2?: Length;
   y1?: Length;
   y2?: Length;
+
+  stops: Array<GradientStop>;
+}
+export interface RadialGradient extends Gradient {
+  cx?: Length;
+  cy?: Length;
+  r?: Length;
+  fx?: Length;
+  fy?: Length;
 
   stops: Array<GradientStop>;
 }
