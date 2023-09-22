@@ -36,14 +36,15 @@ export abstract class BaseShape extends Mesh {
   }
 
   protected getStrokeMaterial(): Material | undefined {
-    if (!this.params.stroke) this.params.stroke = 'black'
+    let color = this.params.stroke
+    if (!color) color = 'black'
 
     let opacity = 1
     if (this.params.opacity !== undefined) opacity = this.params.opacity
     if (this.params.strokeOpacity !== undefined) opacity = this.params.strokeOpacity
 
     const material = this.svg.createStrokeMaterial() as MeshBasicMaterial
-    material.color.setStyle(this.params.stroke, SRGBColorSpace);
+    material.color.setStyle(color, SRGBColorSpace);
     if (opacity < 1) {
       material.transparent = true
       material.opacity = opacity
@@ -83,7 +84,9 @@ export abstract class BaseShape extends Mesh {
 
   protected renderStroke(shape: Shape, divisions = 12): BufferGeometry {
     let strokeWidth = SVGShapeUtils.parseFloatWithUnits(this.params.strokeWidth || 0);
-    if (!strokeWidth && (this.params.stroke != 'black' || this.params.fill == 'none' || this.params.fill == 'transparent')) strokeWidth = 1
+    if (!strokeWidth && (this.params.fill == 'none' || this.params.fill == 'transparent')) strokeWidth = 1
+   
+    if (!strokeWidth && this.params.stroke) strokeWidth = 1
     
     if (strokeWidth) {
       const style = SVGLoader.getStrokeStyle(strokeWidth, this.params.stroke, this.params.strokeLineJoin, this.params.strokeLineCap, this.params.strokeMiterLimit)

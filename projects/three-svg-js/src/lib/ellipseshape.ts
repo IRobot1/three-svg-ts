@@ -89,8 +89,9 @@ export class EllipseShape extends BaseShape implements Ellipse {
     const shape = new Shape();
     shape.absellipse(this.cx, this.cy, this.rx, this.ry, 0, Math.PI * 2, true);
 
-    if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape)
-    if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape)
+    const divisions = 32
+    if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape, divisions)
+    if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape, divisions)
 
   }
 }
