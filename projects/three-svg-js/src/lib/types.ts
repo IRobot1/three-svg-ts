@@ -19,7 +19,7 @@ export interface PresentationAttributes {
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
-  // opacity?: string;
+  opacity?: number;
   // pointerEvents?: string;
   // shapeRendering?: string;
   stroke?: string;
@@ -57,7 +57,7 @@ export class RectParams implements PresentationAttributes {
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
-  // opacity?: string;
+  opacity?: number;
   // pointerEvents?: string;
   // shapeRendering?: string;
   stroke?: string;
@@ -66,7 +66,7 @@ export class RectParams implements PresentationAttributes {
   strokeLineCap?: StrokeLineCap;
   strokeLineJoin?: StrokeLineJoin;
   strokeMiterLimit?: number;
-  // strokeOpacity?: string;
+  // strokeopacity?: number;
   strokeWidth?: Length;
   // transform?: string;
   // vectorEffect?: string;
@@ -92,7 +92,7 @@ export class CircleParams implements PresentationAttributes {
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
-  // opacity?: string;
+  opacity?: number;
   // pointerEvents?: string;
   // shapeRendering?: string;
   stroke?: string;
@@ -101,7 +101,7 @@ export class CircleParams implements PresentationAttributes {
   strokeLineCap?: StrokeLineCap;
   strokeLineJoin?: StrokeLineJoin;
   strokeMiterLimit?: number;
-  // strokeOpacity?: string;
+  // strokeopacity?: number;
   strokeWidth?: Length;
   // transform?: string;
   // vectorEffect?: string;
@@ -128,7 +128,7 @@ export class EllipseParams implements PresentationAttributes {
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
-  // opacity?: string;
+  opacity?: number;
   // pointerEvents?: string;
   // shapeRendering?: string;
   stroke?: string;
@@ -137,7 +137,7 @@ export class EllipseParams implements PresentationAttributes {
   strokeLineCap?: StrokeLineCap;
   strokeLineJoin?: StrokeLineJoin;
   strokeMiterLimit?: number;
-  // strokeOpacity?: string;
+  // strokeopacity?: number;
   strokeWidth?: Length;
   // transform?: string;
   // vectorEffect?: string;
@@ -182,7 +182,7 @@ export class TextParams implements PresentationAttributes {
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
-  // opacity?: string;
+  opacity?: number;
   // pointerEvents?: string;
   // shapeRendering?: string;
   // stroke?: string;
@@ -191,7 +191,7 @@ export class TextParams implements PresentationAttributes {
   strokeLineCap?: StrokeLineCap;
   strokeLineJoin?: StrokeLineJoin;
   strokeMiterLimit?: number;
-  // strokeOpacity?: string;
+  // strokeopacity?: number;
   // strokeWidth?: Length;
   // transform?: string;
   // vectorEffect?: string;
@@ -219,7 +219,7 @@ export class LineParams implements PresentationAttributes {
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
-  // opacity?: string;
+  opacity?: number;
   // pointerEvents?: string;
   // shapeRendering?: string;
   stroke?: string;
@@ -228,7 +228,7 @@ export class LineParams implements PresentationAttributes {
   strokeLineCap?: StrokeLineCap;
   strokeLineJoin?: StrokeLineJoin;
   strokeMiterLimit?: number;
-  // strokeOpacity?: string;
+  // strokeopacity?: number;
   strokeWidth?: Length;
   // transform?: string;
   // vectorEffect?: string;
@@ -252,7 +252,7 @@ export class PolylineParams implements PresentationAttributes {
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
-  // opacity?: string;
+  opacity?: number;
   // pointerEvents?: string;
   // shapeRendering?: string;
   stroke?: string;
@@ -261,7 +261,7 @@ export class PolylineParams implements PresentationAttributes {
   strokeLineCap?: StrokeLineCap;
   strokeLineJoin?: StrokeLineJoin;
   strokeMiterLimit?: number;
-  // strokeOpacity?: string;
+  // strokeopacity?: number;
   strokeWidth?: Length;
   // transform?: string;
   // vectorEffect?: string;
@@ -285,7 +285,7 @@ export class PolygonParams implements PresentationAttributes {
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
-  // opacity?: string;
+  opacity?: number;
   // pointerEvents?: string;
   // shapeRendering?: string;
   stroke?: string;
@@ -294,7 +294,7 @@ export class PolygonParams implements PresentationAttributes {
    strokeLineCap?: StrokeLineCap;
   strokeLineJoin?: StrokeLineJoin;
   strokeMiterLimit?: number;
-  // strokeOpacity?: string;
+  // strokeopacity?: number;
   strokeWidth?: Length;
   // transform?: string;
   // vectorEffect?: string;
@@ -320,7 +320,7 @@ export class PathParams implements PresentationAttributes {
   // fillRule?: string;
   // filter?: string;
   // mask?: string;
-  // opacity?: string;
+  opacity?: number;
   // pointerEvents?: string;
   // shapeRendering?: string;
   stroke?: string;
@@ -329,7 +329,7 @@ export class PathParams implements PresentationAttributes {
    strokeLineCap?: StrokeLineCap;
   strokeLineJoin?: StrokeLineJoin;
   strokeMiterLimit?: number;
-  // strokeOpacity?: string;
+  // strokeopacity?: number;
   strokeWidth?: Length;
   // transform?: string;
   // vectorEffect?: string;

@@ -38,21 +38,30 @@ export abstract class BaseShape extends Mesh {
   protected getStrokeMaterial(): Material | undefined {
     if (!this.params.stroke) this.params.stroke = 'black'
 
+    let opacity = 1
+    if (this.params.opacity !== undefined) opacity = this.params.opacity
+    if (this.params.strokeOpacity !== undefined) opacity = this.params.strokeOpacity
+
     const material = this.svg.createStrokeMaterial() as MeshBasicMaterial
     material.color.setStyle(this.params.stroke, SRGBColorSpace);
+    if (opacity < 1) {
+      material.transparent = true
+      material.opacity = opacity
+    }
     return material
   }
 
   protected getFillMaterial(): Material | undefined {
     if (this.params.fill === 'none') return undefined;
 
+    let opacity = 1
+    if (this.params.opacity !== undefined) opacity = this.params.opacity
+    if (this.params.fillOpacity !== undefined) opacity = this.params.fillOpacity
+
     const material = this.svg.createFillMaterial() as MeshBasicMaterial
     if (this.params.fill === 'transparent') {
       material.transparent = true;
-      material.opacity = 0;
-      if (this.params.fillOpacity) {
-        material.opacity = this.params.fillOpacity;
-      }
+      material.opacity = opacity;
     }
     else if (this.params.fill) {
       if (this.params.fill.startsWith('url(#')) {
@@ -61,12 +70,12 @@ export abstract class BaseShape extends Mesh {
         const texture = this.svg.getGradientById(id)
         if (texture) material.map = texture
       }
-      else
+      else 
         material.color.setStyle(this.params.fill, SRGBColorSpace);
 
-      if (this.params.fillOpacity) {
+      if (opacity < 1) {
         material.transparent = true;
-        material.opacity = this.params.fillOpacity;
+        material.opacity = opacity;
       }
     }
     return material
