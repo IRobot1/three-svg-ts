@@ -1,10 +1,15 @@
 import { SVGShapeOptions } from "./svgshape";
 import { CircleParams, EllipseParams, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RectParams, TextParams } from "./types";
 
+export interface GroupShapeType {
+  options?: PresentationAttributes,
+  elements: Array<ShapeTypes>
+}
+
 export interface ShapeTypes {
   circle?: CircleParams
   ellipse?: EllipseParams
-  group?: { options?: PresentationAttributes, elements: Array<ShapeTypes> }
+  group?: GroupShapeType
   line?: LineParams
   path?: PathParams
   polygon?: PolygonParams

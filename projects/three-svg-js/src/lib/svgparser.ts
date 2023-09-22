@@ -1,4 +1,4 @@
-import { ShapeSchema, ShapeTypes } from "./schema";
+import { GroupShapeType, ShapeSchema, ShapeTypes } from "./schema";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGShapeOptions } from "./svgshape";
 import { CircleParams, EllipseParams, GradientStop, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RectParams, TextParams } from "./types";
@@ -14,10 +14,16 @@ export class SVGParser {
 
     const xml = new DOMParser().parseFromString(<string>text, 'image/svg+xml'); // application/xml
 
-    const node = xml.documentElement.querySelector('style')
-    if (node) this.parseCSSStylesheet(node, stylesheets);
+    const stylenode = xml.documentElement.querySelector('style')
+    if (stylenode) this.parseCSSStylesheet(stylenode, stylesheets);
 
-    this.parseNode(schema, xml.documentElement as any, {
+    const svgnode = xml.documentElement.querySelector('svg')
+    if (svgnode) {
+      //style = this.parseStyle(stylenode, style, stylesheets);
+      this.parseSVGNode(svgnode, schema);
+    }
+
+    this.parseNode(schema, schema.elements, xml.documentElement as any, {
       fill: '#000',
       fillOpacity: 1,
       strokeOpacity: 1,
@@ -30,7 +36,7 @@ export class SVGParser {
     return schema
   }
 
-  parseNode(schema: ShapeSchema, node: Element, style: PresentationAttributes, stylesheets: any) {
+  parseNode(schema: ShapeSchema, elements: Array<ShapeTypes>, node: Element, style: PresentationAttributes, stylesheets: any) {
     if (node.nodeType !== 1) return;
 
     const transform = this.getNodeTransform(node);
@@ -38,8 +44,7 @@ export class SVGParser {
     switch (node.nodeName) {
 
       case 'svg':
-        style = this.parseStyle(node, style, stylesheets);
-        this.parseSVGNode(node, schema);
+        // already handled
         break;
 
       case 'style':
@@ -47,47 +52,48 @@ export class SVGParser {
         break;
 
       case 'g':
-        style = this.parseStyle(node, style, stylesheets);
-        console.warn('group style', style)
+        const group = this.parseGroupNode(node, elements);
+        this.parseStyle(node, group.options, stylesheets);
+        elements = group.elements
         break;
 
       case 'path':
-        style = this.parsePathNode(node, schema.elements);
+        style = this.parsePathNode(node, elements);
         this.parseStyle(node, style, stylesheets);
         break;
 
       case 'rect':
-        style = this.parseRectNode(node, schema.elements);
+        style = this.parseRectNode(node, elements);
         this.parseStyle(node, style, stylesheets);
         break;
 
       case 'polygon':
-        style = this.parsePolygonNode(node, schema.elements);
+        style = this.parsePolygonNode(node, elements);
         this.parseStyle(node, style, stylesheets);
         break;
 
       case 'polyline':
-        style = this.parsePolylineNode(node, schema.elements);
+        style = this.parsePolylineNode(node, elements);
         this.parseStyle(node, style, stylesheets);
         break;
 
       case 'circle':
-        style = this.parseCircleNode(node, schema.elements);
+        style = this.parseCircleNode(node, elements);
         this.parseStyle(node, style, stylesheets);
         break;
 
       case 'ellipse':
-        style = this.parseEllipseNode(node, schema.elements);
+        style = this.parseEllipseNode(node, elements);
         this.parseStyle(node, style, stylesheets);
         break;
 
       case 'line':
-        style = this.parseLineNode(node, schema.elements);
+        style = this.parseLineNode(node, elements);
         this.parseStyle(node, style, stylesheets);
         break;
 
       case 'text':
-        style = this.parseTextNode(node, schema.elements);
+        style = this.parseTextNode(node, elements);
         this.parseStyle(node, style, stylesheets);
         break;
 
@@ -110,7 +116,7 @@ export class SVGParser {
         const usedNode = (<any>(<SVGElement>node).viewportElement)?.getElementById(usedNodeId);
         if (usedNode) {
 
-          this.parseNode(schema, usedNode, style, stylesheets);
+          this.parseNode(schema, elements, usedNode, style, stylesheets);
 
         } else {
 
@@ -121,7 +127,7 @@ export class SVGParser {
         break;
 
       case 'linearGradient':
-        stylesheets.gradient = this.parseLinearGradientNode(node, schema.elements);
+        stylesheets.gradient = this.parseLinearGradientNode(node, elements);
         if (!schema.gradients) schema.gradients = []
         schema.gradients.push(stylesheets.gradient)
         break;
@@ -158,7 +164,7 @@ export class SVGParser {
 
       const node = <SVGElement>childNodes[i];
 
-      this.parseNode(schema, node, style, stylesheets);
+      this.parseNode(schema, elements, node, style, stylesheets);
 
     }
 
@@ -295,6 +301,14 @@ export class SVGParser {
       schema.options.viewBox = viewbox.substring(1, viewbox.length - 1).split(',').map(x => +x)
     else
       schema.options.viewBox = [0, 0, schema.options.width, schema.options.height]
+  }
+
+  parseGroupNode(node: Element, parent: Array<ShapeTypes>): GroupShapeType {
+    const options: PresentationAttributes = {}
+    const elements: Array<ShapeTypes> = []
+    const group: GroupShapeType = { options, elements: elements }
+    parent.push({ group })
+    return group
   }
 
   parsePathNode(node: Element, elements: Array<ShapeTypes>): PresentationAttributes {
