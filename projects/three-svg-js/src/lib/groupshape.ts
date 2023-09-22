@@ -38,6 +38,7 @@ export class GroupShape extends BaseShape  {
     if (!params.fill) params.fill = this.params.fill
     if (!params.stroke) params.stroke = this.params.stroke
     if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
+    if (!params.transform) params.transform = this.params.transform
 
     const group = new GroupShape(this.svg, params)
     this.addShape(group)
@@ -47,8 +48,10 @@ export class GroupShape extends BaseShape  {
 
   rect(params: RectParams): this {
     if (!params.fill) params.fill = this.params.fill
+    if (!params.opacity) params.opacity = this.params.opacity
     if (!params.stroke) params.stroke = this.params.stroke
     if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
+    if (!params.transform) params.transform = this.params.transform
 
     const shape = new RectShape(this.svg, this, params)
     this.addShape(shape)
@@ -57,8 +60,10 @@ export class GroupShape extends BaseShape  {
 
   circle(params: CircleParams): this {
     if (!params.fill) params.fill = this.params.fill
+    if (!params.opacity) params.opacity = this.params.opacity
     if (!params.stroke) params.stroke = this.params.stroke
     if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
+    if (!params.transform) params.transform = this.params.transform
 
     const shape = new CircleShape(this.svg, this, params)
     this.addShape(shape)
@@ -67,8 +72,10 @@ export class GroupShape extends BaseShape  {
 
   ellipse(params: EllipseParams): this {
     if (!params.fill) params.fill = this.params.fill
+    if (!params.opacity) params.opacity = this.params.opacity
     if (!params.stroke) params.stroke = this.params.stroke
     if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
+    if (!params.transform) params.transform = this.params.transform
 
     const shape = new EllipseShape(this.svg, this, params)
     this.addShape(shape)
@@ -77,7 +84,8 @@ export class GroupShape extends BaseShape  {
 
   text(params: TextParams): this {
     if (!params.fill) params.fill = this.params.fill
-    //if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
+    if (!params.opacity) params.opacity = this.params.opacity
+    if (!params.transform) params.transform = this.params.transform
 
     const shape = new TextShape(this.svg, this, params)
     this.addShape(shape)
@@ -87,6 +95,7 @@ export class GroupShape extends BaseShape  {
   line(params: LineParams):this {
     if (!params.stroke) params.stroke = this.params.stroke
     if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
+    if (!params.transform) params.transform = this.params.transform
 
     const shape = new LineShape(this.svg, this, params)
     this.addShape(shape)
@@ -96,6 +105,7 @@ export class GroupShape extends BaseShape  {
   polyline(params: PolylineParams) {
     if (!params.stroke) params.stroke = this.params.stroke
     if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
+    if (!params.transform) params.transform = this.params.transform
 
     const shape = new PolylineShape(this.svg, this, params)
     this.addShape(shape)
@@ -105,6 +115,7 @@ export class GroupShape extends BaseShape  {
   polygon(params: PolygonParams) {
     if (!params.stroke) params.stroke = this.params.stroke
     if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
+    if (!params.transform) params.transform = this.params.transform
 
     const shape = new PolygonShape(this.svg, this, params)
     this.addShape(shape)
@@ -113,10 +124,12 @@ export class GroupShape extends BaseShape  {
 
   path(params: PathParams): this {
     if (!params.fill) params.fill = this.params.fill
+    if (!params.opacity) params.opacity = this.params.opacity
     if (!params.stroke) params.stroke = this.params.stroke
     if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
     if (!params.strokeLineCap) params.strokeLineCap = this.params.strokeLineCap
     if (!params.strokeLineJoin) params.strokeLineJoin = this.params.strokeLineJoin
+    if (!params.transform) params.transform = this.params.transform
 
     const shape = new PathShape(this.svg, this, params)
     this.addShape(shape)

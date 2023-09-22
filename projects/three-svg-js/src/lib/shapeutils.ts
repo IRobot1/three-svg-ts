@@ -393,6 +393,7 @@ export class SVGShapeUtils {
             control.x = point.x;
             control.y = point.y;
             shape.lineTo(point.x, point.y);
+            //console.log(`shape.lineTo(${point.x},${point.y})`)
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -417,6 +418,7 @@ export class SVGShapeUtils {
             control.y = point.y + numbers[j + 3];
             point.x += numbers[j + 4];
             point.y += -numbers[j + 5];
+            //console.warn(`shape.bezierCurveTo(${point.x + numbers[j + 0]},${point.y - numbers[j + 1]},${point.x + numbers[j + 2]},${point.y - numbers[j + 3]},${point.x + numbers[j + 4]},${point.y - numbers[j + 5]})`)
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -930,7 +932,7 @@ export class SVGShapeUtils {
               }
 
               // Rotate around center (cx, cy)
-              object.rotateOnAxis(new Vector3(cx, cy, 1), angle)
+              object.rotateOnAxis(new Vector3(cx, cy, 1), -angle)
             }
 
             break;

@@ -1,4 +1,4 @@
-import { BufferGeometry, Mesh } from "three";
+import { BufferGeometry, Mesh, ShapeUtils } from "three";
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 import { BaseShape } from "./baseshape";
@@ -7,6 +7,7 @@ import { SVGOptions } from "./svgshape";
 import { PathParams } from "./types";
 import { GroupShape } from "./groupshape";
 import { ShapePathEx } from "./shapepathex";
+import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 
 export interface Path {
   d: string
@@ -79,7 +80,8 @@ export class PathShape extends BaseShape implements Path {
     else {
       const shape = new ShapePathEx();
       SVGShapeUtils.parsePath(this.d, shape)
-      const shapes = shape.toShapes(true)
+      
+      const shapes = SVGLoader.createShapes(shape)
       const divisions = 32
 
       if (this.strokemesh) {
