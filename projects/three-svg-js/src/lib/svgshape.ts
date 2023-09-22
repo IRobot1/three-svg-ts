@@ -12,6 +12,7 @@ import { PathShape } from "./pathshape";
 import { LineShape } from "./lineshape";
 import { EllipseShape } from "./ellipseshape";
 import { CircleShape } from "./circleshape";
+import { ShapePathEx } from "./shapepathex";
 
 export interface SVGShapeOptions {
   width?: number;
@@ -75,11 +76,11 @@ export class SVGOptions implements SVGShapeOptions {
     return new ShapeGeometry(shapes)
   }
 
-  private pathids = new Map<string, Shape>([])
-  addPathId(id: string, shape: Shape) {
+  private pathids = new Map<string, ShapePathEx>([])
+  addPathId(id: string, shape: ShapePathEx) {
     this.pathids.set(id, shape)
   }
-  getPathById(id: string): Shape | undefined {
+  getPathById(id: string): ShapePathEx | undefined {
     return this.pathids.get(id)
   }
 

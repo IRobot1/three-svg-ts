@@ -1,4 +1,5 @@
-import { Object3D, Path, Vector2, Vector3 } from "three";
+import { Object3D, Vector2, Vector3 } from "three";
+import { ShapePathEx } from "./shapepathex";
 
 // Units
 const units = ["mm", "cm", "in", "pt", "pc", "px"];
@@ -99,7 +100,7 @@ export class SVGShapeUtils {
     return scale * parseFloat(value);
   }
 
-  static parsePath(d: string, shape: Path) {
+  static parsePath(d: string, shape: ShapePathEx) {
     const point = new Vector2();
     const control = new Vector2();
 
@@ -148,6 +149,7 @@ export class SVGShapeUtils {
               shape.lineTo(point.x, point.y);
 
             }
+            //console.log(`shape.moveTo(${point.x},${point.y})`)
 
             if (j === 0) firstPoint.copy(point);
 
@@ -356,6 +358,7 @@ export class SVGShapeUtils {
             control.x = point.x;
             control.y = point.y;
             shape.lineTo(point.x, point.y);
+            //console.log(`shape.lineTo(${point.x},${point.y})`)
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -372,6 +375,7 @@ export class SVGShapeUtils {
             control.x = point.x;
             control.y = point.y;
             shape.lineTo(point.x, point.y);
+            //console.log(`shape.lineTo(${point.x},${point.y})`)
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -515,13 +519,12 @@ export class SVGShapeUtils {
 
         case 'Z':
         case 'z':
-          shape.autoClose = true;
+          shape.closePath()
 
-          if (shape.curves.length > 0) {
+          if (shape.subPaths.length > 0) {
 
             // Reset point to beginning of Path
             point.copy(firstPoint);
-            shape.currentPoint.copy(point);
             isFirstPoint = true;
 
           }
@@ -796,7 +799,7 @@ export class SVGShapeUtils {
 
   }
 
-  private static parseArcCommand(path: Path, rx: number, ry: number, x_axis_rotation: number, large_arc_flag: number, sweep_flag: number, start: Vector2, end: Vector2) {
+  private static parseArcCommand(path: ShapePathEx, rx: number, ry: number, x_axis_rotation: number, large_arc_flag: number, sweep_flag: number, start: Vector2, end: Vector2) {
 
     if (rx == 0 || ry == 0) {
 

@@ -164,7 +164,9 @@ export class TextShape extends BaseShape implements Text {
 
   private updatePath(id: string, font: Font, size: number, spacing: number, text: string) {
     if (id.startsWith('#')) id = id.substring(1)
-    const curve = this.svg.getPathById(id)
+
+    const shape = this.svg.getPathById(id)
+    const curve = shape?.toShapes(true)[0]
     if (!curve) return
 
     // Calculate the total length of the text

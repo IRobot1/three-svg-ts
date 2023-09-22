@@ -1,9 +1,12 @@
-import { Mesh, SRGBColorSpace, Shape } from "three";
+import { BufferGeometry, Mesh } from "three";
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+
 import { BaseShape } from "./baseshape";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGOptions } from "./svgshape";
 import { PathParams } from "./types";
 import { GroupShape } from "./groupshape";
+import { ShapePathEx } from "./shapepathex";
 
 export interface Path {
   d: string
@@ -68,18 +71,32 @@ export class PathShape extends BaseShape implements Path {
 
     if (this.pathid) {
       if (!this.svg.getPathById(this.pathid)) {
-        const shape = new Shape();
+        const shape = new ShapePathEx();
         SVGShapeUtils.parsePath(this.d, shape)
         this.svg.addPathId(this.pathid, shape)
       }
     }
     else {
-      const shape = new Shape();
+      const shape = new ShapePathEx();
       SVGShapeUtils.parsePath(this.d, shape)
-
+      const shapes = shape.toShapes(true)
       const divisions = 32
-      if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape, divisions)
-      if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape, divisions)
+
+      if (this.strokemesh) {
+        const strokes: Array<BufferGeometry> = []
+        shapes.forEach(shape => {
+          strokes.push(this.renderStroke(shape, divisions))
+        })
+        this.strokemesh.geometry = mergeGeometries(strokes)
+      }
+
+      if (this.fillmesh) {
+        const fills: Array<BufferGeometry> = []
+        shapes.forEach(shape => {
+          fills.push(this.renderFill(shape, divisions))
+        })
+        this.fillmesh.geometry = mergeGeometries(fills)
+      }
     }
     return this;
   }

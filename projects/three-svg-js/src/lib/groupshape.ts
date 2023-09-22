@@ -41,7 +41,7 @@ export class GroupShape extends BaseShape  {
 
     const group = new GroupShape(this.svg, params)
     this.addShape(group)
-    this.add(group)
+    this.addMesh(group)
     return group
   }
 
@@ -115,6 +115,8 @@ export class GroupShape extends BaseShape  {
     if (!params.fill) params.fill = this.params.fill
     if (!params.stroke) params.stroke = this.params.stroke
     if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
+    if (!params.strokeLineCap) params.strokeLineCap = this.params.strokeLineCap
+    if (!params.strokeLineJoin) params.strokeLineJoin = this.params.strokeLineJoin
 
     const shape = new PathShape(this.svg, this, params)
     this.addShape(shape)
