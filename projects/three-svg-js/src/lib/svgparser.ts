@@ -6,33 +6,30 @@ import { CircleParams, EllipseParams, GradientStop, LineParams, LinearGradient, 
 export class SVGParser {
 
   parse(text: string | ArrayBuffer): ShapeSchema {
-    const options: SVGShapeOptions = {}
+    const options: SVGShapeOptions = {
+      fill: '#000',
+      fillOpacity: 1,
+      strokeOpacity: 1,
+      strokeLineJoin: 'miter',
+      strokeLineCap: 'butt',
+      strokeMiterLimit: 4
+}
     const elements: Array<ShapeTypes> = []
     const schema: ShapeSchema = { options, elements }
 
     const stylesheets = {};
-
+    
     const xml = new DOMParser().parseFromString(<string>text, 'image/svg+xml'); // application/xml
 
     const stylenode = xml.documentElement.querySelector('style')
     if (stylenode) this.parseCSSStylesheet(stylenode, stylesheets);
 
-    const svgnode = xml.documentElement.querySelector('svg')
-    if (svgnode) {
-      //style = this.parseStyle(stylenode, style, stylesheets);
-      this.parseSVGNode(svgnode, schema);
-    }
+    const svgnode = xml.documentElement
+    const style = this.parseStyle(svgnode, schema.options, stylesheets);
+    this.parseSVGNode(svgnode, schema);
 
-    this.parseNode(schema, schema.elements, xml.documentElement as any, {
-      fill: '#000',
-      fillOpacity: 1,
-      strokeOpacity: 1,
-      strokeWidth: 1,
-      strokeLineJoin: 'miter',
-      strokeLineCap: 'butt',
-      strokeMiterLimit: 4
-    }, stylesheets);
-    
+    this.parseNode(schema, schema.elements, xml.documentElement as any, style, stylesheets);
+
     return schema
   }
 
@@ -106,7 +103,6 @@ export class SVGParser {
         break;
 
       case 'use':
-        console.warn(node.nodeName)
         style = this.parseStyle(node, style, stylesheets);
 
         const href = node.getAttributeNS('http://www.w3.org/1999/xlink', 'href') || '';
@@ -134,10 +130,21 @@ export class SVGParser {
         this.parseStyle(node, stop, stylesheets);
         break;
 
+      case 'clipPath':
+      case 'radialGradient':
+      case 'filter':
+      case 'feGaussianBlur':
+      case 'animate':
+      case 'set':
+      case 'animateColor':
+      case 'animateTransform':
+      case 'title':
+      case 'image':
+        console.log(node.nodeName + ' not implemented')
+        break;
       default:
         console.warn(node.nodeName)
-      // console.log( node );
-
+        break;
     }
 
     const childNodes = node.childNodes;
@@ -175,15 +182,15 @@ export class SVGParser {
     if (node.hasAttribute('id')) {
 
       stylesheetStyles = Object.assign(stylesheetStyles, stylesheets['#' + node.getAttribute('id')]);
-      
+
     }
 
     function addStyle(svgName: string, jsName: string, debug = false) {
       const astyle = style as any
       if (node.hasAttribute(svgName)) astyle[jsName] = node.getAttribute(svgName)!;
       if (stylesheetStyles[svgName]) astyle[jsName] = stylesheetStyles[svgName];
-      if (stylesheetStyles[jsName]) astyle[jsName] = stylesheetStyles[jsName].replace(/"/g,'');
-      
+      if (stylesheetStyles[jsName]) astyle[jsName] = stylesheetStyles[jsName].replace(/"/g, '');
+
       const nodestyle = (node as any).style
       if (nodestyle && nodestyle[svgName] !== '') astyle[jsName] = nodestyle[svgName];
 
@@ -272,7 +279,7 @@ export class SVGParser {
     path.d = node.getAttribute('d') || undefined
     path.id = node.getAttribute('id') || undefined
 
-    elements.push({path})
+    elements.push({ path })
     return path
   }
 
@@ -313,7 +320,7 @@ export class SVGParser {
     circle.cy = node.getAttribute('cy') || 0
     circle.r = node.getAttribute('r') || 0
 
-    elements.push({circle})
+    elements.push({ circle })
     return circle
   }
 
@@ -325,7 +332,7 @@ export class SVGParser {
     ellipse.rx = node.getAttribute('rx') || 0
     ellipse.ry = node.getAttribute('ry') || 0
 
-    elements.push({ellipse})
+    elements.push({ ellipse })
     return ellipse
   }
 
@@ -337,7 +344,7 @@ export class SVGParser {
     line.x2 = node.getAttribute('x2') || 0
     line.y2 = node.getAttribute('y2') || 0
 
-    elements.push({line})
+    elements.push({ line })
     return line
   }
 
@@ -356,8 +363,8 @@ export class SVGParser {
 
   parseLinearGradientNode(node: Element, elements: Array<ShapeTypes>): LinearGradient {
     const id = node.getAttribute('id') || ''
-    const stops : Array<GradientStop> = []
-    const gradient: LinearGradient = {id, stops}
+    const stops: Array<GradientStop> = []
+    const gradient: LinearGradient = { id, stops }
 
     gradient.x1 = node.getAttribute('x1') || 0
     gradient.y1 = node.getAttribute('y1') || 0

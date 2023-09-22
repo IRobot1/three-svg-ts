@@ -1,5 +1,5 @@
 import { BufferGeometry, CanvasTexture, DoubleSide, Material, MeshBasicMaterial, RepeatWrapping, Shape, ShapeGeometry, SRGBColorSpace, Texture } from "three";
-import { LinearGradient } from './types'
+import { LinearGradient, PresentationAttributes } from './types'
 import { SVGShapeUtils } from "./shapeutils";
 import { GroupShape } from "./groupshape";
 import { ShapeSchema, ShapeTypes } from "./schema";
@@ -14,7 +14,7 @@ import { EllipseShape } from "./ellipseshape";
 import { CircleShape } from "./circleshape";
 import { ShapePathEx } from "./shapepathex";
 
-export interface SVGShapeOptions {
+export interface SVGShapeOptions extends PresentationAttributes {
   width?: number;
   height?: number;
   viewBox?: Array<number>;
@@ -137,7 +137,8 @@ export class SVGOptions implements SVGShapeOptions {
 export class SVGShape extends GroupShape {
 
   constructor(options?: SVGShapeOptions) {
-    super(new SVGOptions(options ?? {}), {})
+    const params = options ?? {}
+    super(new SVGOptions(params), params)
   }
 
   private loadElements(group: GroupShape, elements: Array<ShapeTypes>) {
@@ -153,8 +154,8 @@ export class SVGShape extends GroupShape {
 
       if (item.group) {
         let options = item.group.options ?? {}
-        const group = this.group(options)
-        this.loadElements(group, item.group.elements)
+        const newgroup = group.group(options)
+        this.loadElements(newgroup, item.group.elements)
       }
     })
   }

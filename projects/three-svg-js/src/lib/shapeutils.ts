@@ -863,26 +863,12 @@ export class SVGShapeUtils {
   }
 
   static processTransform(object: Object3D, transformText: string) {
-    //const transform = new Matrix3();
-    //const currentTransform = tempTransform0;
-
-    //if (node.nodeName === 'use' && (node.hasAttribute('x') || node.hasAttribute('y'))) {
-
-    //  const tx = parseFloatWithUnits(node.getAttribute('x'));
-    //  const ty = parseFloatWithUnits(node.getAttribute('y'));
-
-    //  transform.translate(tx, ty);
-
-    //}
-
-
     const transformsTexts = transformText.split(')');
 
-    for (let tIndex = transformsTexts.length - 1; tIndex >= 0; tIndex--) {
+    transformsTexts.forEach(transformText => {
+      transformText = transformText.trim()
 
-      const transformText = transformsTexts[tIndex].trim();
-
-      if (transformText === '') continue;
+      if (transformText === '') return
 
       const openParPos = transformText.indexOf('(');
       const closeParPos = transformText.length;
@@ -893,7 +879,7 @@ export class SVGShapeUtils {
 
         const array = this.parseFloats(transformText.slice(openParPos + 1));
 
-        //currentTransform.identity();
+        //console.warn(transformType)
 
         switch (transformType) {
 
@@ -902,13 +888,13 @@ export class SVGShapeUtils {
             if (array.length >= 1) {
 
               const tx = array[0];
-              object.translateX(tx)
+              object.translateX(tx*object.scale.x)
 
               let ty = 0;
               if (array.length >= 2) {
                 ty = array[1];
               }
-              object.translateY(ty)
+              object.translateY(-ty*object.scale.y)
             }
 
             break;
@@ -950,7 +936,6 @@ export class SVGShapeUtils {
 
               }
 
-              //currentTransform.scale(scaleX, scaleY);
               object.scale.set(scaleX, scaleY, 1)
 
             }
@@ -1005,12 +990,6 @@ export class SVGShapeUtils {
 
       }
 
-      //transform.premultiply(currentTransform);
-
-    }
-
-
-    //return transform;
-
+    })
   }
 }
