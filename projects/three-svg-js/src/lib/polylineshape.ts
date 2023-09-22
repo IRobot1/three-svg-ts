@@ -23,6 +23,7 @@ export class PolylineShape extends BaseShape implements Polyline {
       mesh.material = strokematerial
       parent.addMesh(mesh);
       this.strokemesh = mesh
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
   }
 

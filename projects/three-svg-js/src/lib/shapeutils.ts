@@ -1,4 +1,4 @@
-import { Path, Vector2 } from "three";
+import { Object3D, Path, Vector2, Vector3 } from "three";
 
 // Units
 const units = ["mm", "cm", "in", "pt", "pc", "px"];
@@ -515,16 +515,16 @@ export class SVGShapeUtils {
 
         case 'Z':
         case 'z':
-            shape.autoClose = true;
+          shape.autoClose = true;
 
-            if (shape.curves.length > 0) {
+          if (shape.curves.length > 0) {
 
-              // Reset point to beginning of Path
-              point.copy(firstPoint);
-              shape.currentPoint.copy(point);
-              isFirstPoint = true;
+            // Reset point to beginning of Path
+            point.copy(firstPoint);
+            shape.currentPoint.copy(point);
+            isFirstPoint = true;
 
-            }
+          }
 
           break;
 
@@ -857,4 +857,155 @@ export class SVGShapeUtils {
 
   }
 
+  static processTransform(object: Object3D, transformText: string) {
+    //const transform = new Matrix3();
+    //const currentTransform = tempTransform0;
+
+    //if (node.nodeName === 'use' && (node.hasAttribute('x') || node.hasAttribute('y'))) {
+
+    //  const tx = parseFloatWithUnits(node.getAttribute('x'));
+    //  const ty = parseFloatWithUnits(node.getAttribute('y'));
+
+    //  transform.translate(tx, ty);
+
+    //}
+
+
+    const transformsTexts = transformText.split(')');
+
+    for (let tIndex = transformsTexts.length - 1; tIndex >= 0; tIndex--) {
+
+      const transformText = transformsTexts[tIndex].trim();
+
+      if (transformText === '') continue;
+
+      const openParPos = transformText.indexOf('(');
+      const closeParPos = transformText.length;
+
+      if (openParPos > 0 && openParPos < closeParPos) {
+
+        const transformType = transformText.slice(0, openParPos);
+
+        const array = this.parseFloats(transformText.slice(openParPos + 1));
+
+        //currentTransform.identity();
+
+        switch (transformType) {
+
+          case 'translate':
+
+            if (array.length >= 1) {
+
+              const tx = array[0];
+              object.translateX(tx)
+
+              let ty = 0;
+              if (array.length >= 2) {
+                ty = array[1];
+              }
+              object.translateY(ty)
+            }
+
+            break;
+
+          case 'rotate':
+            if (array.length >= 1) {
+
+              let angle = 0;
+              let cx = 0;
+              let cy = 0;
+
+              // Angle
+              angle = array[0] * Math.PI / 180;
+
+              if (array.length >= 3) {
+
+                // Center x, y
+                cx = array[1];
+                cy = array[2];
+
+              }
+
+              // Rotate around center (cx, cy)
+              object.rotateOnAxis(new Vector3(cx, cy, 1), angle)
+            }
+
+            break;
+
+          case 'scale':
+
+            if (array.length >= 1) {
+
+              const scaleX = array[0];
+              let scaleY = scaleX;
+
+              if (array.length >= 2) {
+
+                scaleY = array[1];
+
+              }
+
+              //currentTransform.scale(scaleX, scaleY);
+              object.scale.set(scaleX, scaleY, 1)
+
+            }
+
+            break;
+
+          //case 'skewX':
+
+          //  if (array.length === 1) {
+
+          //    currentTransform.set(
+          //      1, Math.tan(array[0] * Math.PI / 180), 0,
+          //      0, 1, 0,
+          //      0, 0, 1
+          //    );
+
+          //  }
+
+          //  break;
+
+          //case 'skewY':
+
+          //  if (array.length === 1) {
+
+          //    currentTransform.set(
+          //      1, 0, 0,
+          //      Math.tan(array[0] * Math.PI / 180), 1, 0,
+          //      0, 0, 1
+          //    );
+
+          //  }
+
+          //  break;
+
+          //case 'matrix':
+
+          //  if (array.length === 6) {
+
+          //    currentTransform.set(
+          //      array[0], array[2], array[4],
+          //      array[1], array[3], array[5],
+          //      0, 0, 1
+          //    );
+
+          //  }
+
+          //  break;
+          default:
+            console.warn(`Transform ${transformType} not implemented`)
+            break;
+        }
+
+      }
+
+      //transform.premultiply(currentTransform);
+
+    }
+
+
+    //return transform;
+
+  }
 }

@@ -29,6 +29,7 @@ export class LineShape extends BaseShape implements Line {
       mesh.material = strokematerial
       parent.addMesh(mesh);
       this.strokemesh = mesh
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
   }
 

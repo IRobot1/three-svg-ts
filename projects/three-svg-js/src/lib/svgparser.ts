@@ -39,8 +39,6 @@ export class SVGParser {
   parseNode(schema: ShapeSchema, elements: Array<ShapeTypes>, node: Element, style: PresentationAttributes, stylesheets: any) {
     if (node.nodeType !== 1) return;
 
-    const transform = this.getNodeTransform(node);
-    
     switch (node.nodeName) {
 
       case 'svg':
@@ -142,22 +140,6 @@ export class SVGParser {
 
     }
 
-    //if (path) {
-
-    //  if (style.fill !== undefined && style.fill !== 'none') {
-
-    //    path.color.setStyle(style.fill, SRGBColorSpace);
-
-    //  }
-
-    //  transformPath(path, currentTransform);
-
-    //  data.paths.push(path);
-
-    //  (<any>path).userData = { node: node, style: style };
-
-    //}
-
     const childNodes = node.childNodes;
 
     for (let i = 0; i < childNodes.length; i++) {
@@ -167,35 +149,8 @@ export class SVGParser {
       this.parseNode(schema, elements, node, style, stylesheets);
 
     }
-
-
-    //  if (transform) {
-
-    //    transformStack.pop();
-
-    //    if (transformStack.length > 0) {
-
-    //      currentTransform.copy(transformStack[transformStack.length - 1]);
-
-    //    } else {
-
-    //      currentTransform.identity();
-
-    //    }
-
-    //  }
   }
 
-
-  getNodeTransform(node: Element): any {
-
-    if (!(node.hasAttribute('transform') || (node.nodeName === 'use' && (node.hasAttribute('x') || node.hasAttribute('y'))))) {
-
-      return null;
-
-    }
-    return node.hasAttribute('transform')
-  }
 
   parseStyle(node: Element, style: any, stylesheets: any) {
 
@@ -234,6 +189,7 @@ export class SVGParser {
 
     }
 
+    addStyle('transform', 'transform');
     addStyle('fill', 'fill');
     addStyle('fill-opacity', 'fillOpacity');
     addStyle('fill-rule', 'fillRule');

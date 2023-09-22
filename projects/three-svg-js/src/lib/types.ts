@@ -30,7 +30,7 @@ export interface PresentationAttributes {
   strokeMiterLimit?: number;
   strokeOpacity?: number;
   strokeWidth?: Length;
-  // transform?: string;
+  transform?: string;
   // vectorEffect?: string;
   // visibility?: string;
 }
@@ -68,7 +68,7 @@ export class RectParams implements PresentationAttributes {
   strokeMiterLimit?: number;
   // strokeopacity?: number;
   strokeWidth?: Length;
-  // transform?: string;
+  transform?: string;
   // vectorEffect?: string;
   // visibility?: string;
 }
@@ -103,7 +103,7 @@ export class CircleParams implements PresentationAttributes {
   strokeMiterLimit?: number;
   // strokeopacity?: number;
   strokeWidth?: Length;
-  // transform?: string;
+  transform?: string;
   // vectorEffect?: string;
   // visibility?: string;
 }
@@ -139,7 +139,7 @@ export class EllipseParams implements PresentationAttributes {
   strokeMiterLimit?: number;
   // strokeopacity?: number;
   strokeWidth?: Length;
-  // transform?: string;
+  transform?: string;
   // vectorEffect?: string;
   // visibility?: string;
 }
@@ -193,7 +193,7 @@ export class TextParams implements PresentationAttributes {
   strokeMiterLimit?: number;
   // strokeopacity?: number;
   // strokeWidth?: Length;
-  // transform?: string;
+  transform?: string;
   // vectorEffect?: string;
   // visibility?: string;
 }
@@ -230,7 +230,7 @@ export class LineParams implements PresentationAttributes {
   strokeMiterLimit?: number;
   // strokeopacity?: number;
   strokeWidth?: Length;
-  // transform?: string;
+  transform?: string;
   // vectorEffect?: string;
   // visibility?: string;
 }
@@ -263,7 +263,7 @@ export class PolylineParams implements PresentationAttributes {
   strokeMiterLimit?: number;
   // strokeopacity?: number;
   strokeWidth?: Length;
-  // transform?: string;
+  transform?: string;
   // vectorEffect?: string;
   // visibility?: string;
 }
@@ -296,7 +296,7 @@ export class PolygonParams implements PresentationAttributes {
   strokeMiterLimit?: number;
   // strokeopacity?: number;
   strokeWidth?: Length;
-  // transform?: string;
+  transform?: string;
   // vectorEffect?: string;
   // visibility?: string;
 }
@@ -331,7 +331,7 @@ export class PathParams implements PresentationAttributes {
   strokeMiterLimit?: number;
   // strokeopacity?: number;
   strokeWidth?: Length;
-  // transform?: string;
+  transform?: string;
   // vectorEffect?: string;
   // visibility?: string;
 }

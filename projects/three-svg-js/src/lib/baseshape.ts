@@ -61,7 +61,7 @@ export abstract class BaseShape extends Mesh {
     const material = this.svg.createFillMaterial() as MeshBasicMaterial
     if (this.params.fill === 'transparent') {
       material.transparent = true;
-      material.opacity = opacity;
+      material.opacity = 0;
     }
     else if (this.params.fill) {
       if (this.params.fill.startsWith('url(#')) {
@@ -83,8 +83,8 @@ export abstract class BaseShape extends Mesh {
 
   protected renderStroke(shape: Shape, divisions = 12): BufferGeometry {
     let strokeWidth = SVGShapeUtils.parseFloatWithUnits(this.params.strokeWidth || 0);
-    if (!strokeWidth && (this.params.fill == 'none' || this.params.fill == 'transparent')) strokeWidth = 1
-
+    if (!strokeWidth && (this.params.stroke != 'black' || this.params.fill == 'none' || this.params.fill == 'transparent')) strokeWidth = 1
+    
     if (strokeWidth) {
       const style = SVGLoader.getStrokeStyle(strokeWidth, this.params.stroke, this.params.strokeLineJoin, this.params.strokeLineCap, this.params.strokeMiterLimit)
       if (this.params.strokeLineCap == 'round') divisions *= 2;
@@ -100,4 +100,6 @@ export abstract class BaseShape extends Mesh {
     this.FixShapeUV(geometry)
     return geometry
   }
+
+
 }

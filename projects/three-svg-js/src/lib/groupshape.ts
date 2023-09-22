@@ -47,6 +47,7 @@ export class GroupShape extends BaseShape  {
 
   rect(params: RectParams): this {
     if (!params.fill) params.fill = this.params.fill
+    if (!params.stroke) params.stroke = this.params.stroke
     if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
 
     const shape = new RectShape(this.svg, this, params)
@@ -56,6 +57,7 @@ export class GroupShape extends BaseShape  {
 
   circle(params: CircleParams): this {
     if (!params.fill) params.fill = this.params.fill
+    if (!params.stroke) params.stroke = this.params.stroke
     if (!params.strokeWidth) params.strokeWidth = this.params.strokeWidth
 
     const shape = new CircleShape(this.svg, this, params)

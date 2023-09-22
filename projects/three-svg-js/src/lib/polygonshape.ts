@@ -23,6 +23,7 @@ export class PolygonShape extends BaseShape implements Polygon {
       mesh.material = strokematerial
       parent.addMesh(mesh);
       this.strokemesh = mesh
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
   }
   private strokemesh?: Mesh

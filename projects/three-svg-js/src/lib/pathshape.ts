@@ -27,6 +27,7 @@ export class PathShape extends BaseShape implements Path {
       mesh.material = strokematerial
       parent.addMesh(mesh);
       this.strokemesh = mesh
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
 
     const material = this.getFillMaterial()
@@ -36,6 +37,7 @@ export class PathShape extends BaseShape implements Path {
       mesh.material = material
       parent.addMesh(mesh);
       this.fillmesh = mesh
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
   }
 

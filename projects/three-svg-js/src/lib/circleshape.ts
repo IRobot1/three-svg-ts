@@ -20,6 +20,7 @@ export class CircleShape extends BaseShape implements Circle {
     this.r = SVGShapeUtils.parseFloatWithUnits(params.r || 0);
     this.batch = false
 
+
     const strokematerial = this.getStrokeMaterial()
     if (strokematerial) {
       const mesh = new Mesh()
@@ -27,6 +28,7 @@ export class CircleShape extends BaseShape implements Circle {
       mesh.material = strokematerial
       parent.addMesh(mesh);
       this.strokemesh = mesh
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
     const material = this.getFillMaterial()
     if (material) {
@@ -35,6 +37,7 @@ export class CircleShape extends BaseShape implements Circle {
       mesh.material = material
       parent.addMesh(mesh);
       this.fillmesh = mesh
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
   }
 

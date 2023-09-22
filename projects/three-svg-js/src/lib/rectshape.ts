@@ -32,6 +32,7 @@ export class RectShape extends BaseShape implements Rect {
       mesh.material = strokematerial
       parent.addMesh(mesh);
       this.strokemesh = mesh
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
 
     const fillmaterial = this.getFillMaterial()
@@ -41,6 +42,7 @@ export class RectShape extends BaseShape implements Rect {
       mesh.material = fillmaterial
       parent.addMesh(mesh);
       this.fillmesh = mesh
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
   }
 

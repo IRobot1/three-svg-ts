@@ -40,10 +40,19 @@ export class SVGParseExample {
 
     const text = `
 
-<svg id='svg1' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'>
-  <circle r="32" cx="35" cy="65" fill="#F00" opacity="0.5"/>
-  <circle r="32" cx="65" cy="65" fill="#0F0" opacity="0.5"/>
-  <circle r="32" cx="50" cy="35" fill="#00F" opacity="0.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-52 -53 100 100" stroke-width="2">
+ <g fill="none">
+  <ellipse stroke="#66899a" rx="6" ry="44"/>
+  <ellipse stroke="#e1d85d" rx="6" ry="44" transform="rotate(-66)"/>
+  <ellipse stroke="#80a3cf" rx="6" ry="44" transform="rotate(66)"/>
+  <circle  stroke="#4b541f" r="44"/>
+ </g>
+ <g fill="#66899a" stroke="white">
+  <circle fill="#80a3cf" r="13"/>
+  <circle cy="-44" r="9"/>
+  <circle cx="-40" cy="18" r="9"/>
+  <circle cx="40" cy="18" r="9"/>
+ </g>
 </svg>
 
 

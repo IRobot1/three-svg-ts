@@ -29,6 +29,8 @@ export class EllipseShape extends BaseShape implements Ellipse {
       mesh.material = strokematerial
       parent.addMesh(mesh);
       this.strokemesh = mesh
+
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
 
     const material = this.getFillMaterial()
@@ -38,6 +40,7 @@ export class EllipseShape extends BaseShape implements Ellipse {
       mesh.material = material
       parent.addMesh(mesh);
       this.fillmesh = mesh
+      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
   }
 
@@ -88,5 +91,6 @@ export class EllipseShape extends BaseShape implements Ellipse {
 
     if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape)
     if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape)
+
   }
 }
