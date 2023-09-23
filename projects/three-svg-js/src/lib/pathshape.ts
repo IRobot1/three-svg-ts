@@ -80,7 +80,7 @@ export class PathShape extends BaseShape implements Path {
     else {
       const shape = new ShapePathEx();
       SVGShapeUtils.parsePath(this.d, shape)
-      
+
       const shapes = SVGLoader.createShapes(shape)
       const divisions = 32
 
@@ -89,7 +89,8 @@ export class PathShape extends BaseShape implements Path {
         shapes.forEach(shape => {
           strokes.push(this.renderStroke(shape, divisions))
         })
-        this.strokemesh.geometry = mergeGeometries(strokes)
+        if (strokes.length > 0)
+          this.strokemesh.geometry = mergeGeometries(strokes)
       }
 
       if (this.fillmesh) {
@@ -97,7 +98,8 @@ export class PathShape extends BaseShape implements Path {
         shapes.forEach(shape => {
           fills.push(this.renderFill(shape, divisions))
         })
-        this.fillmesh.geometry = mergeGeometries(fills)
+        if (fills.length > 0)
+          this.fillmesh.geometry = mergeGeometries(fills)
       }
     }
     return this;

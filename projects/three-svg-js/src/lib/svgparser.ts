@@ -18,7 +18,8 @@ export class SVGParser {
 
     const stylesheets = {};
 
-    const xml = new DOMParser().parseFromString(<string>text, 'image/svg+xml'); // application/xml
+    const dom = (<string>text).replace(`<?xml version="1.0" standalone="no"?>`,'')
+    const xml = new DOMParser().parseFromString(dom, 'image/svg+xml'); // application/xml
 
     const stylenode = xml.documentElement.querySelector('style')
     if (stylenode) this.parseCSSStylesheet(stylenode, stylesheets);

@@ -1,4 +1,4 @@
-import { AmbientLight, Color, PointLight, Scene } from "three"
+import { AmbientLight, Box3, Color, PointLight, Scene, Vector3 } from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import { ThreeJSApp } from "./threejs-app"
@@ -19,7 +19,7 @@ export class SVGParseExample {
     scene.background = new Color().setStyle('#666')
     app.scene = scene
 
-    app.camera.position.z = 2
+    app.camera.position.z = 5
 
     const orbit = new OrbitControls(app.camera, app.domElement);
     orbit.target.set(0, app.camera.position.y, 0)
@@ -40,7 +40,7 @@ export class SVGParseExample {
 
     const text = `
 
-<svg xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round" viewBox="0 0 100 100">
+  <svg xmlns="http://www.w3.org/2000/svg" stroke-linejoin="round" viewBox="0 0 100 100">
   <path d="M50,4L4,50L50,96L96,50Z" stroke="#FE4" stroke-width="3"/>
   <path d="M50,5L5,50L50,95L95,50Z" stroke="#333" fill="#FE4" stroke-width="3"/>
   <g transform="scale(0.8) translate(14,30)">
@@ -62,7 +62,7 @@ export class SVGParseExample {
    </g>
  </g>
 </svg>
-    `
+`
     const parser = new SVGParser()
     const schema = parser.parse(text)
     console.warn(schema)
@@ -79,17 +79,26 @@ export class SVGParseExample {
         }
       })
       svgshape2.update()
-
+      
       svgshape2.scale.setScalar(0.01)
-      svgshape2.position.set(-1.5, 0.5, 0)
+
+      const box = new Box3()
+      box.setFromObject(svgshape2)
+
+      const center = new Vector3()
+      box.getCenter(center)
+
+      svgshape2.translateX(-center.x)
+      svgshape2.translateY(-center.y)
+
       scene.add(svgshape2);
       //console.warn(svgshape2)
     })
 
-    const svg = new SVGLoader().parse(text);
-    const group = showSVG(scene, svg.paths)
-    group.scale.set(0.01, -0.01, 1)
-    group.position.set(0.5, 0.5, 0)
+    //const svg = new SVGLoader().parse(text);
+    //const group = showSVG(scene, svg.paths)
+    //group.scale.set(0.01, -0.01, 1)
+    //group.position.set(0.5, 0.5, 0)
 
 
     this.dispose = () => {
