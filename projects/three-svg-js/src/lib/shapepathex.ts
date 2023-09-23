@@ -19,9 +19,9 @@ export class ShapePathEx extends ShapePath {
 
   }
 
-  ellipse(aX: number, aY: number, xRadius: number, yRadius: number, aStartAngle: number, aEndAngle: number, aClockwise: boolean, aRotation:number) {
+  ellipse(aX: number, aY: number, xRadius: number, yRadius: number, aStartAngle: number, aEndAngle: number, aClockwise: boolean, aRotation: number) {
 
-    this.currentPath?.ellipse(aX , aY , xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation);
+    this.currentPath?.ellipse(aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation);
 
     return this;
 
@@ -35,7 +35,8 @@ export class ShapePathEx extends ShapePath {
   }
 
   closePath() {
-    this.currentPath?.closePath()
+    if (this.currentPath && this.currentPath.curves.length > 0)
+      this.currentPath.closePath()
   }
 }
 
