@@ -6,7 +6,7 @@ import { SVGShapeUtils } from "./shapeutils";
 import { SVGOptions } from "./svgshape";
 import { PathParams } from "./types";
 import { GroupShape } from "./groupshape";
-import { ShapePathEx } from "./shapepathex";
+import { SVGShapePath } from "./shapepathex";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 
 export interface Path {
@@ -72,14 +72,17 @@ export class PathShape extends BaseShape implements Path {
 
     if (this.pathid) {
       if (!this.svg.getPathById(this.pathid)) {
-        const shape = new ShapePathEx();
-        SVGShapeUtils.parsePath(this.d, shape)
+        const shape = new SVGShapePath();
+        const pathcommands = SVGShapeUtils.parsePath(this.d)
+        shape.generate(pathcommands)
+
         this.svg.addPathId(this.pathid, shape)
       }
     }
     else {
-      const shape = new ShapePathEx();
-      SVGShapeUtils.parsePath(this.d, shape)
+      const shape = new SVGShapePath();
+      const pathcommands = SVGShapeUtils.parsePath(this.d)
+      shape.generate(pathcommands)
 
       const shapes = SVGLoader.createShapes(shape)
       const divisions = 32
