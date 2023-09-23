@@ -51,6 +51,10 @@ const unitConversion: any = {
   }
 };
 
+export interface PathCommand {
+  type: string
+  values: Array<number>
+}
 
 export class SVGShapeUtils {
   // Default dots per inch
@@ -100,18 +104,12 @@ export class SVGShapeUtils {
     return scale * parseFloat(value);
   }
 
-  static parsePath(d: string, shape: ShapePathEx) {
-    const point = new Vector2();
-    const control = new Vector2();
-
-    const firstPoint = new Vector2();
-    let isFirstPoint = true;
-    let doSetFirstPoint = false;
-
-    if (d === '' || d === 'none') return;
+  static parsePath(d: string, shape?: ShapePathEx): Array<PathCommand> {
+    const pathcommands: Array<PathCommand> = []
+    if (d === '' || d === 'none') return pathcommands;
 
     const commands = d.match(/[a-df-z][^a-df-z]*/ig);
-    if (!commands) return
+    if (!commands) return pathcommands
 
     for (let i = 0, l = commands.length; i < l; i++) {
 
@@ -120,431 +118,51 @@ export class SVGShapeUtils {
       const type = command.charAt(0);
       const data = command.slice(1).trim();
 
-      if (isFirstPoint === true) {
-
-        doSetFirstPoint = true;
-        isFirstPoint = false;
-
-      }
-
       let numbers;
+      let addcommand = true
 
       switch (type) {
 
         case 'M':
-          numbers = this.parseFloats(data);
-          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
-
-            point.x = numbers[j + 0];
-            point.y = -numbers[j + 1];
-            control.x = point.x;
-            control.y = point.y;
-
-            if (j === 0) {
-
-              shape.moveTo(point.x, point.y);
-
-            } else {
-
-              shape.lineTo(point.x, point.y);
-
-            }
-            //console.log(`shape.moveTo(${point.x},${point.y})`)
-
-            if (j === 0) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'H':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j++) {
-
-            point.x = numbers[j];
-            control.x = point.x;
-            control.y = point.y;
-            shape.lineTo(point.x, point.y);
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'V':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j++) {
-
-            point.y = -numbers[j];
-            control.x = point.x;
-            control.y = point.y;
-            shape.lineTo(point.x, point.y);
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'L':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
-
-            point.x = numbers[j + 0];
-            point.y = -numbers[j + 1];
-            control.x = point.x;
-            control.y = point.y;
-            shape.lineTo(point.x, point.y);
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'C':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 6) {
-
-            shape.bezierCurveTo(
-              numbers[j + 0],
-              -numbers[j + 1],
-              numbers[j + 2],
-              -numbers[j + 3],
-              numbers[j + 4],
-              -numbers[j + 5]
-            );
-            control.x = numbers[j + 2];
-            control.y = numbers[j + 3];
-            point.x = numbers[j + 4];
-            point.y = -numbers[j + 5];
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'S':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 4) {
-
-            shape.bezierCurveTo(
-              this.getReflection(point.x, control.x),
-              this.getReflection(point.y, control.y),
-              numbers[j + 0],
-              -numbers[j + 1],
-              numbers[j + 2],
-              -numbers[j + 3]
-            );
-            control.x = numbers[j + 0];
-            control.y = numbers[j + 1];
-            point.x = numbers[j + 2];
-            point.y = -numbers[j + 3];
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'Q':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 4) {
-
-            shape.quadraticCurveTo(
-              numbers[j + 0],
-              -numbers[j + 1],
-              numbers[j + 2],
-              -numbers[j + 3]
-            );
-            control.x = numbers[j + 0];
-            control.y = -numbers[j + 1];
-            point.x = numbers[j + 2];
-            point.y = -numbers[j + 3];
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'T':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
-
-            const rx = this.getReflection(point.x, control.x);
-            const ry = this.getReflection(point.y, control.y);
-            shape.quadraticCurveTo(
-              rx,
-              ry,
-              numbers[j + 0],
-              -numbers[j + 1]
-            );
-            control.x = rx;
-            control.y = -ry;
-            point.x = numbers[j + 0];
-            point.y = -numbers[j + 1];
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
-        case 'A':
-          numbers = this.parseFloats(data, [3, 4], 7);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 7) {
-
-            // skip command if start point == end point
-            if (numbers[j + 5] == point.x && numbers[j + 6] == point.y) continue;
-
-            const start = point.clone();
-            point.x = numbers[j + 5];
-            point.y = -numbers[j + 6];
-            control.x = point.x;
-            control.y = point.y;
-            this.parseArcCommand(
-              shape, numbers[j], -numbers[j + 1], -numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
-            );
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'm':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
-
-            point.x += numbers[j + 0];
-            point.y += -numbers[j + 1];
-            control.x = point.x;
-            control.y = point.y;
-
-            if (j === 0) {
-
-              shape.moveTo(point.x, point.y);
-
-            } else {
-
-              shape.lineTo(point.x, point.y);
-
-            }
-
-            if (j === 0) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'h':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j++) {
-
-            point.x += numbers[j];
-            control.x = point.x;
-            control.y = point.y;
-            shape.lineTo(point.x, point.y);
-            //console.log(`shape.lineTo(${point.x},${point.y})`)
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'v':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j++) {
-
-            point.y += -numbers[j];
-            control.x = point.x;
-            control.y = point.y;
-            shape.lineTo(point.x, point.y);
-            //console.log(`shape.lineTo(${point.x},${point.y})`)
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'l':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
-
-            point.x += numbers[j + 0];
-            point.y += -numbers[j + 1];
-            control.x = point.x;
-            control.y = point.y;
-            shape.lineTo(point.x, point.y);
-            //console.log(`shape.lineTo(${point.x},${point.y})`)
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'c':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 6) {
-
-            shape.bezierCurveTo(
-              point.x + numbers[j + 0],
-              point.y - numbers[j + 1],
-              point.x + numbers[j + 2],
-              point.y - numbers[j + 3],
-              point.x + numbers[j + 4],
-              point.y - numbers[j + 5]
-            );
-            control.x = point.x + numbers[j + 2];
-            control.y = point.y + numbers[j + 3];
-            point.x += numbers[j + 4];
-            point.y += -numbers[j + 5];
-            //console.warn(`shape.bezierCurveTo(${point.x + numbers[j + 0]},${point.y - numbers[j + 1]},${point.x + numbers[j + 2]},${point.y - numbers[j + 3]},${point.x + numbers[j + 4]},${point.y - numbers[j + 5]})`)
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 's':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 4) {
-
-            shape.bezierCurveTo(
-              this.getReflection(point.x, control.x),
-              this.getReflection(point.y, control.y),
-              point.x + numbers[j + 0],
-              point.y - numbers[j + 1],
-              point.x + numbers[j + 2],
-              point.y - numbers[j + 3]
-            );
-            control.x = point.x + numbers[j + 0];
-            control.y = point.y - numbers[j + 1];
-            point.x += numbers[j + 2];
-            point.y += -numbers[j + 3];
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 'q':
-          numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 4) {
-
-            shape.quadraticCurveTo(
-              point.x + numbers[j + 0],
-              point.y - numbers[j + 1],
-              point.x + numbers[j + 2],
-              point.y - numbers[j + 3]
-            );
-            control.x = point.x + numbers[j + 0];
-            control.y = point.y - numbers[j + 1];
-            point.x += numbers[j + 2];
-            point.y += -numbers[j + 3];
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
         case 't':
           numbers = this.parseFloats(data);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
-
-            const rx = this.getReflection(point.x, control.x);
-            const ry = this.getReflection(point.y, control.y);
-            shape.quadraticCurveTo(
-              rx,
-              ry,
-              point.x + numbers[j + 0],
-              point.y - numbers[j + 1]
-            );
-            control.x = rx;
-            control.y = -ry;
-            point.x = point.x + numbers[j + 0];
-            point.y = point.y - numbers[j + 1];
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
           break;
-
+        case 'A':
         case 'a':
           numbers = this.parseFloats(data, [3, 4], 7);
-
-          for (let j = 0, jl = numbers.length; j < jl; j += 7) {
-
-            // skip command if no displacement
-            if (numbers[j + 5] == 0 && numbers[j + 6] == 0) continue;
-
-            const start = point.clone();
-            point.x += numbers[j + 5];
-            point.y += -numbers[j + 6];
-            control.x = point.x;
-            control.y = point.y;
-            this.parseArcCommand(
-              shape, numbers[j], -numbers[j + 1], -numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
-            );
-
-            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
-
-          }
-
-          break;
-
+          break
         case 'Z':
         case 'z':
-          shape.closePath()
-
-          if (shape.subPaths.length > 0) {
-
-            // Reset point to beginning of Path
-            point.copy(firstPoint);
-            isFirstPoint = true;
-
-          }
-
           break;
-
         default:
           console.warn(command);
+          addcommand = false
+          break
 
       }
 
-      // console.log( type, parseFloats( data ), parseFloats( data ).length  )
-
-      doSetFirstPoint = false;
-
+      if (addcommand)
+        pathcommands.push({ type, values: numbers ?? [] })
     }
 
+    if (shape) this.pathToShape(pathcommands, shape)
+    return pathcommands
   }
+
 
   static parseFloats(input: string, flags?: any, stride?: any) {
 
@@ -888,13 +506,13 @@ export class SVGShapeUtils {
             if (array.length >= 1) {
 
               const tx = array[0];
-              object.translateX(tx*object.scale.x)
+              object.translateX(tx * object.scale.x)
 
               let ty = 0;
               if (array.length >= 2) {
                 ty = array[1];
               }
-              object.translateY(-ty*object.scale.y)
+              object.translateY(-ty * object.scale.y)
             }
 
             break;
@@ -992,4 +610,416 @@ export class SVGShapeUtils {
 
     })
   }
+
+  static pathToShape(pathcommands: Array<PathCommand>, shape: ShapePathEx) {
+    const point = new Vector2();
+    const control = new Vector2();
+
+    const firstPoint = new Vector2();
+    let isFirstPoint = true;
+    let doSetFirstPoint = false;
+
+    pathcommands.forEach(command => {
+      if (isFirstPoint === true) {
+
+        doSetFirstPoint = true;
+        isFirstPoint = false;
+
+      }
+
+      let numbers = command.values
+
+      switch (command.type) {
+
+        case 'M':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
+
+            point.x = numbers[j + 0];
+            point.y = -numbers[j + 1];
+            control.x = point.x;
+            control.y = point.y;
+
+            if (j === 0) {
+
+              shape.moveTo(point.x, point.y);
+
+            } else {
+
+              shape.lineTo(point.x, point.y);
+
+            }
+
+            if (j === 0) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'H':
+
+          for (let j = 0, jl = numbers.length; j < jl; j++) {
+
+            point.x = numbers[j];
+            control.x = point.x;
+            control.y = point.y;
+            shape.lineTo(point.x, point.y);
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'V':
+
+          for (let j = 0, jl = numbers.length; j < jl; j++) {
+
+            point.y = -numbers[j];
+            control.x = point.x;
+            control.y = point.y;
+            shape.lineTo(point.x, point.y);
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'L':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
+
+            point.x = numbers[j + 0];
+            point.y = -numbers[j + 1];
+            control.x = point.x;
+            control.y = point.y;
+            shape.lineTo(point.x, point.y);
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'C':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 6) {
+
+            shape.bezierCurveTo(
+              numbers[j + 0],
+              -numbers[j + 1],
+              numbers[j + 2],
+              -numbers[j + 3],
+              numbers[j + 4],
+              -numbers[j + 5]
+            );
+            control.x = numbers[j + 2];
+            control.y = numbers[j + 3];
+            point.x = numbers[j + 4];
+            point.y = -numbers[j + 5];
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'S':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 4) {
+
+            shape.bezierCurveTo(
+              this.getReflection(point.x, control.x),
+              this.getReflection(point.y, control.y),
+              numbers[j + 0],
+              -numbers[j + 1],
+              numbers[j + 2],
+              -numbers[j + 3]
+            );
+            control.x = numbers[j + 0];
+            control.y = numbers[j + 1];
+            point.x = numbers[j + 2];
+            point.y = -numbers[j + 3];
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'Q':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 4) {
+
+            shape.quadraticCurveTo(
+              numbers[j + 0],
+              -numbers[j + 1],
+              numbers[j + 2],
+              -numbers[j + 3]
+            );
+            control.x = numbers[j + 0];
+            control.y = -numbers[j + 1];
+            point.x = numbers[j + 2];
+            point.y = -numbers[j + 3];
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'T':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
+
+            const rx = this.getReflection(point.x, control.x);
+            const ry = this.getReflection(point.y, control.y);
+            shape.quadraticCurveTo(
+              rx,
+              ry,
+              numbers[j + 0],
+              -numbers[j + 1]
+            );
+            control.x = rx;
+            control.y = -ry;
+            point.x = numbers[j + 0];
+            point.y = -numbers[j + 1];
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'A':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 7) {
+
+            // skip command if start point == end point
+            if (numbers[j + 5] == point.x && numbers[j + 6] == point.y) continue;
+
+            const start = point.clone();
+            point.x = numbers[j + 5];
+            point.y = -numbers[j + 6];
+            control.x = point.x;
+            control.y = point.y;
+            this.parseArcCommand(
+              shape, numbers[j], -numbers[j + 1], -numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
+            );
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'm':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
+
+            point.x += numbers[j + 0];
+            point.y += -numbers[j + 1];
+            control.x = point.x;
+            control.y = point.y;
+
+            if (j === 0) {
+
+              shape.moveTo(point.x, point.y);
+
+            } else {
+
+              shape.lineTo(point.x, point.y);
+
+            }
+
+            if (j === 0) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'h':
+
+          for (let j = 0, jl = numbers.length; j < jl; j++) {
+
+            point.x += numbers[j];
+            control.x = point.x;
+            control.y = point.y;
+            shape.lineTo(point.x, point.y);
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'v':
+
+          for (let j = 0, jl = numbers.length; j < jl; j++) {
+
+            point.y += -numbers[j];
+            control.x = point.x;
+            control.y = point.y;
+            shape.lineTo(point.x, point.y);
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'l':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
+
+            point.x += numbers[j + 0];
+            point.y += -numbers[j + 1];
+            control.x = point.x;
+            control.y = point.y;
+            shape.lineTo(point.x, point.y);
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'c':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 6) {
+
+            shape.bezierCurveTo(
+              point.x + numbers[j + 0],
+              point.y - numbers[j + 1],
+              point.x + numbers[j + 2],
+              point.y - numbers[j + 3],
+              point.x + numbers[j + 4],
+              point.y - numbers[j + 5]
+            );
+            control.x = point.x + numbers[j + 2];
+            control.y = point.y + numbers[j + 3];
+            point.x += numbers[j + 4];
+            point.y += -numbers[j + 5];
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 's':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 4) {
+
+            shape.bezierCurveTo(
+              this.getReflection(point.x, control.x),
+              this.getReflection(point.y, control.y),
+              point.x + numbers[j + 0],
+              point.y - numbers[j + 1],
+              point.x + numbers[j + 2],
+              point.y - numbers[j + 3]
+            );
+            control.x = point.x + numbers[j + 0];
+            control.y = point.y - numbers[j + 1];
+            point.x += numbers[j + 2];
+            point.y += -numbers[j + 3];
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'q':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 4) {
+
+            shape.quadraticCurveTo(
+              point.x + numbers[j + 0],
+              point.y - numbers[j + 1],
+              point.x + numbers[j + 2],
+              point.y - numbers[j + 3]
+            );
+            control.x = point.x + numbers[j + 0];
+            control.y = point.y - numbers[j + 1];
+            point.x += numbers[j + 2];
+            point.y += -numbers[j + 3];
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 't':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 2) {
+
+            const rx = this.getReflection(point.x, control.x);
+            const ry = this.getReflection(point.y, control.y);
+            shape.quadraticCurveTo(
+              rx,
+              ry,
+              point.x + numbers[j + 0],
+              point.y - numbers[j + 1]
+            );
+            control.x = rx;
+            control.y = -ry;
+            point.x = point.x + numbers[j + 0];
+            point.y = point.y - numbers[j + 1];
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'a':
+
+          for (let j = 0, jl = numbers.length; j < jl; j += 7) {
+
+            // skip command if no displacement
+            if (numbers[j + 5] == 0 && numbers[j + 6] == 0) continue;
+
+            const start = point.clone();
+            point.x += numbers[j + 5];
+            point.y += -numbers[j + 6];
+            control.x = point.x;
+            control.y = point.y;
+            this.parseArcCommand(
+              shape, numbers[j], -numbers[j + 1], -numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
+            );
+
+            if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
+
+          }
+
+          break;
+
+        case 'Z':
+        case 'z':
+          shape.closePath()
+
+          if (shape.subPaths.length > 0) {
+
+            // Reset point to beginning of Path
+            point.copy(firstPoint);
+            isFirstPoint = true;
+
+          }
+
+          break;
+
+        default:
+          console.warn(command);
+          break
+
+      }
+
+      doSetFirstPoint = false;
+
+    })
+  }
+
 }
