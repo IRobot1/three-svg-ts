@@ -1,4 +1,4 @@
-import { BufferGeometry, CanvasTexture, DoubleSide, Material, MeshBasicMaterial, RepeatWrapping, Shape, ShapeGeometry, SRGBColorSpace, Texture } from "three";
+import { Box3, BufferGeometry, CanvasTexture, DoubleSide, Material, MeshBasicMaterial, RepeatWrapping, Shape, ShapeGeometry, SRGBColorSpace, Texture, Vector2, Vector3 } from "three";
 import { LinearGradient, PresentationAttributes, RadialGradient } from './types'
 import { SVGShapeUtils } from "./shapeutils";
 import { GroupShape } from "./groupshape";
@@ -190,6 +190,20 @@ export class SVGShape extends GroupShape {
   constructor(options?: SVGShapeOptions) {
     const params = options ?? {}
     super(new SVGOptions(params), params)
+  }
+
+  center() : Box3 {
+    const box = new Box3()
+    box.setFromObject(this)
+
+    const center = new Vector3()
+    box.getCenter(center)
+
+    this.translateX(-center.x)
+    this.translateY(-center.y)
+
+    box.getSize(center)
+    return box
   }
 
   private loadElements(group: GroupShape, elements: Array<ShapeTypes>) {

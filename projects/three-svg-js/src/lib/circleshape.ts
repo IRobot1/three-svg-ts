@@ -16,7 +16,7 @@ export class CircleShape extends BaseShape implements Circle {
     super('circle', svg, params)
     this.batch = true
     this.cx = SVGShapeUtils.parseFloatWithUnits(params.cx || 0);
-    this.cy = -SVGShapeUtils.parseFloatWithUnits(params.cy || 0);
+    this.cy = SVGShapeUtils.parseFloatWithUnits(params.cy || 0);
     this.r = SVGShapeUtils.parseFloatWithUnits(params.r || 0);
     this.batch = false
 

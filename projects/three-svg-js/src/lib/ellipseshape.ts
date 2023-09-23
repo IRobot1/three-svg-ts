@@ -17,7 +17,7 @@ export class EllipseShape extends BaseShape implements Ellipse {
     super('ellipse',svg, params)
     this.batch = true
     this.cx = SVGShapeUtils.parseFloatWithUnits(params.cx || 0);
-    this.cy = -SVGShapeUtils.parseFloatWithUnits(params.cy || 0);
+    this.cy = SVGShapeUtils.parseFloatWithUnits(params.cy || 0);
     this.rx = SVGShapeUtils.parseFloatWithUnits(params.rx || 0);
     this.ry = SVGShapeUtils.parseFloatWithUnits(params.ry || 0);
     this.batch = false

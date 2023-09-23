@@ -68,7 +68,7 @@ export class SVGShapePath extends ShapePathEx {
           for (let j = 0, jl = numbers.length; j < jl; j += 2) {
 
             point.x = numbers[j + 0];
-            point.y = -numbers[j + 1];
+            point.y = numbers[j + 1];
             control.x = point.x;
             control.y = point.y;
 
@@ -107,7 +107,7 @@ export class SVGShapePath extends ShapePathEx {
 
           for (let j = 0, jl = numbers.length; j < jl; j++) {
 
-            point.y = -numbers[j];
+            point.y = numbers[j];
             control.x = point.x;
             control.y = point.y;
             this.lineTo(point.x, point.y);
@@ -123,7 +123,7 @@ export class SVGShapePath extends ShapePathEx {
           for (let j = 0, jl = numbers.length; j < jl; j += 2) {
 
             point.x = numbers[j + 0];
-            point.y = -numbers[j + 1];
+            point.y = numbers[j + 1];
             control.x = point.x;
             control.y = point.y;
             this.lineTo(point.x, point.y);
@@ -140,16 +140,16 @@ export class SVGShapePath extends ShapePathEx {
 
             this.bezierCurveTo(
               numbers[j + 0],
-              -numbers[j + 1],
+              numbers[j + 1],
               numbers[j + 2],
-              -numbers[j + 3],
+              numbers[j + 3],
               numbers[j + 4],
-              -numbers[j + 5]
+              numbers[j + 5]
             );
             control.x = numbers[j + 2];
             control.y = numbers[j + 3];
             point.x = numbers[j + 4];
-            point.y = -numbers[j + 5];
+            point.y = numbers[j + 5];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -165,14 +165,14 @@ export class SVGShapePath extends ShapePathEx {
               this.getReflection(point.x, control.x),
               this.getReflection(point.y, control.y),
               numbers[j + 0],
-              -numbers[j + 1],
+              numbers[j + 1],
               numbers[j + 2],
-              -numbers[j + 3]
+              numbers[j + 3]
             );
             control.x = numbers[j + 0];
             control.y = numbers[j + 1];
             point.x = numbers[j + 2];
-            point.y = -numbers[j + 3];
+            point.y = numbers[j + 3];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -186,14 +186,14 @@ export class SVGShapePath extends ShapePathEx {
 
             this.quadraticCurveTo(
               numbers[j + 0],
-              -numbers[j + 1],
+              numbers[j + 1],
               numbers[j + 2],
-              -numbers[j + 3]
+              numbers[j + 3]
             );
             control.x = numbers[j + 0];
-            control.y = -numbers[j + 1];
+            control.y = numbers[j + 1];
             point.x = numbers[j + 2];
-            point.y = -numbers[j + 3];
+            point.y = numbers[j + 3];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -211,12 +211,12 @@ export class SVGShapePath extends ShapePathEx {
               rx,
               ry,
               numbers[j + 0],
-              -numbers[j + 1]
+              numbers[j + 1]
             );
             control.x = rx;
-            control.y = -ry;
+            control.y = ry;
             point.x = numbers[j + 0];
-            point.y = -numbers[j + 1];
+            point.y = numbers[j + 1];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -233,11 +233,11 @@ export class SVGShapePath extends ShapePathEx {
 
             const start = point.clone();
             point.x = numbers[j + 5];
-            point.y = -numbers[j + 6];
+            point.y = numbers[j + 6];
             control.x = point.x;
             control.y = point.y;
             this.parseArcCommand(
-              numbers[j], -numbers[j + 1], -numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
+              numbers[j], numbers[j + 1], numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
             );
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
@@ -251,7 +251,7 @@ export class SVGShapePath extends ShapePathEx {
           for (let j = 0, jl = numbers.length; j < jl; j += 2) {
 
             point.x += numbers[j + 0];
-            point.y += -numbers[j + 1];
+            point.y += numbers[j + 1];
             control.x = point.x;
             control.y = point.y;
 
@@ -290,7 +290,7 @@ export class SVGShapePath extends ShapePathEx {
 
           for (let j = 0, jl = numbers.length; j < jl; j++) {
 
-            point.y += -numbers[j];
+            point.y += numbers[j];
             control.x = point.x;
             control.y = point.y;
             this.lineTo(point.x, point.y);
@@ -306,7 +306,7 @@ export class SVGShapePath extends ShapePathEx {
           for (let j = 0, jl = numbers.length; j < jl; j += 2) {
 
             point.x += numbers[j + 0];
-            point.y += -numbers[j + 1];
+            point.y += numbers[j + 1];
             control.x = point.x;
             control.y = point.y;
             this.lineTo(point.x, point.y);
@@ -323,16 +323,16 @@ export class SVGShapePath extends ShapePathEx {
 
             this.bezierCurveTo(
               point.x + numbers[j + 0],
-              point.y - numbers[j + 1],
+              point.y + numbers[j + 1],
               point.x + numbers[j + 2],
-              point.y - numbers[j + 3],
+              point.y + numbers[j + 3],
               point.x + numbers[j + 4],
-              point.y - numbers[j + 5]
+              point.y + numbers[j + 5]
             );
             control.x = point.x + numbers[j + 2];
             control.y = point.y + numbers[j + 3];
             point.x += numbers[j + 4];
-            point.y += -numbers[j + 5];
+            point.y += numbers[j + 5];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -348,14 +348,14 @@ export class SVGShapePath extends ShapePathEx {
               this.getReflection(point.x, control.x),
               this.getReflection(point.y, control.y),
               point.x + numbers[j + 0],
-              point.y - numbers[j + 1],
+              point.y + numbers[j + 1],
               point.x + numbers[j + 2],
-              point.y - numbers[j + 3]
+              point.y + numbers[j + 3]
             );
             control.x = point.x + numbers[j + 0];
-            control.y = point.y - numbers[j + 1];
+            control.y = point.y + numbers[j + 1];
             point.x += numbers[j + 2];
-            point.y += -numbers[j + 3];
+            point.y += numbers[j + 3];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -369,14 +369,14 @@ export class SVGShapePath extends ShapePathEx {
 
             this.quadraticCurveTo(
               point.x + numbers[j + 0],
-              point.y - numbers[j + 1],
+              point.y + numbers[j + 1],
               point.x + numbers[j + 2],
-              point.y - numbers[j + 3]
+              point.y + numbers[j + 3]
             );
             control.x = point.x + numbers[j + 0];
-            control.y = point.y - numbers[j + 1];
+            control.y = point.y + numbers[j + 1];
             point.x += numbers[j + 2];
-            point.y += -numbers[j + 3];
+            point.y += numbers[j + 3];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -394,12 +394,12 @@ export class SVGShapePath extends ShapePathEx {
               rx,
               ry,
               point.x + numbers[j + 0],
-              point.y - numbers[j + 1]
+              point.y + numbers[j + 1]
             );
             control.x = rx;
-            control.y = -ry;
+            control.y = ry;
             point.x = point.x + numbers[j + 0];
-            point.y = point.y - numbers[j + 1];
+            point.y = point.y + numbers[j + 1];
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
 
@@ -416,11 +416,11 @@ export class SVGShapePath extends ShapePathEx {
 
             const start = point.clone();
             point.x += numbers[j + 5];
-            point.y += -numbers[j + 6];
+            point.y += numbers[j + 6];
             control.x = point.x;
             control.y = point.y;
             this.parseArcCommand(
-              numbers[j], -numbers[j + 1], -numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
+              numbers[j], numbers[j + 1], numbers[j + 2], numbers[j + 3], numbers[j + 4], start, point
             );
 
             if (j === 0 && doSetFirstPoint === true) firstPoint.copy(point);
@@ -528,7 +528,7 @@ export class SVGShapePath extends ShapePathEx {
     const theta = this.svgAngle(1, 0, (x1p - cxp) / rx, (y1p - cyp) / ry);
     const delta = this.svgAngle((x1p - cxp) / rx, (y1p - cyp) / ry, (- x1p - cxp) / rx, (- y1p - cyp) / ry) % (Math.PI * 2);
 
-    this.absellipse(cx, cy, rx, ry, theta, theta + delta, sweep_flag !== 0, x_axis_rotation);
+    this.absellipse(cx, cy, rx, ry, theta, theta + delta, sweep_flag === 0, x_axis_rotation);
 
   }
 

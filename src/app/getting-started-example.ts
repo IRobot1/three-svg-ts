@@ -53,8 +53,10 @@ export class GettingStartedExample {
         fill: "white"
       })
       svgshape.update()
-      console.warn(svgshape)
+
       svgshape.scale.setScalar(0.01)
+      svgshape.center()
+
       scene.add(svgshape);
     })
 

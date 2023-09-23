@@ -37,35 +37,39 @@ export class PathsExample {
     //scene.add(new AxesHelper())
 
     const svgshape1 = new SVGShape({ width: 100, height: 100 })
-      .path({ d: "M 10 10 H 90 V 90 H 10 L 10 10"})
-      .circle({ cx: 10, cy: 10, r: 2, fill: 'red'})
-      .circle({ cx: 90, cy: 90, r: 2, fill: 'red'})
-      .circle({ cx: 90, cy: 10, r: 2, fill: 'red'})
+      .path({ d: "M 10 10 H 90 V 90 H 10 L 10 10" })
+      .circle({ cx: 10, cy: 10, r: 2, fill: 'red' })
+      .circle({ cx: 90, cy: 90, r: 2, fill: 'red' })
+      .circle({ cx: 90, cy: 10, r: 2, fill: 'red' })
       .circle({ cx: 10, cy: 90, r: 2, fill: 'red' })
 
     svgshape1.update()
 
-    svgshape1.scale.setScalar(0.01)
-    svgshape1.position.set(-2, 0.5,0)
+    svgshape1.scale.set(0.01, -0.01, 0.01)
+    svgshape1.center()
+
+    svgshape1.position.set(-2, 0.5, 0)
     scene.add(svgshape1);
 
     const svgshape2 = new SVGShape({ width: 190, height: 160 })
-      .path({ d: "M 10 10 C 20 20, 40 20, 50 10", stroke:'black', fill:'transparent'})
-      .path({ d: "M 70 10 C 70 20, 110 20, 110 10", stroke:'black', fill:'transparent'})
-      .path({ d: "M 130 10 C 120 20, 180 20, 170 10", stroke:'black', fill:'transparent'})
-      .path({ d: "M 10 60 C 20 80, 40 80, 50 60", stroke:'black', fill:'transparent'})
-      .path({ d: "M 70 60 C 70 80, 110 80, 110 60", stroke:'black', fill:'transparent'})
-      .path({ d: "M 130 60 C 120 80, 180 80, 170 60", stroke:'black', fill:'transparent'})
-      .path({ d: "M 10 110 C 20 140, 40 140, 50 110", stroke:'black', fill:'transparent'})
-      .path({ d: "M 70 110 C 70 140, 110 140, 110 110", stroke:'black', fill:'transparent'})
-      .path({ d: "M 130 110 C 120 140, 180 140, 170 110", stroke:'black', fill:'transparent'})
-      //.path({ d: "M 10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80", stroke:'black', fill:'transparent'})
-      //.path({ d: "M 10 80 Q 95 10 180 80", stroke:'black', fill:'transparent'})
-      //.path({ d: "M 10 80 Q 52.5 10, 95 80 T 180 80", stroke:'black', fill:'transparent'})
+      .path({ d: "M 10 10 C 20 20, 40 20, 50 10", stroke: 'black', fill: 'transparent' })
+      .path({ d: "M 70 10 C 70 20, 110 20, 110 10", stroke: 'black', fill: 'transparent' })
+      .path({ d: "M 130 10 C 120 20, 180 20, 170 10", stroke: 'black', fill: 'transparent' })
+      .path({ d: "M 10 60 C 20 80, 40 80, 50 60", stroke: 'black', fill: 'transparent' })
+      .path({ d: "M 70 60 C 70 80, 110 80, 110 60", stroke: 'black', fill: 'transparent' })
+      .path({ d: "M 130 60 C 120 80, 180 80, 170 60", stroke: 'black', fill: 'transparent' })
+      .path({ d: "M 10 110 C 20 140, 40 140, 50 110", stroke: 'black', fill: 'transparent' })
+      .path({ d: "M 70 110 C 70 140, 110 140, 110 110", stroke: 'black', fill: 'transparent' })
+      .path({ d: "M 130 110 C 120 140, 180 140, 170 110", stroke: 'black', fill: 'transparent' })
+    //.path({ d: "M 10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80", stroke:'black', fill:'transparent'})
+    //.path({ d: "M 10 80 Q 95 10 180 80", stroke:'black', fill:'transparent'})
+    //.path({ d: "M 10 80 Q 52.5 10, 95 80 T 180 80", stroke:'black', fill:'transparent'})
     svgshape2.update()
 
-    svgshape2.scale.setScalar(0.01)
-    svgshape2.position.set(-1, 0.5,0)
+    svgshape2.scale.set(0.01, -0.01, 0.01)
+    svgshape2.center()
+
+    svgshape2.position.set(-1, 0.5, 0)
     scene.add(svgshape2);
 
     const svgshape3 = new SVGShape({ width: 320, height: 320 })
@@ -75,21 +79,27 @@ export class PathsExample {
            A 30 50 0 0 1 162.55 162.45
            L 172.55 152.45
            A 30 50 -45 0 1 215.1 109.9
-           L 315 10`, stroke:'black', fill:'green', strokeWidth:2, fillOpacity:0.5})
-           svgshape3.update()
-    svgshape3.scale.setScalar(0.005)
-    svgshape3.position.set(1, 0.5,0)
+           L 315 10`, stroke: 'black', fill: 'green', strokeWidth: 2, fillOpacity: 0.5
+      })
+    svgshape3.update()
+
+    svgshape3.scale.set(0.005, -0.005, 0.005)
+    svgshape3.center()
+
+    svgshape3.position.set(1, 0.5, 0)
     scene.add(svgshape3);
 
     const svgshape4 = new SVGShape({ width: 325, height: 325 })
       .path({
         d: `M 80 80
            A 45 45, 0, 0, 0, 125 125
-           L 125 80 Z`, fill:'green'})
+           L 125 80 Z`, fill: 'green'
+      })
       .path({
         d: `M 230 80
            A 45 45, 0, 1, 0, 275 125
-           L 275 80 Z`, fill:'red'})
+           L 275 80 Z`, fill: 'red'
+      })
       .path({
         d: `M 80 230
            A 45 45, 0, 0, 1, 125 275
@@ -100,9 +110,12 @@ export class PathsExample {
            A 45 45, 0, 1, 1, 275 275
            L 275 230 Z`, fill: 'blue'
       })
-      svgshape4.update()
-    svgshape4.scale.setScalar(0.005)
-    svgshape4.position.set(-1, 2,0)
+    svgshape4.update()
+
+    svgshape4.scale.set(0.005, -0.005, 0.005)
+    svgshape4.center()
+
+    svgshape4.position.set(-1, 2, 0)
     scene.add(svgshape4);
 
     //     const loader = new SVGLoader();

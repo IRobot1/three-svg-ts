@@ -64,7 +64,10 @@ export class GradientsExample {
     svgshape1.rect({ x: "10", y: "120", rx: "15", ry: "15", width: "150", height: "150", fill: "url(#Gradient1)" })
 
     svgshape1.update()
-    svgshape1.position.set(0, 1, 0)
+
+    svgshape1.scale.set(1, -1, 1)
+    svgshape1.center()
+
     scene.add(svgshape1);
 
 

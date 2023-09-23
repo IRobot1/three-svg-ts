@@ -49,8 +49,10 @@ export class TextExample {
           textSpacing: 4,
         })
       svgshape1.update()
-      svgshape1.scale.setScalar(0.01)
-      svgshape1.position.set(-2, 0.5, 0)
+
+      svgshape1.scale.set(0.01, -0.01, 0.01)
+      svgshape1.center()
+
       scene.add(svgshape1);
     })
 

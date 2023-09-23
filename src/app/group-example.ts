@@ -49,7 +49,8 @@ export class GroupExample {
       .rect({ x: "60", y: "0", width: "10", height: "10" })
 
     svgshape1.update()
-    svgshape1.scale.setScalar(0.01)
+    svgshape1.scale.set(0.01, -0.01, 0.01)
+
     svgshape1.position.set(-1, 0.5, 0)
     scene.add(svgshape1);
 
@@ -107,7 +108,9 @@ export class GroupExample {
     const svgshape2 = new SVGShape()
     svgshape2.load(schema)
     svgshape2.update()
-    svgshape2.scale.setScalar(0.01)
+
+    svgshape2.scale.set(0.01, -0.01, 0.01)
+
     svgshape2.position.set(1, 0.5, 0)
     scene.add(svgshape2);
 

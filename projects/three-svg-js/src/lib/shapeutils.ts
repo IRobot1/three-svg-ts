@@ -434,7 +434,7 @@ export class SVGShapeUtils {
               if (array.length >= 2) {
                 ty = array[1];
               }
-              object.translateY(-ty * object.scale.y)
+              object.translateY(ty * object.scale.y)
             }
 
             break;
@@ -458,7 +458,7 @@ export class SVGShapeUtils {
               }
 
               // Rotate around center (cx, cy)
-              object.rotateOnAxis(new Vector3(cx, cy, 1), -angle)
+              object.rotateOnAxis(new Vector3(cx, cy, 1), angle)
             }
 
             break;

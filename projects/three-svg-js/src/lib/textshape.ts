@@ -3,7 +3,7 @@ import { BaseShape } from "./baseshape";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGOptions } from "./svgshape";
 import { PresentationAttributes, TextParams } from "./types";
-import { BufferGeometry, Color, Material, Mesh, MeshBasicMaterial, SRGBColorSpace, Vector3 } from "three";
+import { BufferGeometry, Color, Material, MathUtils, Mesh, MeshBasicMaterial, SRGBColorSpace, Vector3 } from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { GroupShape } from "./groupshape";
 
@@ -17,9 +17,9 @@ export class TextShape extends BaseShape implements Text {
     super('text', svg, params)
     this.batch = true
     this.x = SVGShapeUtils.parseFloatWithUnits(params.x || 0);
-    this.y = -SVGShapeUtils.parseFloatWithUnits(params.y || 0);
+    this.y = SVGShapeUtils.parseFloatWithUnits(params.y || 0);
     this.dx = SVGShapeUtils.parseFloatWithUnits(params.dx || 0);
-    this.dy = -SVGShapeUtils.parseFloatWithUnits(params.dy || 0);
+    this.dy = SVGShapeUtils.parseFloatWithUnits(params.dy || 0);
     this.fontSize = SVGShapeUtils.parseFloatWithUnits(params.fontSize || 18);
     this.textSpacing = SVGShapeUtils.parseFloatWithUnits(params.textSpacing || this.fontSize / 4);
     this.textPath = params.textPath
@@ -29,7 +29,7 @@ export class TextShape extends BaseShape implements Text {
 
     const material = this.svg.createFillMaterial() as MeshBasicMaterial
     this.applyFill(material.color, params);
-    
+
     this.name = 'text-fill'
     this.material = material
     this.position.set(this.x, this.y, 0)
@@ -48,7 +48,7 @@ export class TextShape extends BaseShape implements Text {
     //transformPath( path, currentTransform );
   }
 
-  private _text : string | undefined
+  private _text: string | undefined
   get text(): string | undefined { return this._text }
   set text(newvalue: string | undefined) {
     if (newvalue != this._text) {
@@ -92,7 +92,7 @@ export class TextShape extends BaseShape implements Text {
     }
   }
 
-  private _font : Font|undefined
+  private _font: Font | undefined
   get font(): Font | undefined { return this._font }
   set font(newvalue: Font | undefined) {
     if (newvalue != this._font) {
@@ -130,7 +130,7 @@ export class TextShape extends BaseShape implements Text {
 
   update() {
     if (!this.text || !this.font) return
-    
+
     if (this.textPath) {
       this.children.length = 0;
       this.updatePath(this.textPath, this.font, this.fontSize, this.textSpacing, this.text)
@@ -156,7 +156,7 @@ export class TextShape extends BaseShape implements Text {
       //}
 
       this.geometry = geometry
-      this.position.y = this.y + size.y / 2
+      this.position.y = this.y - size.y / 2
     }
 
 
@@ -166,7 +166,7 @@ export class TextShape extends BaseShape implements Text {
     if (id.startsWith('#')) id = id.substring(1)
 
     const shape = this.svg.getPathById(id)
-    const curve = shape?.toShapes(true)[0]
+    const curve = shape?.toShapes(false)[0]
     if (!curve) return
 
     // Calculate the total length of the text
@@ -208,8 +208,9 @@ export class TextShape extends BaseShape implements Text {
 
         // Get the tangent and adjust the rotation
         const tangent = curve.getTangentAt(startDistance / totalTextLength * textCurveLength);
-        const angle = Math.atan2(tangent.y, tangent.x);
+        const angle = Math.atan2(tangent.y, tangent.x)
         charMesh.rotation.z = angle
+        charMesh.scale.y = -1
 
         // Add the character mesh to the scene
         this.add(charMesh);

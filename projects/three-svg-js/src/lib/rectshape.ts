@@ -18,7 +18,7 @@ export class RectShape extends BaseShape implements Rect {
     super('rect',svg, params)
     this.batch = true
     this.x = SVGShapeUtils.parseFloatWithUnits(params.x || 0);
-    this.y = -SVGShapeUtils.parseFloatWithUnits(params.y || 0);
+    this.y = SVGShapeUtils.parseFloatWithUnits(params.y || 0);
     this.rx = SVGShapeUtils.parseFloatWithUnits(params.rx || params.ry || 0);
     this.ry = SVGShapeUtils.parseFloatWithUnits(params.ry || params.rx || 0);
     this.w = SVGShapeUtils.parseFloatWithUnits(params.width, svg.width);
@@ -121,44 +121,44 @@ export class RectShape extends BaseShape implements Rect {
         x + w - rx * bci,
         y,
         x + w,
-        y - ry * bci,
+        y + ry * bci,
         x + w,
-        y - ry
+        y + ry
       );
     }
 
     // bottom right
-    shape.lineTo(x + w, y - h + ry);
+    shape.lineTo(x + w, y + h - ry);
     if (rx !== 0 || ry !== 0) {
       shape.bezierCurveTo(
         x + w,
-        y - h + ry * bci,
+        y + h - ry * bci,
         x + w - rx * bci,
-        y - h,
+        y + h,
         x + w - rx,
-        y - h
+        y + h
       );
     }
 
     // bottom left
-    shape.lineTo(x + rx, y - h);
+    shape.lineTo(x + rx, y + h);
     if (rx !== 0 || ry !== 0) {
       shape.bezierCurveTo(
         x + rx * bci,
-        y - h,
+        y + h,
         x,
-        y - h + ry * bci,
+        y + h - ry * bci,
         x,
-        y - h + ry
+        y + h - ry
       );
     }
 
     // back to top left
-    shape.lineTo(x, y - ry);
+    shape.lineTo(x, y + ry);
     if (rx !== 0 || ry !== 0) {
       shape.bezierCurveTo(
         x,
-        y - ry * bci,
+        y + ry * bci,
         x + rx * bci,
         y,
         x + rx,
