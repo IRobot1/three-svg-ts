@@ -5,6 +5,8 @@ import { CircleParams, EllipseParams, GradientStop, LineParams, LinearGradient, 
 
 export class SVGParser {
 
+  log(message: any, ...optionalParams: any[]) {  }
+
   parse(text: string | ArrayBuffer): ShapeSchema {
     const options: SVGShapeOptions = {
       fillOpacity: 1,
@@ -114,7 +116,7 @@ export class SVGParser {
 
         } else {
 
-          console.warn('SVGLoader: \'use node\' references non-existent node id: ' + usedNodeId);
+          this.log('SVGParser: use references non-existent node id: ' + usedNodeId);
 
         }
 
@@ -147,10 +149,10 @@ export class SVGParser {
       case 'animateTransform':
       case 'title':
       case 'image':
-        console.log(node.nodeName + ' not implemented')
+        this.log(node.nodeName + ' not implemented')
         break;
       default:
-        console.warn(node.nodeName)
+        this.log(node.nodeName)
         break;
     }
 

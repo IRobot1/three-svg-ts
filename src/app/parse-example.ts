@@ -61,9 +61,13 @@ export class SVGParseExample {
     <circle cx="40" cy="18" r="9"/>
    </g>
  </g>
-</svg>
+ </svg>
 `
     const parser = new SVGParser()
+    parser.log = (message: any, ...optionalParams: any[]) => {
+      console.warn(message, optionalParams)
+    }
+
     const schema = parser.parse(text)
     console.warn(schema)
 
