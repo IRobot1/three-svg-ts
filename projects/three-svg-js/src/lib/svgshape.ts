@@ -65,11 +65,11 @@ export class SVGOptions implements SVGShapeOptions {
   }
 
   private defaultStrokeMaterial(): Material {
-    return new MeshBasicMaterial({ color: 0, side: DoubleSide });
+    return new MeshBasicMaterial({ color: 0, depthTest:false });
   }
 
   private defaultFillMaterial(): Material {
-    return new MeshBasicMaterial({ color: 0 });
+    return new MeshBasicMaterial({ color: 0, depthWrite:false });
   }
 
   private defaultCreateGeometry(shapes?: Shape | Shape[], curveSegments?: number): BufferGeometry {

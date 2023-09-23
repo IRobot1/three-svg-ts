@@ -27,7 +27,6 @@ export class GroupShape extends BaseShape  {
   }
 
   addMesh(mesh: Object3D) {
-    mesh.position.z = this.children.length * this.svg.zfix!
     this.add(mesh)
   }
 
