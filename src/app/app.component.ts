@@ -1,22 +1,13 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ThreeJSApp } from './threejs-app';
-import { GettingStartedExample } from './getting-started-example';
-import { BasicShapesExample } from './basic-shapes';
-import { PathsExample } from './paths-example';
-import { StrokesExample } from './strokes-example';
-import { GradientsExample } from './gradient-example';
-import { TextExample } from './text-example';
-import { GroupExample } from './group-example';
-import { SVGParseExample } from './parse-example';
 import { AmbientLight, Color, PointLight, Scene, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { SVGParser, SVGShape } from 'three-svg-js';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
-import { BaseShape } from '../../projects/three-svg-js/src/lib/baseshape';
-import { TextShape } from '../../projects/three-svg-js/src/lib/textshape';
+import { BaseShape } from 'three-svg-js';
+import { TextShape } from 'three-svg-js';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import { showSVG } from './showsvg';
-import { EditorComponent } from 'ngx-monaco-editor-v2';
 import { Exporter } from './exporter';
 
 

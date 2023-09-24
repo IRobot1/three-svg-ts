@@ -6,8 +6,6 @@ import { ThreeJSApp } from "./threejs-app"
 import { SVGShape, ShapeSchema } from "three-svg-js";
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { showSVG } from "./showsvg";
-import { RectShape } from "../../projects/three-svg-js/src/lib/rectshape";
-import { elementAt } from "rxjs";
 
 export class GroupExample {
 

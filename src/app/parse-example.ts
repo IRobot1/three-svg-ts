@@ -3,8 +3,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import { ThreeJSApp } from "./threejs-app"
 import { SVGParser, SVGShape } from "three-svg-js";
-import { BaseShape } from "../../projects/three-svg-js/src/lib/baseshape";
-import { TextShape } from "../../projects/three-svg-js/src/lib/textshape";
+import { BaseShape } from "three-svg-js";
+import { TextShape } from "three-svg-js";
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader";
 
 export class SVGParseExample {
