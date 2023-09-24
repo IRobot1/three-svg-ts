@@ -201,7 +201,7 @@ export class SVGParser {
       if (stylesheetStyles[jsName]) astyle[jsName] = stylesheetStyles[jsName].replace(/"/g, '');
 
       const nodestyle = (node as any).style
-      if (nodestyle && nodestyle[svgName] !== '') astyle[jsName] = nodestyle[svgName];
+      if (nodestyle && nodestyle[svgName] !== '') astyle[jsName] = nodestyle[svgName].replace(/"/g, '');
 
     }
 

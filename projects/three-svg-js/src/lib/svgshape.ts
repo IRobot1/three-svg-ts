@@ -65,11 +65,11 @@ export class SVGOptions implements SVGShapeOptions {
   }
 
   private defaultStrokeMaterial(): Material {
-    return new MeshBasicMaterial({ color: 0, depthTest:false });
+    return new MeshBasicMaterial({ color: 0, depthTest: false });
   }
 
   private defaultFillMaterial(): Material {
-    return new MeshBasicMaterial({ color: 0, depthWrite:false });
+    return new MeshBasicMaterial({ color: 0, depthWrite: false });
   }
 
   private defaultCreateGeometry(shapes?: Shape | Shape[], curveSegments?: number): BufferGeometry {
@@ -136,7 +136,7 @@ export class SVGOptions implements SVGShapeOptions {
   }
 
   radialGradient(params: RadialGradient): this {
-    if (params.gradientUnits != 'objectBoundingBox') {
+    if (params.gradientUnits == 'userSpaceOnUse') {
       console.warn('radial gradient userSpaceOnUse not supported')
       return this
     }
@@ -148,8 +148,8 @@ export class SVGOptions implements SVGShapeOptions {
     const cx = SVGShapeUtils.parseFloatWithUnits(params.cx, 1) || 0.5
     const cy = SVGShapeUtils.parseFloatWithUnits(params.cy, 1) || 0.5
     const r = SVGShapeUtils.parseFloatWithUnits(params.r, 1) || 0.5
-    const fx = SVGShapeUtils.parseFloatWithUnits(params.fx, 1) || cx
-    const fy = SVGShapeUtils.parseFloatWithUnits(params.fy, 1) || cy
+    //const fx = SVGShapeUtils.parseFloatWithUnits(params.fx, 1) || cx
+    //const fy = SVGShapeUtils.parseFloatWithUnits(params.fy, 1) || cy
     //console.warn(params, cx, cy, r, fx, fy)
 
     const canvas = document.createElement('canvas');
@@ -160,11 +160,11 @@ export class SVGOptions implements SVGShapeOptions {
     const context = canvas.getContext('2d', options);
     if (!context) return this;
 
-    const gradient = context.createRadialGradient(CANVAS_SIZE * cx, CANVAS_SIZE * cy, 0, CANVAS_SIZE * r, CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+    const gradient = context.createRadialGradient(canvas.width * cx, canvas.height * cy, 0, canvas.height * r, canvas.width / 2, canvas.height * r);
     params.stops.forEach(stop => {
       let offset = 0
       if (typeof stop.offset === 'string')
-        offset = parseFloat(stop.offset) / 100
+        offset = SVGShapeUtils.parseFloatWithUnits(stop.offset, 1)
       else
         offset = <number>stop.offset
       let color = 'black'
@@ -174,7 +174,7 @@ export class SVGOptions implements SVGShapeOptions {
     })
 
     context.fillStyle = gradient;
-    context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    context.fillRect(0, 0, canvas.width, canvas.height);
 
     const texture = new CanvasTexture(canvas)
     texture.colorSpace = SRGBColorSpace;
@@ -192,7 +192,7 @@ export class SVGShape extends GroupShape {
     super(new SVGOptions(params), params)
   }
 
-  center() : Box3 {
+  center(): Box3 {
     const box = new Box3()
     box.setFromObject(this)
 
