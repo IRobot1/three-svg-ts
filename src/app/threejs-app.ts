@@ -1,20 +1,12 @@
 import { Camera, PerspectiveCamera, Scene, WebGLRenderer, WebGLRendererParameters } from "three";
-import { UIRouter } from "./ui-routes";
 
 export interface renderState { scene: Scene, camera: Camera, renderer: WebGLRenderer }
 
 export class ThreeJSApp extends WebGLRenderer {
   public camera!: Camera;
 
-  //public router = new UIRouter()
-
   constructor(p?: WebGLRendererParameters, public parent?: any, public scene?: Scene, camera?: Camera) {
     super()
-
-    //this.router.addEventListener('load', () => {
-    //  this.camera.position.set(0, 0, 0)
-    //  this.camera.rotation.set(0, 0, 0)
-    //})
 
     if (!camera) {
       this.camera = new PerspectiveCamera(
@@ -66,11 +58,6 @@ export class ThreeJSApp extends WebGLRenderer {
 
     animate()
   }
-
-  // short-cut
-  //navigateto(route: string) {
-  //  this.router.navigateto(route)
-  //}
 
 
 }

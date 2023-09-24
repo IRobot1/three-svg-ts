@@ -1,5 +1,21 @@
-<div>
-  <button (click)="loadsvg.click()">Load SVG</button>
+<div style="margin-left:1rem">
+  <label for="examples" style="color:white">Examples</label>
+
+  <select name="cars" id="examples" #examples style="margin-left:1rem" (change)="loadExample(examples.value)">
+    <option value="">Select example</option>
+    <option value="getting-started.svg">Getting Started</option>
+    <option value="basic.svg">Basic</option>
+    <option value="linear-gradient.svg">Linear Gradient</option>
+    <option value="radial-gradient.svg">Radial Gradient</option>
+    <option value="group.svg">Group</option>
+    <option value="bezier-path.svg">Path - Bezier</option>
+    <option value="arc-path.svg">Path - Arc</option>
+    <option value="stroke-linecap.svg">Stroke LineCap</option>
+    <option value="stroke-linejoin.svg">Stroke LineJoin</option>
+    <option value="text-textpath.svg">Text - Path</option>
+    <option value="tiger.svg">Tiger</option>
+  </select>
+  <button style="margin-left:1rem" (click)="loadsvg.click()">Load SVG</button>
   <input style="display:none" type="file" #loadsvg accept="image/svg+xml" (change)="copyToCloud(loadsvg.files)" />
 </div>
 
@@ -12,7 +28,7 @@
     <div>
       <div style="margin-left:1rem;color:white">
         <span style="margin-left:1rem;margin-right:1rem">threejs canvas view.  Use mouse to orbit and pan</span>
-        <button (click)="saveGLTF()">Save</button>
+        <button (click)="saveGLTF()">Save GLTF</button>
       </div>
       <div #test style="height:50vh">
         <!--placeholder for threejs canvas-->
@@ -21,7 +37,7 @@
     <div>
       <div style="color:white">
         <span style="margin-left:1rem;margin-right:1rem">Equivalent JSON for loading into SVGShape</span>
-        <button (click)="saveJSON()">Save</button>
+        <button (click)="saveJSON()">Save JSON</button>
       </div>
       <ngx-monaco-editor style="height:50vh" [options]="jsonoptions" [(ngModel)]="jsoncode"></ngx-monaco-editor>
     </div>

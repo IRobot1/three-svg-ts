@@ -9,7 +9,7 @@ import { TextShape } from 'three-svg-js';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import { showSVG } from './showsvg';
 import { Exporter } from './exporter';
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -60,6 +60,8 @@ export class AppComponent implements AfterViewInit {
 
   app!: ThreeJSApp
   scene!: Scene
+
+  constructor(private httpClient: HttpClient) { }
 
   ngAfterViewInit(): void {
     this.app = new ThreeJSApp({}, this.test.nativeElement)
@@ -190,7 +192,7 @@ export class AppComponent implements AfterViewInit {
     if (!this.filename)
       filename = new Date().getTime() + '.json';
     else
-      filename = this.filename.replace('.svg','.json')
+      filename = this.filename.replace('.svg', '.json')
     const ex = new Exporter();
     ex.saveString(this.jsoncode!, filename)
   }
@@ -202,9 +204,20 @@ export class AppComponent implements AfterViewInit {
     if (!this.filename)
       filename = new Date().getTime().toString()
     else
-      filename = this.filename.replace('.svg','')
+      filename = this.filename.replace('.svg', '')
     const ex = new Exporter();
-    ex.exportGLTF(this.svgshape,filename,false)
+    ex.exportGLTF(this.svgshape, filename, false)
+  }
+
+  loadExample(example: string) {
+    if (!example) return
+
+    const headers = new HttpHeaders();
+    headers.set('Accept', 'image/svg+xml');
+    this.httpClient.get('./assets/' + example, { headers, responseType: 'text' }).subscribe(content => {
+      this.svgcode = content as string
+    })
+
   }
 }
 
