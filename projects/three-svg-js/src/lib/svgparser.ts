@@ -270,7 +270,7 @@ export class SVGParser {
     const viewbox = node.getAttribute('viewBox')
     if (viewbox)
       // remove [] and convert to array of numbers
-      schema.options.viewBox = viewbox.substring(1, viewbox.length - 1).split(',').map(x => +x)
+      schema.options.viewBox = viewbox.substring(1, viewbox.length - 1).split(' ').map(x => +x)
     else
       schema.options.viewBox = [0, 0, schema.options.width, schema.options.height]
   }
