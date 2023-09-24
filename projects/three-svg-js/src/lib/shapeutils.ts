@@ -1,4 +1,4 @@
-import { Object3D, Vector3 } from "three";
+import { Matrix3, Matrix4, Mesh, Object3D, Vector3 } from "three";
 
 // Units
 const units = ["mm", "cm", "in", "pt", "pc", "px"];
@@ -50,7 +50,7 @@ const unitConversion: any = {
   }
 };
 
-export type PathCommandType = 'M' |  'H' |  'V' |  'L' |  'C' |  'S' |  'Q' |  'T' |  'm' |  'h' |  'v' |  'l' |  'c' |  's' |  'q' |  't' |  'A' |  'a' |  'Z' |  'z'
+export type PathCommandType = 'M' | 'H' | 'V' | 'L' | 'C' | 'S' | 'Q' | 'T' | 'm' | 'h' | 'v' | 'l' | 'c' | 's' | 'q' | 't' | 'A' | 'a' | 'Z' | 'z'
 
 export interface PathCommand {
   type: PathCommandType
@@ -402,7 +402,7 @@ export class SVGShapeUtils {
 
   }
 
-  static processTransform(object: Object3D, transformText: string) {
+  static processTransform(object: Mesh, transformText: string) {
     const transformsTexts = transformText.split(')');
 
     transformsTexts.forEach(transformText => {
@@ -458,7 +458,7 @@ export class SVGShapeUtils {
               }
 
               // Rotate around center (cx, cy)
-              object.rotateOnAxis(new Vector3(cx, cy, 1), angle)
+              object.rotateOnAxis(new Vector3(cx, cy, 1).normalize(), angle)
             }
 
             break;
@@ -482,47 +482,45 @@ export class SVGShapeUtils {
 
             break;
 
-          //case 'skewX':
+          case 'skewX':
 
-          //  if (array.length === 1) {
+            if (array.length === 1) {
+              const matrix = new Matrix4();
+              const amount = array[0] * Math.PI / 180
+              matrix.makeShear(amount, 0, 0, 0, 0, 0);
+              object.geometry.applyMatrix4(matrix);
+            }
 
-          //    currentTransform.set(
-          //      1, Math.tan(array[0] * Math.PI / 180), 0,
-          //      0, 1, 0,
-          //      0, 0, 1
-          //    );
+            break;
 
-          //  }
+          case 'skewY':
 
-          //  break;
+            if (array.length === 1) {
+              const matrix = new Matrix4();
+              const amount = array[0] * Math.PI / 180
+              matrix.makeShear(0, 0, amount, 0, 0, 0);
+              object.geometry.applyMatrix4(matrix);
+            }
 
-          //case 'skewY':
+            break;
 
-          //  if (array.length === 1) {
+          case 'matrix':
 
-          //    currentTransform.set(
-          //      1, 0, 0,
-          //      Math.tan(array[0] * Math.PI / 180), 1, 0,
-          //      0, 0, 1
-          //    );
+            if (array.length === 6) {
 
-          //  }
+              const matrix = new Matrix4();
 
-          //  break;
+              matrix.set(
+                array[0], array[2], 0, array[4],
+                array[1], array[3], 0, array[5],
+                0, 0, 1, 0,
+                0, 0, 0, 1
+              );
 
-          //case 'matrix':
+              object.applyMatrix4(matrix)
+            }
 
-          //  if (array.length === 6) {
-
-          //    currentTransform.set(
-          //      array[0], array[2], array[4],
-          //      array[1], array[3], array[5],
-          //      0, 0, 1
-          //    );
-
-          //  }
-
-          //  break;
+            break;
           default:
             console.warn(`Transform ${transformType} not implemented`)
             break;
