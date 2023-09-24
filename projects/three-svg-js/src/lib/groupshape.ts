@@ -65,15 +65,22 @@ export class GroupShape extends BaseShape  {
 
   circle(params: CircleParams): this {
     this.inheritParams(params)
-
-    const shape = new CircleShape(this.svg, this, params)
-    this.addShape(shape)
+    const r = SVGShapeUtils.parseFloatWithUnits(params.r || 0);
+    if (!r) {
+      console.warn('circle radius zero!')
+    }
+    else {
+      const shape = new CircleShape(this.svg, this, params)
+      this.addShape(shape)
+    }
     return this
   }
 
   ellipse(params: EllipseParams): this {
     this.inheritParams(params)
-    if (!params.rx || !params.ry) {
+    const rx = SVGShapeUtils.parseFloatWithUnits(params.rx || 0);
+    const ry = SVGShapeUtils.parseFloatWithUnits(params.ry || 0);
+    if (!rx || !ry) {
       console.warn('ellipse radius zero!')
     }
     else {
