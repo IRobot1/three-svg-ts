@@ -1,15 +1,23 @@
 <div>
-  <!--<button (click)="format()">Format SVG</button>-->
+  <button (click)="loadsvg.click()">Load SVG</button>
+  <input style="display:none" type="file" #loadsvg accept="image/svg+xml" (change)="copyToCloud(loadsvg.files)" />
 </div>
 
 <div style="display:flex;flex-direction:row">
-  <ngx-monaco-editor #svgeditor style="margin-top:0px;width:50%;height:100vh"
+  <ngx-monaco-editor #svgeditor style="width:50%;height:100vh"
                      [options]="svgoptions"
-                     (onInit)="onInit($event)"
                      [(ngModel)]="svgcode"
                      (ngModelChange)="svgchanged($event)"></ngx-monaco-editor>
   <div style="width: 50%">
-    <div #test style="height:50vh"></div>
-    <ngx-monaco-editor style="height:100vh" [options]="jsoptions" [(ngModel)]="jscode"></ngx-monaco-editor>
+    <div>
+      <div style="margin-left:1rem;color:white">threejs canvas view.  Use mouse to orbit and pan</div>
+      <div #test style="height:50vh">
+        <!--placeholder for threejs canvas-->
+      </div>
+    </div>
+    <div>
+      <div style="margin-left:1rem;color:white">Equivalent JSON for loading into SVGShape</div>
+      <ngx-monaco-editor style="height:50vh" [options]="jsonoptions" [(ngModel)]="jsoncode"></ngx-monaco-editor>
+    </div>
   </div>
 </div>

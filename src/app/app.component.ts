@@ -27,14 +27,12 @@ export class AppComponent implements AfterViewInit {
   title = 'three-svg-ts'
   showMultiple = true
   codeInput: string | undefined = ''
-  jsoptions = {
+  jsonoptions = {
     theme: 'vs-dark',
-    language: 'typescript',
-    "autoIndent": true,
-    "formatOnPaste": true,
-    "formatOnType": true
+    language: 'json',
+    "readOnly": true
   };
-  jscode: string | undefined = 'function x() {\nconsole.log("Hello world!");\n}';
+  jsoncode: string | undefined
   svgoptions = {
     theme: 'vs-dark',
     language: 'xml',
@@ -65,8 +63,6 @@ export class AppComponent implements AfterViewInit {
    </g>
  </g>
  </svg>  `
-  jsonoptions = { theme: 'vs-dark', language: 'json' };
-  jsoncode: string = '{}';
 
   @ViewChild('test') test!: ElementRef<HTMLDivElement>;
 
@@ -123,6 +119,10 @@ export class AppComponent implements AfterViewInit {
   updateCanvas(svg: string) {
     const schema = this.parser.parse(svg)
     console.warn(schema)
+    const timer = setTimeout(() => {
+      this.jsoncode = JSON.stringify(schema, undefined, 1)
+      clearTimeout(timer)
+    }, 100)
 
     const svgshape = new SVGShape(schema.options)
     svgshape.load(schema)
@@ -176,19 +176,18 @@ export class AppComponent implements AfterViewInit {
 
   }
 
-  editor: any
-  onInit(editor: any) {
-    this.editor = editor
+  copyToCloud(list: FileList | null) {
+    if (!list) return
+    if (list.length == 0) return
+    const file = list[0]
+
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onloadend = () => {
+      this.svgcode = reader.result as string
+    };
+
   }
-  format() {
-    //console.warn(this.editor.getAction('editor.action.formatDocument'))
-    setTimeout(() => {
-
-    this.editor.getAction('editor.action.formatDocument').run()
-    }, 100)
-  }
-
-
 }
 
 //import * as monaco from 'monaco-editor';
