@@ -2,7 +2,7 @@ import { Font } from "three/examples/jsm/loaders/FontLoader";
 import { BaseShape } from "./baseshape";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGOptions } from "./svgshape";
-import { PresentationAttributes, TextParams } from "./types";
+import { PresentationAttributes, TextAnchorType, TextParams } from "./types";
 import { BufferGeometry, Color, Material, MathUtils, Mesh, MeshBasicMaterial, SRGBColorSpace, Vector3 } from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { GroupShape } from "./groupshape";
@@ -25,6 +25,7 @@ export class TextShape extends BaseShape implements Text {
     this.textPath = params.textPath
     this.text = params.content
     this.font = params.font
+    this.textAnchor = params.textAnchor
     this.batch = false
 
     const material = this.svg.createFillMaterial() as MeshBasicMaterial
@@ -32,7 +33,7 @@ export class TextShape extends BaseShape implements Text {
 
     this.name = 'text-fill'
     this.material = material
-    this.position.set(this.x, this.y, 0)
+    this.position.set(this.x * this.scale.x, this.y * this.scale.y, 0)
     parent.addMesh(this)
   }
 
@@ -128,6 +129,16 @@ export class TextShape extends BaseShape implements Text {
     }
   }
 
+  private _textAnchor: TextAnchorType | undefined
+  get textAnchor(): TextAnchorType | undefined { return this._textAnchor }
+  set textAnchor(newvalue: TextAnchorType | undefined) {
+    if (newvalue != this._textAnchor) {
+      this._textAnchor = newvalue
+      if (!this.batch) this.update()
+    }
+  }
+
+
   update() {
     if (!this.text || !this.font) return
 
@@ -141,22 +152,21 @@ export class TextShape extends BaseShape implements Text {
       const size = new Vector3()
       geometry.boundingBox!.getSize(size)
 
-      //if (params.textAnchor) {
-      //  switch (params.textAnchor) {
-      //    case 'start':
-      //      geometry.translate(size.x / 2, 0, 0)
-      //      break;
-      //    case 'middle':
-      //      // already centered
-      //      break;
-      //    case 'end':
-      //      geometry.translate(-size.x / 2, 0, 0)
-      //      break;
-      //  }
-      //}
+      switch (this.textAnchor) {
+        case 'start':
+          geometry.translate(size.x / 2, 0, 0)
+          break;
+        case 'middle':
+          // already centered
+          break;
+        case 'end':
+          geometry.translate(-size.x / 2, 0, 0)
+          break;
+      }
 
       this.geometry = geometry
       this.position.y = this.y - size.y / 2
+      this.scale.y = -1
     }
 
 

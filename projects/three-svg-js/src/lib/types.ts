@@ -144,6 +144,8 @@ export class EllipseParams implements PresentationAttributes {
   // visibility?: string;
 }
 
+export type TextAnchorType = 'start' | 'middle' | 'end'
+
 export class TextParams implements PresentationAttributes {
   content?: string;
 
@@ -169,7 +171,7 @@ export class TextParams implements PresentationAttributes {
   // fontWeight?:string;
 
   // presentation attributes
-  textAnchor?: 'start' | 'middle' | 'end';
+  textAnchor?: TextAnchorType;
   // clipPath?: string;
   // clipRule?: string;
   // color?: string;

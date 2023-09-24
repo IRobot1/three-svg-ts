@@ -21,8 +21,6 @@ export class PathShape extends BaseShape implements Path {
     this.batch = false
 
     this.pathid = params.id
-    if (this.pathid) return
-
 
     const strokematerial = this.getStrokeMaterial()
     if (strokematerial) {
@@ -70,40 +68,33 @@ export class PathShape extends BaseShape implements Path {
   override update() {
     if (!this.d) return this
 
-    if (this.pathid) {
-      if (!this.svg.getPathById(this.pathid)) {
-        const shape = new SVGShapePath();
-        const pathcommands = SVGShapeUtils.parsePath(this.d)
-        shape.generate(pathcommands)
+    const shape = new SVGShapePath();
+    const pathcommands = SVGShapeUtils.parsePath(this.d)
+    shape.generate(pathcommands)
 
-        this.svg.addPathId(this.pathid, shape)
-      }
+    if (this.pathid && !this.svg.getPathById(this.pathid)) {
+      this.svg.addPathId(this.pathid, shape)
     }
-    else {
-      const shape = new SVGShapePath();
-      const pathcommands = SVGShapeUtils.parsePath(this.d)
-      shape.generate(pathcommands)
 
-      const shapes = SVGLoader.createShapes(shape)
-      const divisions = 32
+    const shapes = SVGLoader.createShapes(shape)
+    const divisions = 32
 
-      if (this.strokemesh) {
-        const strokes: Array<BufferGeometry> = []
-        shapes.forEach(shape => {
-          strokes.push(this.renderStroke(shape, divisions))
-        })
-        if (strokes.length > 0)
-          this.strokemesh.geometry = mergeGeometries(strokes)
-      }
+    if (this.strokemesh) {
+      const strokes: Array<BufferGeometry> = []
+      shapes.forEach(shape => {
+        strokes.push(this.renderStroke(shape, divisions))
+      })
+      if (strokes.length > 0)
+        this.strokemesh.geometry = mergeGeometries(strokes)
+    }
 
-      if (this.fillmesh) {
-        const fills: Array<BufferGeometry> = []
-        shapes.forEach(shape => {
-          fills.push(this.renderFill(shape, divisions))
-        })
-        if (fills.length > 0)
-          this.fillmesh.geometry = mergeGeometries(fills)
-      }
+    if (this.fillmesh) {
+      const fills: Array<BufferGeometry> = []
+      shapes.forEach(shape => {
+        fills.push(this.renderFill(shape, divisions))
+      })
+      if (fills.length > 0)
+        this.fillmesh.geometry = mergeGeometries(fills)
     }
     return this;
   }
