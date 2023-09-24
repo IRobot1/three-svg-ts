@@ -10,13 +10,19 @@
                      (ngModelChange)="svgchanged($event)"></ngx-monaco-editor>
   <div style="width: 50%">
     <div>
-      <div style="margin-left:1rem;color:white">threejs canvas view.  Use mouse to orbit and pan</div>
+      <div style="margin-left:1rem;color:white">
+        <span style="margin-left:1rem;margin-right:1rem">threejs canvas view.  Use mouse to orbit and pan</span>
+        <button (click)="saveGLTF()">Save</button>
+      </div>
       <div #test style="height:50vh">
         <!--placeholder for threejs canvas-->
       </div>
     </div>
     <div>
-      <div style="margin-left:1rem;color:white">Equivalent JSON for loading into SVGShape</div>
+      <div style="color:white">
+        <span style="margin-left:1rem;margin-right:1rem">Equivalent JSON for loading into SVGShape</span>
+        <button (click)="saveJSON()">Save</button>
+      </div>
       <ngx-monaco-editor style="height:50vh" [options]="jsonoptions" [(ngModel)]="jsoncode"></ngx-monaco-editor>
     </div>
   </div>

@@ -17,6 +17,7 @@ import { TextShape } from '../../projects/three-svg-js/src/lib/textshape';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader';
 import { showSVG } from './showsvg';
 import { EditorComponent } from 'ngx-monaco-editor-v2';
+import { Exporter } from './exporter';
 
 
 @Component({
@@ -154,6 +155,7 @@ export class AppComponent implements AfterViewInit {
     //helper.add(svgshape2)
 
     this.scene.add(svgshape);
+    this.svgshape = svgshape
     //console.warn(svgshape2)
 
     //const result = new SVGLoader().parse(svg);
@@ -162,6 +164,7 @@ export class AppComponent implements AfterViewInit {
     //group.position.set(-0.5, 0.5, 0)
   }
 
+  private svgshape?: SVGShape
   private timeoutId: any
 
   svgchanged(svg: string) {
@@ -176,17 +179,41 @@ export class AppComponent implements AfterViewInit {
 
   }
 
+  filename: string | undefined
+
   copyToCloud(list: FileList | null) {
     if (!list) return
     if (list.length == 0) return
     const file = list[0]
+    this.filename = file.name
 
     const reader = new FileReader();
     reader.readAsText(file);
     reader.onloadend = () => {
       this.svgcode = reader.result as string
     };
+  }
 
+  saveJSON() {
+    let filename = this.filename
+    if (!this.filename)
+      filename = new Date().getTime() + '.json';
+    else
+      filename = this.filename.replace('.svg','.json')
+    const ex = new Exporter();
+    ex.saveString(this.jsoncode!, filename)
+  }
+
+  saveGLTF() {
+    if (!this.svgshape) return
+
+    let filename = this.filename
+    if (!this.filename)
+      filename = new Date().getTime().toString()
+    else
+      filename = this.filename.replace('.svg','')
+    const ex = new Exporter();
+    ex.exportGLTF(this.svgshape,filename,false)
   }
 }
 
