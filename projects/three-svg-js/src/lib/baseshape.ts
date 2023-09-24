@@ -36,6 +36,8 @@ export abstract class BaseShape extends Mesh {
   }
 
   protected getStrokeMaterial(): Material | undefined {
+    if (this.params.stroke === 'none') return undefined
+
     let color = this.params.stroke
     if (!color) color = 'black'
 
