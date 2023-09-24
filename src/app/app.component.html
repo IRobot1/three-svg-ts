@@ -1,0 +1,15 @@
+<div>
+  <!--<button (click)="format()">Format SVG</button>-->
+</div>
+
+<div style="display:flex;flex-direction:row">
+  <ngx-monaco-editor #svgeditor style="margin-top:0px;width:50%;height:100vh"
+                     [options]="svgoptions"
+                     (onInit)="onInit($event)"
+                     [(ngModel)]="svgcode"
+                     (ngModelChange)="svgchanged($event)"></ngx-monaco-editor>
+  <div style="width: 50%">
+    <div #test style="height:50vh"></div>
+    <ngx-monaco-editor style="height:100vh" [options]="jsoptions" [(ngModel)]="jscode"></ngx-monaco-editor>
+  </div>
+</div>

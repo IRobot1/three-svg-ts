@@ -1,4 +1,4 @@
-import { Camera, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { Camera, PerspectiveCamera, Scene, WebGLRenderer, WebGLRendererParameters } from "three";
 import { UIRouter } from "./ui-routes";
 
 export interface renderState { scene: Scene, camera: Camera, renderer: WebGLRenderer }
@@ -6,15 +6,15 @@ export interface renderState { scene: Scene, camera: Camera, renderer: WebGLRend
 export class ThreeJSApp extends WebGLRenderer {
   public camera!: Camera;
 
-  public router = new UIRouter()
+  //public router = new UIRouter()
 
-  constructor(public scene?: Scene, camera?: Camera) {
+  constructor(p?: WebGLRendererParameters, public parent?: any, public scene?: Scene, camera?: Camera) {
     super()
 
-    this.router.addEventListener('load', () => {
-      this.camera.position.set(0, 0, 0)
-      this.camera.rotation.set(0, 0, 0)
-    })
+    //this.router.addEventListener('load', () => {
+    //  this.camera.position.set(0, 0, 0)
+    //  this.camera.rotation.set(0, 0, 0)
+    //})
 
     if (!camera) {
       this.camera = new PerspectiveCamera(
@@ -27,14 +27,23 @@ export class ThreeJSApp extends WebGLRenderer {
     else
       this.camera = camera
 
-    this.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(this.domElement);
+    let container: () => { width: number, height: number }
+    if (!parent) {
+      this.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(this.domElement);
+      container = () => { return { width: window.innerWidth, height: window.innerHeight } }
+    }
+    else {
+      this.setSize(parent.clientWidth, parent.clientHeight);
+      parent.appendChild(this.domElement);
+      container = () => { return { width: parent.clientWidth, height: parent.clientHeight } }
+    }
 
     this.shadowMap.enabled = true;
 
     window.addEventListener('resize', () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
+      const { width, height } = container()
+
       this.setSize(width, height);
 
       if (this.camera.type == 'PerspectiveCamera') {
@@ -59,9 +68,9 @@ export class ThreeJSApp extends WebGLRenderer {
   }
 
   // short-cut
-  navigateto(route: string) {
-    this.router.navigateto(route)
-  }
+  //navigateto(route: string) {
+  //  this.router.navigateto(route)
+  //}
 
 
 }
