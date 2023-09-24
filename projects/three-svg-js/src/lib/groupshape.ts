@@ -73,9 +73,13 @@ export class GroupShape extends BaseShape  {
 
   ellipse(params: EllipseParams): this {
     this.inheritParams(params)
-
-    const shape = new EllipseShape(this.svg, this, params)
-    this.addShape(shape)
+    if (!params.rx || !params.ry) {
+      console.warn('ellipse radius zero!')
+    }
+    else {
+      const shape = new EllipseShape(this.svg, this, params)
+      this.addShape(shape)
+    }
     return this
   }
 
