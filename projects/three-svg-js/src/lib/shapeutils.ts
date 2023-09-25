@@ -58,12 +58,6 @@ export interface PathCommand {
 }
 
 export class SVGShapeUtils {
-  // Default dots per inch
-  static defaultDPI = 90;
-
-  // Accepted units: 'mm', 'cm', 'in', 'pt', 'pc', 'px'
-  static defaultUnit = "px";
-
   static parseFloatWithUnits(length: string | number | undefined | null, size = 0): number {
     if (!length) return 0;
 
@@ -88,17 +82,17 @@ export class SVGShapeUtils {
 
     let scale = undefined;
 
-    if (theUnit === "px" && this.defaultUnit !== "px") {
+    if (theUnit !== "px") {
       // Conversion scale from  pixels to inches, then to default units
 
-      scale = unitConversion["in"][this.defaultUnit] / this.defaultDPI;
+      scale = unitConversion["in"]["px"] / 90;
     } else {
-      scale = unitConversion[theUnit][this.defaultUnit];
+      scale = unitConversion[theUnit]["px"];
 
       if (scale < 0) {
         // Conversion scale to pixels
 
-        scale = unitConversion[theUnit]["in"] * this.defaultDPI;
+        scale = unitConversion[theUnit]["in"] * 90;
       }
     }
 
@@ -156,8 +150,10 @@ export class SVGShapeUtils {
 
       }
 
-      if (addcommand)
-        pathcommands.push({ type, values: numbers ?? [] })
+      if (addcommand) {
+        if (!numbers) numbers = []
+        pathcommands.push({ type, values: numbers })
+      }
     }
 
     return pathcommands

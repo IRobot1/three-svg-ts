@@ -5,7 +5,8 @@ export class ShapePathEx extends ShapePath {
 
   arc(aX: number, aY: number, aRadius: number, aStartAngle: number, aEndAngle: number, aClockwise: boolean): this {
 
-    this.currentPath?.arc(aX, aY, aRadius, aStartAngle, aEndAngle, aClockwise);
+    if (this.currentPath)
+      this.currentPath.arc(aX, aY, aRadius, aStartAngle, aEndAngle, aClockwise);
 
     return this;
 
@@ -13,7 +14,8 @@ export class ShapePathEx extends ShapePath {
 
   absarc(aX: number, aY: number, aRadius: number, aStartAngle: number, aEndAngle: number, aClockwise: boolean) {
 
-    this.currentPath?.absellipse(aX, aY, aRadius, aRadius, aStartAngle, aEndAngle, aClockwise);
+    if (this.currentPath)
+      this.currentPath.absellipse(aX, aY, aRadius, aRadius, aStartAngle, aEndAngle, aClockwise);
 
     return this;
 
@@ -21,7 +23,8 @@ export class ShapePathEx extends ShapePath {
 
   ellipse(aX: number, aY: number, xRadius: number, yRadius: number, aStartAngle: number, aEndAngle: number, aClockwise: boolean, aRotation: number) {
 
-    this.currentPath?.ellipse(aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation);
+    if (this.currentPath)
+      this.currentPath.ellipse(aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation);
 
     return this;
 
@@ -29,7 +32,8 @@ export class ShapePathEx extends ShapePath {
 
   absellipse(aX: number, aY: number, xRadius: number, yRadius: number, aStartAngle: number, aEndAngle: number, aClockwise: boolean, aRotation: number) {
 
-    this.currentPath?.absellipse(aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation);
+    if (this.currentPath)
+      this.currentPath.absellipse(aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation);
 
     return this;
   }

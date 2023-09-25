@@ -189,8 +189,8 @@ export class SVGOptions implements SVGShapeOptions {
 export class SVGShape extends GroupShape {
 
   constructor(options?: SVGShapeOptions) {
-    const params = options ?? {}
-    super(new SVGOptions(params), params)
+    if (!options) options = {}
+    super(new SVGOptions(options), options)
   }
 
   loadSVG(text: string): SVGSchema {
@@ -226,7 +226,8 @@ export class SVGShape extends GroupShape {
       if (item.text) group.text(item.text)
 
       if (item.group) {
-        let options = item.group.options ?? {}
+        let options = item.group.options
+        if (!options) options = {}
         const newgroup = group.group(options)
         this.loadElements(newgroup, item.group.elements)
       }

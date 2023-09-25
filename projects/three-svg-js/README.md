@@ -17,6 +17,8 @@ svgshape.update() // generate the geometry
 scene.add(svgshape)
 ```
 
+[Codesandbox Example](https://codesandbox.io/s/three-svg-js-starter-gkjf79)
+
 The SVGShape class has methods that mimic an SVG document to allow programmatic building shapes and geometry
 
 ```ts

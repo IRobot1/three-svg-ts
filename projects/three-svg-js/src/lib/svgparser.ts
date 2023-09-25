@@ -5,7 +5,7 @@ import { CircleParams, EllipseParams, GradientStop, LineParams, LinearGradient, 
 
 export class SVGParser {
 
-  log(message: any, ...optionalParams: any[]) {  }
+  log(message: any, ...optionalParams: any[]) { }
 
   parse(text: string | ArrayBuffer): SVGSchema {
     const options: SVGShapeOptions = {
@@ -20,7 +20,7 @@ export class SVGParser {
 
     const stylesheets = {};
 
-    const dom = (<string>text).replace(`<?xml version="1.0" standalone="no"?>`,'')
+    const dom = (<string>text).replace(`<?xml version="1.0" standalone="no"?>`, '')
     const xml = new DOMParser().parseFromString(dom, 'image/svg+xml'); // application/xml
 
     const stylenode = xml.documentElement.querySelector('style')
@@ -96,7 +96,8 @@ export class SVGParser {
 
       case 'textPath':
         const tstyle = style as TextParams
-        tstyle.content = node.textContent?.trim() || undefined
+        if (node.textContent)
+          tstyle.content = node.textContent.trim() || undefined
         tstyle.textPath = node.getAttribute('href') || undefined
         break;
 
@@ -109,7 +110,7 @@ export class SVGParser {
 
         const href = node.getAttributeNS('http://www.w3.org/1999/xlink', 'href') || '';
         const usedNodeId = href.substring(1);
-        const usedNode = (<any>(<SVGElement>node).viewportElement)?.getElementById(usedNodeId);
+        const usedNode = (<any>node).viewportElement.getElementById(usedNodeId);
         if (usedNode) {
 
           this.parseNode(schema, elements, usedNode, style, stylesheets);
