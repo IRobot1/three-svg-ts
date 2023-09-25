@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "publish": "ng build three-svg-js --configuration production && cd dist/three-svg-js && npm publish --access=public",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

@@ -1,6 +1,6 @@
 {
   "name": "three-svg-js",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "peerDependencies": {
     "@angular/common": "^15.1.0",
     "@angular/core": "^15.1.0"
