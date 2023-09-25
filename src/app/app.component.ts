@@ -198,8 +198,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   loadExample(example: string) {
-    if (!example) return
-
+    this.filename = example
     const headers = new HttpHeaders();
     headers.set('Accept', 'image/svg+xml');
     this.httpClient.get('./assets/' + example, { headers, responseType: 'text' }).subscribe(content => {
