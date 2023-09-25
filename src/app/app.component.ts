@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ThreeJSApp } from './threejs-app';
 import { AmbientLight, Color, PointLight, Scene, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { SVGParser, SVGShape } from 'three-svg-js';
+import { SVGShape } from 'three-svg-js';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { BaseShape } from 'three-svg-js';
 import { TextShape } from 'three-svg-js';
@@ -50,7 +50,7 @@ export class AppComponent implements AfterViewInit {
   scene!: Scene
 
   constructor(private httpClient: HttpClient) { }
-
+ 
   ngAfterViewInit(): void {
     this.app = new ThreeJSApp({}, this.test.nativeElement)
 
@@ -81,11 +81,6 @@ export class AppComponent implements AfterViewInit {
 
 
 
-    this.parser = new SVGParser()
-    this.parser.log = (message: any, ...optionalParams: any[]) => {
-      console.warn(message, optionalParams)
-    }
-
     const loader = new FontLoader();
     loader.load('assets/helvetiker_regular.typeface.json', (font: Font) => {
       this.font = font
@@ -95,19 +90,17 @@ export class AppComponent implements AfterViewInit {
 
   }
 
-  parser!: SVGParser
   font!: Font
 
   updateCanvas(svg: string) {
-    const schema = this.parser.parse(svg)
+    const svgshape = new SVGShape()
+    const schema = svgshape.loadSVG(svg)
     console.warn(schema)
     const timer = setTimeout(() => {
       this.jsoncode = JSON.stringify(schema, undefined, 1)
       clearTimeout(timer)
     }, 100)
 
-    const svgshape = new SVGShape(schema.options)
-    svgshape.load(schema)
 
     svgshape.traverse(object => {
       const shape = object as BaseShape

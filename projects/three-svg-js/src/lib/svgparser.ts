@@ -1,4 +1,4 @@
-import { GroupShapeType, ShapeSchema, ShapeTypes } from "./schema";
+import { GroupShapeType, SVGSchema, ShapeTypes } from "./schema";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGShapeOptions } from "./svgshape";
 import { CircleParams, EllipseParams, GradientStop, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RadialGradient, RectParams, TextParams } from "./types";
@@ -7,7 +7,7 @@ export class SVGParser {
 
   log(message: any, ...optionalParams: any[]) {  }
 
-  parse(text: string | ArrayBuffer): ShapeSchema {
+  parse(text: string | ArrayBuffer): SVGSchema {
     const options: SVGShapeOptions = {
       fillOpacity: 1,
       strokeOpacity: 1,
@@ -16,7 +16,7 @@ export class SVGParser {
       strokeMiterLimit: 4
     }
     const elements: Array<ShapeTypes> = []
-    const schema: ShapeSchema = { options, elements }
+    const schema: SVGSchema = { options, elements }
 
     const stylesheets = {};
 
@@ -35,7 +35,7 @@ export class SVGParser {
     return schema
   }
 
-  parseNode(schema: ShapeSchema, elements: Array<ShapeTypes>, node: Element, style: PresentationAttributes, stylesheets: any) {
+  parseNode(schema: SVGSchema, elements: Array<ShapeTypes>, node: Element, style: PresentationAttributes, stylesheets: any) {
     if (node.nodeType !== 1) return;
 
     switch (node.nodeName) {
@@ -167,7 +167,6 @@ export class SVGParser {
     }
   }
 
-
   parseStyle(node: Element, style: any, stylesheets: any) {
 
     //style = Object.assign({}, style); // clone style
@@ -261,7 +260,7 @@ export class SVGParser {
 
   }
 
-  parseSVGNode(node: Element, schema: ShapeSchema) {
+  parseSVGNode(node: Element, schema: SVGSchema) {
     if (!schema.options) return
 
     schema.options.width = SVGShapeUtils.parseFloatWithUnits(node.getAttribute('width') || 0);

@@ -1,4 +1,4 @@
-import { Matrix3, Matrix4, Mesh, Object3D, Vector3 } from "three";
+import { Matrix4, Mesh, Vector3 } from "three";
 
 // Units
 const units = ["mm", "cm", "in", "pt", "pc", "px"];

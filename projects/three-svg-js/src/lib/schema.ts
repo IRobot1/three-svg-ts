@@ -17,7 +17,7 @@ export interface ShapeTypes {
   rect?: RectParams
   text?: TextParams
 }
-export interface ShapeSchema {
+export interface SVGSchema {
   options?: SVGShapeOptions
   gradients?: Array<LinearGradient | RadialGradient>
   elements: Array<ShapeTypes>

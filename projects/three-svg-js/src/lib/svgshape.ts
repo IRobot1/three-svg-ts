@@ -2,7 +2,7 @@ import { Box3, BufferGeometry, CanvasTexture, DoubleSide, Material, MeshBasicMat
 import { LinearGradient, PresentationAttributes, RadialGradient } from './types'
 import { SVGShapeUtils } from "./shapeutils";
 import { GroupShape } from "./groupshape";
-import { ShapeSchema, ShapeTypes } from "./schema";
+import { SVGSchema, ShapeTypes } from "./schema";
 import { RectShape } from "./rectshape";
 import { BaseShape } from "./baseshape";
 import { TextShape } from "./textshape";
@@ -13,6 +13,7 @@ import { LineShape } from "./lineshape";
 import { EllipseShape } from "./ellipseshape";
 import { CircleShape } from "./circleshape";
 import { ShapePathEx } from "./shapepathex";
+import { SVGParser } from "./svgparser";
 
 export interface SVGShapeOptions extends PresentationAttributes {
   width?: number;
@@ -192,6 +193,13 @@ export class SVGShape extends GroupShape {
     super(new SVGOptions(params), params)
   }
 
+  loadSVG(text: string): SVGSchema {
+    const parser = new SVGParser()
+    const schema = parser.parse(text)
+    this.loadSchema(schema)
+    return schema
+  }
+
   center(): Box3 {
     const box = new Box3()
     box.setFromObject(this)
@@ -309,7 +317,7 @@ export class SVGShape extends GroupShape {
     return elements
   }
 
-  load(schema: ShapeSchema) {
+  loadSchema(schema: SVGSchema) {
     if (schema.options) this.svg = new SVGOptions(schema.options)
     if (schema.gradients) {
       schema.gradients.forEach(gradient => {
@@ -322,13 +330,12 @@ export class SVGShape extends GroupShape {
     this.loadElements(this, schema.elements)
   }
 
-  save(): ShapeSchema {
+  saveSchema(): SVGSchema {
     const s = this.svg as SVGShapeOptions
-    const schema: ShapeSchema = {
+    const schema: SVGSchema = {
       options: { width: s.width, height: s.height, viewBox: s.viewBox },
       elements: this.saveElements(this.shapes)
     }
-
 
     return schema
   }
