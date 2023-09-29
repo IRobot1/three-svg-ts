@@ -58,8 +58,8 @@ export interface PathCommand {
 }
 
 export class SVGShapeUtils {
-  static parseFloatWithUnits(length: string | number | undefined | null, size = 0): number {
-    if (!length) return 0;
+  static parseFloatWithUnits(length: string | number | undefined | null, size = 0): number | undefined {
+    if (!length) return undefined;
 
     let theUnit = "px";
 

@@ -264,15 +264,13 @@ export class SVGParser {
   parseSVGNode(node: Element, schema: SVGSchema) {
     if (!schema.options) return
 
-    schema.options.width = SVGShapeUtils.parseFloatWithUnits(node.getAttribute('width') || 0);
-    schema.options.height = SVGShapeUtils.parseFloatWithUnits(node.getAttribute('height') || 0);
+    schema.options.width = SVGShapeUtils.parseFloatWithUnits(node.getAttribute('width'));
+    schema.options.height = SVGShapeUtils.parseFloatWithUnits(node.getAttribute('height'));
 
     const viewbox = node.getAttribute('viewBox')
     if (viewbox)
       // remove [] and convert to array of numbers
       schema.options.viewBox = viewbox.substring(1, viewbox.length - 1).split(' ').map(x => +x)
-    else
-      schema.options.viewBox = [0, 0, schema.options.width, schema.options.height]
   }
 
   parseGroupNode(node: Element, parent: Array<ShapeTypes>): GroupShapeType {

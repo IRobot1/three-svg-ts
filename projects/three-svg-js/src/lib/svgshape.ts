@@ -63,6 +63,10 @@ export class SVGOptions implements SVGShapeOptions {
     if (options.createGeometry !== undefined) this.createGeometry = options.createGeometry
     if (options.createStrokeMaterial !== undefined) this.createStrokeMaterial = options.createStrokeMaterial
     if (options.createFillMaterial !== undefined) this.createFillMaterial = options.createFillMaterial
+
+    options.width = this.width
+    options.height = this.height
+    options.viewBox = this.viewBox
   }
 
   private defaultStrokeMaterial(): Material {
@@ -98,10 +102,10 @@ export class SVGOptions implements SVGShapeOptions {
       console.warn('gradientTransform not implemented');
     }
     const CANVAS_SIZE = 100
-    const x1 = SVGShapeUtils.parseFloatWithUnits(params.x1 || 0);
-    const y1 = SVGShapeUtils.parseFloatWithUnits(params.y1 || 0);
-    const x2 = params.x2 !== undefined ? SVGShapeUtils.parseFloatWithUnits(params.x2) * CANVAS_SIZE : CANVAS_SIZE;
-    const y2 = params.y2 !== undefined ? SVGShapeUtils.parseFloatWithUnits(params.y2) * CANVAS_SIZE : 0;
+    const x1 = SVGShapeUtils.parseFloatWithUnits(params.x1) || 0
+    const y1 = SVGShapeUtils.parseFloatWithUnits(params.y1) || 0
+    const x2 = (SVGShapeUtils.parseFloatWithUnits(params.x2) || 0) * CANVAS_SIZE
+    const y2 = (SVGShapeUtils.parseFloatWithUnits(params.y2) || 0) * CANVAS_SIZE
 
     const canvas = document.createElement('canvas');
     canvas.width = CANVAS_SIZE
@@ -146,9 +150,9 @@ export class SVGOptions implements SVGShapeOptions {
     }
 
     const CANVAS_SIZE = 100
-    const cx = SVGShapeUtils.parseFloatWithUnits(params.cx || 0.5, 1)
-    const cy = SVGShapeUtils.parseFloatWithUnits(params.cy || 0.5, 1)
-    const r = SVGShapeUtils.parseFloatWithUnits(params.r || 0.5, 1)
+    const cx = SVGShapeUtils.parseFloatWithUnits(params.cx, 1) || 0.5
+    const cy = SVGShapeUtils.parseFloatWithUnits(params.cy, 1) || 0.5
+    const r = SVGShapeUtils.parseFloatWithUnits(params.r, 1) || 0.5
     //const fx = SVGShapeUtils.parseFloatWithUnits(params.fx, 1) || cx
     //const fy = SVGShapeUtils.parseFloatWithUnits(params.fy, 1) || cy
     //console.warn(params, cx, cy, r)
@@ -168,7 +172,7 @@ export class SVGOptions implements SVGShapeOptions {
     params.stops.forEach(stop => {
       let offset = 0
       if (typeof stop.offset === 'string')
-        offset = SVGShapeUtils.parseFloatWithUnits(stop.offset, 1)
+        offset = SVGShapeUtils.parseFloatWithUnits(stop.offset, 1) || 0
       else
         offset = <number>stop.offset
       let color = 'black'
@@ -199,6 +203,11 @@ export class SVGShape extends GroupShape {
   loadSVG(text: string): SVGSchema {
     const parser = new SVGParser()
     const schema = parser.parse(text)
+    if (schema.options) {
+      schema.options.createFillMaterial = this.svg.createFillMaterial
+      schema.options.createStrokeMaterial = this.svg.createStrokeMaterial
+      schema.options.createGeometry = this.svg.createGeometry
+    }
     this.loadSchema(schema)
     return schema
   }

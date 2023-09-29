@@ -16,12 +16,12 @@ export class TextShape extends BaseShape implements Text {
   constructor(svg: SVGOptions, parent: GroupShape, params: TextParams) {
     super('text', svg, params)
     this.batch = true
-    this.x = SVGShapeUtils.parseFloatWithUnits(params.x || 0);
-    this.y = SVGShapeUtils.parseFloatWithUnits(params.y || 0);
-    this.dx = SVGShapeUtils.parseFloatWithUnits(params.dx || 0);
-    this.dy = SVGShapeUtils.parseFloatWithUnits(params.dy || 0);
-    this.fontSize = SVGShapeUtils.parseFloatWithUnits(params.fontSize || 18);
-    this.textSpacing = SVGShapeUtils.parseFloatWithUnits(params.textSpacing || this.fontSize / 4);
+    this.x = SVGShapeUtils.parseFloatWithUnits(params.x) || 0;
+    this.y = SVGShapeUtils.parseFloatWithUnits(params.y) || 0;
+    this.dx = SVGShapeUtils.parseFloatWithUnits(params.dx) || 0;
+    this.dy = SVGShapeUtils.parseFloatWithUnits(params.dy) || 0;
+    this.fontSize = SVGShapeUtils.parseFloatWithUnits(params.fontSize) || 18;
+    this.textSpacing = SVGShapeUtils.parseFloatWithUnits(params.textSpacing) || this.fontSize / 4;
     this.textPath = params.textPath
     this.text = params.content
     this.font = params.font

@@ -16,10 +16,10 @@ export class LineShape extends BaseShape implements Line {
   constructor(svg: SVGOptions, parent: GroupShape, params: LineParams) {
     super('line', svg, params)
     this.batch = true
-    this.x1 = SVGShapeUtils.parseFloatWithUnits(params.x1 || 0);
-    this.y1 = SVGShapeUtils.parseFloatWithUnits(params.y1 || 0);
-    this.x2 = SVGShapeUtils.parseFloatWithUnits(params.x2 || 0);
-    this.y2 = SVGShapeUtils.parseFloatWithUnits(params.y2 || 0);
+    this.x1 = SVGShapeUtils.parseFloatWithUnits(params.x1) || 0;
+    this.y1 = SVGShapeUtils.parseFloatWithUnits(params.y1) || 0;
+    this.x2 = SVGShapeUtils.parseFloatWithUnits(params.x2) || 0;
+    this.y2 = SVGShapeUtils.parseFloatWithUnits(params.y2) || 0;
     this.batch = false
 
     this.name = 'line-stroke'

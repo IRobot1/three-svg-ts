@@ -55,8 +55,8 @@ export class PolylineShape extends BaseShape implements Polyline {
 
     const iterator = (match: string, a: Length, b: Length): string => {
 
-      const x = SVGShapeUtils.parseFloatWithUnits(a);
-      const y = SVGShapeUtils.parseFloatWithUnits(b);
+      const x = SVGShapeUtils.parseFloatWithUnits(a) || 0;
+      const y = SVGShapeUtils.parseFloatWithUnits(b) || 0;
 
       if (index === 0) {
 

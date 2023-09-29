@@ -17,12 +17,12 @@ export class RectShape extends BaseShape implements Rect {
   constructor(svg: SVGOptions, parent: GroupShape, params: RectParams) {
     super('rect',svg, params)
     this.batch = true
-    this.x = SVGShapeUtils.parseFloatWithUnits(params.x || 0);
-    this.y = SVGShapeUtils.parseFloatWithUnits(params.y || 0);
-    this.rx = SVGShapeUtils.parseFloatWithUnits(params.rx || params.ry || 0);
-    this.ry = SVGShapeUtils.parseFloatWithUnits(params.ry || params.rx || 0);
-    this.w = SVGShapeUtils.parseFloatWithUnits(params.width, svg.width);
-    this.h = SVGShapeUtils.parseFloatWithUnits(params.height, svg.height);
+    this.x = SVGShapeUtils.parseFloatWithUnits(params.x) || 0;
+    this.y = SVGShapeUtils.parseFloatWithUnits(params.y) || 0;
+    this.rx = SVGShapeUtils.parseFloatWithUnits(params.rx || params.ry) || 0;
+    this.ry = SVGShapeUtils.parseFloatWithUnits(params.ry || params.rx) || 0;
+    this.w = SVGShapeUtils.parseFloatWithUnits(params.width, svg.width) || 0;
+    this.h = SVGShapeUtils.parseFloatWithUnits(params.height, svg.height) || 0;
     this.batch = false
 
     const strokematerial = this.getStrokeMaterial()
