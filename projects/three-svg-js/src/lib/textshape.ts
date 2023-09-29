@@ -182,7 +182,7 @@ export class TextShape extends BaseShape implements Text {
 
     // Calculate the total length of the text
     let totalTextLength = 0;
-    let textData: Array<{ geometry?: BufferGeometry, charWidth: number; }> = [];
+    const textData: Array<{ geometry?: BufferGeometry, charWidth: number; }> = [];
 
     Array.from(text).forEach(char => {
       let charWidth = size / 3
@@ -204,7 +204,7 @@ export class TextShape extends BaseShape implements Text {
     let startDistance = 0;  // Initialize the starting distance along the curve
 
     const material = this.material
-    textData.forEach((char, i) => {
+    textData.forEach(char => {
       let textWidth = char.charWidth
       textWidth = Math.min(size * 1.1, Math.max(size / 5, textWidth))
 

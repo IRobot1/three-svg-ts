@@ -1,4 +1,4 @@
-import { Mesh, SRGBColorSpace, Shape } from "three";
+import { Shape } from "three";
 import { BaseShape } from "./baseshape";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGOptions } from "./svgshape";

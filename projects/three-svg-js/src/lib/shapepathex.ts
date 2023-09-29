@@ -63,7 +63,7 @@ export class SVGShapePath extends ShapePathEx {
 
       }
 
-      let numbers = command.values
+      const numbers = command.values
 
       switch (command.type) {
 

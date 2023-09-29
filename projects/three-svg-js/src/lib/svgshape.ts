@@ -1,4 +1,4 @@
-import { Box3, BufferGeometry, CanvasTexture, DoubleSide, Material, MeshBasicMaterial, RepeatWrapping, Shape, ShapeGeometry, SRGBColorSpace, Texture, Vector2, Vector3 } from "three";
+import { Box3, BufferGeometry, CanvasTexture, Material, MeshBasicMaterial, RepeatWrapping, Shape, ShapeGeometry, SRGBColorSpace, Texture, Vector3 } from "three";
 import { LinearGradient, PresentationAttributes, RadialGradient } from './types'
 import { SVGShapeUtils } from "./shapeutils";
 import { GroupShape } from "./groupshape";
@@ -250,21 +250,23 @@ export class SVGShape extends GroupShape {
     const elements: Array<ShapeTypes> = []
     shapes.forEach(shape => {
       switch (shape.shapetype) {
-        case 'circle':
+        case 'circle': {
           const circle = shape as CircleShape
           elements.push({
             circle: {
               cx: circle.cx, cy: circle.cy, r: circle.r, ...circle.params
             }
           })
+        }
           break;
-        case 'ellipse':
+        case 'ellipse': {
           const ellipse = shape as EllipseShape
           elements.push({
             ellipse: {
               cx: ellipse.cx, cy: ellipse.cy, rx: ellipse.rx, ry: ellipse.ry, ...ellipse.params
             }
           })
+        }
           break;
         case 'group': {
           const group = shape as GroupShape
@@ -276,37 +278,41 @@ export class SVGShape extends GroupShape {
           })
         }
           break;
-        case 'line':
+        case 'line': {
           const line = shape as LineShape
           elements.push({
             line: {
               x1: line.x1, y1: line.y1, x2: line.x2, y2: line.y2, ...line.params
             }
           })
+        }
           break;
-        case 'path':
+        case 'path': {
           const path = shape as PathShape
           elements.push({
             path: {
               id: path.pathid, d: path.d, ...path.params
             }
           })
+        }
           break;
-        case 'polygon':
+        case 'polygon': {
           const polygon = shape as PolygonShape
           elements.push({
             polygon: {
               points: polygon.points, ...polygon.params
             }
           })
+        }
           break;
-        case 'polyline':
+        case 'polyline': {
           const polyline = shape as PolylineShape
           elements.push({
             polyline: {
               points: polyline.points, ...polyline.params
             }
           })
+        }
           break;
         case 'rect': {
           const rect = shape as RectShape
@@ -317,13 +323,14 @@ export class SVGShape extends GroupShape {
           })
         }
           break;
-        case 'text':
+        case 'text': {
           const text = shape as TextShape
           elements.push({
             text: {
               x: text.x, y: text.y, dx: text.dx, dy: text.dy, ...text.params
             }
           })
+        }
           break;
       }
     })

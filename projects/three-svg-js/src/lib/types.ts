@@ -1,4 +1,3 @@
-import { Vector2 } from "three";
 import { Font } from "three/examples/jsm/loaders/FontLoader";
 
 export type Length = number | string;

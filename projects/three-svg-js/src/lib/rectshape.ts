@@ -1,6 +1,6 @@
-import { Mesh, Object3D, SRGBColorSpace, Shape } from "three";
+import { Mesh, Shape } from "three";
 import { BaseShape } from "./baseshape";
-import { SVGOptions, SVGShape, SVGShapeOptions } from "./svgshape";
+import { SVGOptions } from "./svgshape";
 import { RectParams } from "./types";
 import { SVGShapeUtils } from "./shapeutils";
 import { GroupShape } from "./groupshape";

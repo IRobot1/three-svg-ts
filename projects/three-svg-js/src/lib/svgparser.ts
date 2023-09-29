@@ -48,10 +48,11 @@ export class SVGParser {
         // already handled
         break;
 
-      case 'g':
+      case 'g': {
         const group = this.parseGroupNode(node, elements);
         this.parseStyle(node, group.options, stylesheets);
         elements = group.elements
+      }
         break;
 
       case 'path':
@@ -94,18 +95,19 @@ export class SVGParser {
         this.parseStyle(node, style, stylesheets);
         break;
 
-      case 'textPath':
+      case 'textPath': {
         const tstyle = style as TextParams
         if (node.textContent)
           tstyle.content = node.textContent.trim() || undefined
         tstyle.textPath = node.getAttribute('href') || undefined
+      }
         break;
 
       case 'defs':
         // child nodes handled below
         break;
 
-      case 'use':
+      case 'use': {
         style = this.parseStyle(node, style, stylesheets);
 
         const href = node.getAttributeNS('http://www.w3.org/1999/xlink', 'href') || '';
@@ -120,24 +122,25 @@ export class SVGParser {
           this.log('SVGParser: use references non-existent node id: ' + usedNodeId);
 
         }
-
+      }
         break;
 
       case 'linearGradient':
-        stylesheets.gradient = this.parseLinearGradientNode(node, elements);
+        stylesheets.gradient = this.parseLinearGradientNode(node);
         if (!schema.gradients) schema.gradients = []
         schema.gradients.push(stylesheets.gradient)
         break;
 
       case 'radialGradient':
-        stylesheets.gradient = this.parseRadialGradientNode(node, elements);
+        stylesheets.gradient = this.parseRadialGradientNode(node);
         if (!schema.gradients) schema.gradients = []
         schema.gradients.push(stylesheets.gradient)
         break;
 
-      case 'stop':
+      case 'stop': {
         const stop = this.parseGradientStopNode(node, stylesheets.gradient);
         this.parseStyle(node, stop, stylesheets);
+      }
         break;
 
       case 'clipPath':
@@ -194,7 +197,7 @@ export class SVGParser {
 
     }
 
-    function addStyle(svgName: string, jsName: string, debug = false) {
+    function addStyle(svgName: string, jsName: string) {
       const astyle = style as any
       if (node.hasAttribute(svgName)) astyle[jsName] = node.getAttribute(svgName)!;
       if (stylesheetStyles[svgName]) astyle[jsName] = stylesheetStyles[svgName];
@@ -222,7 +225,7 @@ export class SVGParser {
     addStyle('font-size', 'fontSize');
 
     addStyle('offset', 'offset');
-    addStyle('stop-color', 'stopColor', true);
+    addStyle('stop-color', 'stopColor');
     addStyle('stop-opacity', 'stopOpacity');
 
     return style;
@@ -368,7 +371,7 @@ export class SVGParser {
     return text
   }
 
-  parseLinearGradientNode(node: Element, elements: Array<ShapeTypes>): LinearGradient {
+  parseLinearGradientNode(node: Element): LinearGradient {
     const id = node.getAttribute('id') || ''
     const stops: Array<GradientStop> = []
     const gradient: LinearGradient = { type: 'linear', id, stops }
@@ -383,7 +386,7 @@ export class SVGParser {
     return gradient
   }
 
-  parseRadialGradientNode(node: Element, elements: Array<ShapeTypes>): RadialGradient {
+  parseRadialGradientNode(node: Element): RadialGradient {
     const id = node.getAttribute('id') || ''
     const stops: Array<GradientStop> = []
     const gradient: RadialGradient = { type: 'radial', id, stops }

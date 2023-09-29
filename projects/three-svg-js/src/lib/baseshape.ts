@@ -1,9 +1,8 @@
-import { Box3, BufferAttribute, BufferGeometry, Float32BufferAttribute, Material, Mesh, MeshBasicMaterial, Object3D, SRGBColorSpace, Shape, ShapeGeometry, Vector3 } from "three";
+import { Box3, BufferAttribute, BufferGeometry, Float32BufferAttribute, Material, Mesh, MeshBasicMaterial, SRGBColorSpace, Shape, Vector3 } from "three";
 import { PresentationAttributes } from "./types";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { SVGOptions } from "./svgshape";
-import { ShapeTypes } from "./schema";
 
 export type ShapeType = 'circle' | 'ellipse' | 'group' | 'line' | 'path' | 'polygon' | 'polyline' | 'rect' | 'text' 
 
@@ -20,16 +19,16 @@ export abstract class BaseShape extends Mesh {
   abstract update(): void
 
   protected FixShapeUV(geometry: BufferGeometry) {
-    let pos = geometry.attributes['position'] as BufferAttribute;
-    let b3 = new Box3().setFromBufferAttribute(pos);
-    let b3size = new Vector3();
+    const pos = geometry.attributes['position'] as BufferAttribute;
+    const b3 = new Box3().setFromBufferAttribute(pos);
+    const b3size = new Vector3();
     b3.getSize(b3size);
-    let uv = [];
+    const uv = [];
     for (let i = 0; i < pos.count; i++) {
-      let x = pos.getX(i);
-      let y = pos.getY(i);
-      let u = (x - b3.min.x) / b3size.x;
-      let v = (y - b3.min.y) / b3size.y;
+      const x = pos.getX(i);
+      const y = pos.getY(i);
+      const u = (x - b3.min.x) / b3size.x;
+      const v = (y - b3.min.y) / b3size.y;
       uv.push(u, v);
     }
     geometry.setAttribute("uv", new Float32BufferAttribute(uv, 2));
