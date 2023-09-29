@@ -45,7 +45,7 @@ export class SVGOptions implements SVGShapeOptions {
     }
   }
   viewBox: Array<number> = [0, 0, 400, 300]
-  zfix = 0.01
+  zfix = -0.1
 
   createStrokeMaterial: () => Material;
   createFillMaterial: () => Material;
@@ -66,7 +66,7 @@ export class SVGOptions implements SVGShapeOptions {
   }
 
   private defaultStrokeMaterial(): Material {
-    return new MeshBasicMaterial({ color: 0, depthTest: false });
+    return new MeshBasicMaterial({ color: 0, depthTest: true });
   }
 
   private defaultFillMaterial(): Material {

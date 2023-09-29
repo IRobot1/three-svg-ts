@@ -16,14 +16,13 @@ export class PolylineShape extends BaseShape implements Polyline {
     if (params.points) this.points = params.points
     this.batch = false
 
+    this.name = 'polyline-stroke'
+
     const strokematerial = this.getStrokeMaterial()
     if (strokematerial) {
-      const mesh = new Mesh()
-      mesh.name = 'polyline-stroke'
-      mesh.material = strokematerial
-      parent.addMesh(mesh);
-      this.strokemesh = mesh
-      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
+      this.material = strokematerial
+      parent.addMesh(this);
+      if (this.params.transform) SVGShapeUtils.processTransform(this, this.params.transform)
     }
 
     const material = this.getFillMaterial()
@@ -31,13 +30,13 @@ export class PolylineShape extends BaseShape implements Polyline {
       const mesh = new Mesh()
       mesh.name = 'polygon-fill'
       mesh.material = material
+      mesh.position.z = this.svg.zfix
       parent.addMesh(mesh);
       this.fillmesh = mesh
       if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
     }
   }
   private fillmesh?: Mesh
-  private strokemesh?: Mesh
 
   private _points = ''
   get points(): string { return this._points }
@@ -50,7 +49,7 @@ export class PolylineShape extends BaseShape implements Polyline {
 
 
   override update() {
-    if (!this.strokemesh) return
+    //if (!this.strokemesh) return
 
     let index = 0;
 
@@ -79,7 +78,7 @@ export class PolylineShape extends BaseShape implements Polyline {
 
     this.points.replace(regex, iterator);
 
-    if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape)
+    this.geometry = this.renderStroke(shape)
     if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape)
   }
 }

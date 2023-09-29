@@ -3,7 +3,7 @@ import { BaseShape } from "./baseshape";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGOptions } from "./svgshape";
 import { PresentationAttributes, TextAnchorType, TextParams } from "./types";
-import { BufferGeometry, Color, Material, MathUtils, Mesh, MeshBasicMaterial, SRGBColorSpace, Vector3 } from "three";
+import { BufferGeometry, Color, Mesh, SRGBColorSpace, Vector3 } from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { GroupShape } from "./groupshape";
 
@@ -28,11 +28,10 @@ export class TextShape extends BaseShape implements Text {
     this.textAnchor = params.textAnchor
     this.batch = false
 
-    const material = this.svg.createFillMaterial() as MeshBasicMaterial
-    this.applyFill(material.color, params);
-
     this.name = 'text-fill'
-    this.material = material
+    const fillmaterial = this.getFillMaterial()
+    if (fillmaterial)
+      this.material = fillmaterial
     this.position.set(this.x * this.scale.x, this.y * this.scale.y, 0)
     parent.addMesh(this)
   }

@@ -22,15 +22,14 @@ export class EllipseShape extends BaseShape implements Ellipse {
     this.ry = SVGShapeUtils.parseFloatWithUnits(params.ry || 0);
     this.batch = false
 
+    this.name = 'ellipse-stroke'
+
     const strokematerial = this.getStrokeMaterial()
     if (strokematerial) {
-      const mesh = new Mesh()
-      mesh.name = 'ellipse-stroke'
-      mesh.material = strokematerial
-      parent.addMesh(mesh);
-      this.strokemesh = mesh
+      this.material = strokematerial
+      parent.addMesh(this);
 
-      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
+      if (this.params.transform) SVGShapeUtils.processTransform(this, this.params.transform)
     }
 
     const material = this.getFillMaterial()
@@ -38,6 +37,7 @@ export class EllipseShape extends BaseShape implements Ellipse {
       const mesh = new Mesh()
       mesh.name = 'ellipse-fill'
       mesh.material = material
+      mesh.position.z = this.svg.zfix
       parent.addMesh(mesh);
       this.fillmesh = mesh
       if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
@@ -45,7 +45,6 @@ export class EllipseShape extends BaseShape implements Ellipse {
   }
 
   private fillmesh?: Mesh
-  private strokemesh?: Mesh
 
   private _cx = 0
   get cx(): number { return this._cx }
@@ -90,7 +89,7 @@ export class EllipseShape extends BaseShape implements Ellipse {
     shape.absellipse(this.cx, this.cy, this.rx, this.ry, 0, Math.PI * 2, true);
 
     const divisions = 32
-    if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape, divisions)
+    this.geometry = this.renderStroke(shape, divisions)
     if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape, divisions)
 
   }

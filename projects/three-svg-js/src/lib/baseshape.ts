@@ -36,7 +36,7 @@ export abstract class BaseShape extends Mesh {
   }
 
   protected getStrokeMaterial(): Material | undefined {
-    if (this.params.stroke === 'none') return undefined
+    if (!this.params.stroke || this.params.stroke === 'none') return undefined
 
     let color = this.params.stroke
     if (!color) color = 'black'
@@ -56,6 +56,8 @@ export abstract class BaseShape extends Mesh {
 
   protected getFillMaterial(): Material | undefined {
     if (this.params.fill === 'none') return undefined;
+
+    if (this.params.fill === 'transparent' && !(this.params.opacity || this.params.fillOpacity)) return
 
     let opacity = 1
     if (this.params.opacity !== undefined) opacity = this.params.opacity

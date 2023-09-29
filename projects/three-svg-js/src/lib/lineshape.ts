@@ -13,7 +13,7 @@ export interface Line {
 }
 
 export class LineShape extends BaseShape implements Line {
-  constructor(svg: SVGOptions, parent:GroupShape, params: LineParams) {
+  constructor(svg: SVGOptions, parent: GroupShape, params: LineParams) {
     super('line', svg, params)
     this.batch = true
     this.x1 = SVGShapeUtils.parseFloatWithUnits(params.x1 || 0);
@@ -22,18 +22,15 @@ export class LineShape extends BaseShape implements Line {
     this.y2 = SVGShapeUtils.parseFloatWithUnits(params.y2 || 0);
     this.batch = false
 
+    this.name = 'line-stroke'
+
     const strokematerial = this.getStrokeMaterial()
     if (strokematerial) {
-      const mesh = new Mesh()
-      mesh.name = 'line-stroke'
-      mesh.material = strokematerial
-      parent.addMesh(mesh);
-      this.strokemesh = mesh
-      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
+      this.material = strokematerial
+      parent.addMesh(this);
+      if (this.params.transform) SVGShapeUtils.processTransform(this, this.params.transform)
     }
   }
-
-  private strokemesh?: Mesh
 
   private _x1 = 0
   get x1(): number { return this._x1 }
@@ -72,12 +69,12 @@ export class LineShape extends BaseShape implements Line {
   }
 
   override update() {
-    if (!this.strokemesh) return
+    if (!this.material) return
 
     const shape = new Shape()
     shape.moveTo(this.x1, this.y1)
     shape.lineTo(this.x2, this.y2)
 
-    this.strokemesh.geometry = this.renderStroke(shape)
+    this.geometry = this.renderStroke(shape)
   }
 }

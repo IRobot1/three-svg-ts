@@ -130,7 +130,7 @@ export class AppComponent implements AfterViewInit {
 
     this.scene.add(svgshape);
     this.svgshape = svgshape
-    //console.warn(svgshape2)
+    //console.warn(svgshape)
 
     //const result = new SVGLoader().parse(svg);
     //const group = showSVG(this.scene, result.paths)

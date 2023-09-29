@@ -1,4 +1,4 @@
-import { BufferGeometry, Mesh, ShapeUtils } from "three";
+import { BufferGeometry, Mesh } from "three";
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 import { BaseShape } from "./baseshape";
@@ -21,15 +21,13 @@ export class PathShape extends BaseShape implements Path {
     this.batch = false
 
     this.pathid = params.id
+    this.name = 'path-stroke'
 
     const strokematerial = this.getStrokeMaterial()
     if (strokematerial) {
-      const mesh = new Mesh()
-      mesh.name = 'path-stroke'
-      mesh.material = strokematerial
-      parent.addMesh(mesh);
-      this.strokemesh = mesh
-      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
+      this.material = strokematerial
+      parent.addMesh(this);
+      if (this.params.transform) SVGShapeUtils.processTransform(this, this.params.transform)
     }
 
     const material = this.getFillMaterial()
@@ -37,6 +35,7 @@ export class PathShape extends BaseShape implements Path {
       const mesh = new Mesh()
       mesh.name = 'path-fill'
       mesh.material = material
+      mesh.position.z = this.svg.zfix
       parent.addMesh(mesh);
       this.fillmesh = mesh
       if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
@@ -44,7 +43,6 @@ export class PathShape extends BaseShape implements Path {
   }
 
   private fillmesh?: Mesh
-  private strokemesh?: Mesh
 
   private _pathid: string | undefined
   get pathid(): string | undefined { return this._pathid }
@@ -79,14 +77,13 @@ export class PathShape extends BaseShape implements Path {
     const shapes = SVGLoader.createShapes(shape)
     const divisions = 32
 
-    if (this.strokemesh) {
-      const strokes: Array<BufferGeometry> = []
-      shapes.forEach(shape => {
-        strokes.push(this.renderStroke(shape, divisions))
-      })
-      if (strokes.length > 0)
-        this.strokemesh.geometry = mergeGeometries(strokes)
-    }
+    const strokes: Array<BufferGeometry> = []
+    shapes.forEach(shape => {
+      strokes.push(this.renderStroke(shape, divisions))
+    })
+    if (strokes.length > 0)
+      this.geometry = mergeGeometries(strokes)
+
 
     if (this.fillmesh) {
       const fills: Array<BufferGeometry> = []

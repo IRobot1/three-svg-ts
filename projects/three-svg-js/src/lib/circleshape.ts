@@ -1,4 +1,4 @@
-import { Mesh, SRGBColorSpace, Shape } from "three";
+import { Mesh, Shape } from "three";
 import { BaseShape } from "./baseshape";
 import { SVGOptions } from "./svgshape";
 import { CircleParams } from "./types";
@@ -19,22 +19,20 @@ export class CircleShape extends BaseShape implements Circle {
     this.cy = SVGShapeUtils.parseFloatWithUnits(params.cy || 0);
     this.r = SVGShapeUtils.parseFloatWithUnits(params.r || 0);
     this.batch = false
-
+    this.name = 'circle-stroke'
 
     const strokematerial = this.getStrokeMaterial()
     if (strokematerial) {
-      const mesh = new Mesh()
-      mesh.name = 'circle-stroke'
-      mesh.material = strokematerial
-      parent.addMesh(mesh);
-      this.strokemesh = mesh
-      if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
+      this.material = strokematerial
+      parent.addMesh(this);
+      if (this.params.transform) SVGShapeUtils.processTransform(this, this.params.transform)
     }
     const material = this.getFillMaterial()
     if (material) {
       const mesh = new Mesh()
       mesh.name = 'circle-fill'
       mesh.material = material
+      mesh.position.z = this.svg.zfix
       parent.addMesh(mesh);
       this.fillmesh = mesh
       if (this.params.transform) SVGShapeUtils.processTransform(mesh, this.params.transform)
@@ -42,7 +40,6 @@ export class CircleShape extends BaseShape implements Circle {
   }
 
   private fillmesh?: Mesh
-  private strokemesh?: Mesh
 
   private _cx = 0
   get cx(): number { return this._cx }
@@ -76,7 +73,7 @@ export class CircleShape extends BaseShape implements Circle {
     shape.absarc(this.cx, this.cy, this.r, 0, Math.PI * 2, true);
 
     const divisions = 32
-    if (this.strokemesh) this.strokemesh.geometry = this.renderStroke(shape, divisions)
+    this.geometry = this.renderStroke(shape, divisions)
     if (this.fillmesh) this.fillmesh.geometry = this.renderFill(shape, divisions)
   }
 }
