@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ThreeJSApp } from './threejs-app';
-import { AmbientLight, Color, PointLight, Scene, Vector3 } from 'three';
+import { AmbientLight, Color, ExtrudeGeometry, PointLight, Scene, Shape, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { SVGShape } from 'three-svg-js';
+import { SVGShape, SVGShapeOptions } from 'three-svg-js';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 import { BaseShape } from 'three-svg-js';
 import { TextShape } from 'three-svg-js';
@@ -91,9 +91,13 @@ export class AppComponent implements AfterViewInit {
   }
 
   font!: Font
-
+  options: SVGShapeOptions = {
+    //createGeometry: (shapes?: Shape | Shape[], curveSegments?: number) => {
+    //  return new ExtrudeGeometry(shapes, { depth:20} )
+    //}
+  }
   updateCanvas(svg: string) {
-    const svgshape = new SVGShape()
+    const svgshape = new SVGShape(this.options)
     const schema = svgshape.loadSVG(svg)
     console.warn(schema)
     const timer = setTimeout(() => {

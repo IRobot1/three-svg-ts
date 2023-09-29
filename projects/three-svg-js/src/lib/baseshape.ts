@@ -103,7 +103,7 @@ export abstract class BaseShape extends Mesh {
   }
 
   protected renderFill(shape: Shape, divisions = 12): BufferGeometry {
-    const geometry = new ShapeGeometry(shape, divisions)
+    const geometry = this.svg.createGeometry(shape, divisions)
     this.FixShapeUV(geometry)
     return geometry
   }
