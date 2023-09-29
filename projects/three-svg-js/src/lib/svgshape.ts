@@ -146,12 +146,12 @@ export class SVGOptions implements SVGShapeOptions {
     }
 
     const CANVAS_SIZE = 100
-    const cx = SVGShapeUtils.parseFloatWithUnits(params.cx, 1) || 0.5
-    const cy = SVGShapeUtils.parseFloatWithUnits(params.cy, 1) || 0.5
-    const r = SVGShapeUtils.parseFloatWithUnits(params.r, 1) || 0.5
+    const cx = SVGShapeUtils.parseFloatWithUnits(params.cx || 0.5, 1)
+    const cy = SVGShapeUtils.parseFloatWithUnits(params.cy || 0.5, 1)
+    const r = SVGShapeUtils.parseFloatWithUnits(params.r || 0.5, 1)
     //const fx = SVGShapeUtils.parseFloatWithUnits(params.fx, 1) || cx
     //const fy = SVGShapeUtils.parseFloatWithUnits(params.fy, 1) || cy
-    //console.warn(params, cx, cy, r, fx, fy)
+    //console.warn(params, cx, cy, r)
 
     const canvas = document.createElement('canvas');
     canvas.width = CANVAS_SIZE
@@ -161,7 +161,10 @@ export class SVGOptions implements SVGShapeOptions {
     const context = canvas.getContext('2d', options);
     if (!context) return this;
 
-    const gradient = context.createRadialGradient(canvas.width * cx, canvas.height * cy, 0, canvas.height * r, canvas.width / 2, canvas.height * r);
+    // createRadialGradient(x0: number, y0: number, r0: number, x1: number, y1: number, r1: number)
+    // Inner circle x0, y0, r0
+    // Outer circle x1, y1, r1
+    const gradient = context.createRadialGradient(CANVAS_SIZE * cx, CANVAS_SIZE * (1 - cy), 0, CANVAS_SIZE * cx, CANVAS_SIZE * (1 - cy), CANVAS_SIZE * r);
     params.stops.forEach(stop => {
       let offset = 0
       if (typeof stop.offset === 'string')
