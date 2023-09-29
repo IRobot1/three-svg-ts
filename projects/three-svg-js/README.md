@@ -1,9 +1,28 @@
 # three-svg-js
 
-threejs classes to display SVG as geometry, parsing SVG and building geometry with SVG like methods. Its similar to [SVGLoader](https://threejs.org/docs/index.html?q=svgload#examples/en/loaders/SVGLoader) but with more features and programmatic control
+![npm](https://img.shields.io/npm/v/three-svg-js)
+
+threejs classes to display SVG as geometry, parse SVG and building geometry with SVG like methods. Its similar to [SVGLoader](https://threejs.org/docs/index.html?q=svgload#examples/en/loaders/SVGLoader) but with more features and programmatic control
+
+# Features
+
+* SVG Parsing
+* SVG version of Shape Path
+* Save and load JSON format
+* Stroke and gradiant support
+* Text path support
+
+# Installation
+
+`npm install three three-svg-js`
+
+`npm install @types/three --save-dev`
+
+# Usage
 
 SVGLoader is mostly a black box that takes an SVG file and outputs an array of ShapePaths.  Unfortunately, none of the structure of the original SVG file is accessible to dynamically build or modify the shapes.  Classes in this library give you that access and control
 
+## Initialization
 The SVGShape class can load an SVG document for adding to the scene
 
 ```ts
@@ -18,6 +37,8 @@ scene.add(svgshape)
 ```
 
 [Codesandbox Example](https://codesandbox.io/s/three-svg-js-starter-gkjf79)
+
+# Manipulating SVG Shapes
 
 The SVGShape class has methods that mimic an SVG document to allow programmatic building shapes and geometry
 
@@ -47,11 +68,17 @@ This is equivalent to the original SVG
   <text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text>
 </svg>
 ```
+
 <svg version="1.1" width="300" height="200" xmlns="http://www.w3.org/2000/svg">
   <rect width="100%" height="100%" fill="red" />
   <circle cx="150" cy="100" r="80" fill="green" />
   <text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text>
 </svg>
+
+![SVG](./src/assets/getting-started.svg)
+
+
+## Adding to ThreeJS scene
 
 SVGShape extends Mesh, so can be added to the scene and be positioned and scaled like any other Object3D
 ```ts
@@ -59,7 +86,7 @@ svgshape.update() // generate the geometry
 scene.add(svgshape)
 ```
 
-## SVGParser
+# SVGParser
 
 SVGParser converts an SVG file to equivalent JSON format for loading into SVGShape.  This is equivalent to SVGLoader parse method adapted to just create an equivalent data representation.  It has no dependencies on threejs so can be used as a standalone component.
 
@@ -159,8 +186,10 @@ BaseShape includes methods for creating stroke and fill materials and converting
 # Developer Notes
 
 The library has been checked against a wide range of SVG content including
+* [Mozilla SVG Tutorial](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Getting_Started)
 * [W3C SVG files](https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/)
 * [Simple Icons Repo](https://github.com/simple-icons/simple-icons/tree/develop/icons)
 * [Circle Flags Repo](https://github.com/HatScripts/circle-flags/tree/gh-pages/flags)
 * [SVG Repo](https://www.svgrepo.com/)
 * [SVG Viewer](https://www.svgviewer.dev/)
+* 

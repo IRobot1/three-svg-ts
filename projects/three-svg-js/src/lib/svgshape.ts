@@ -74,7 +74,7 @@ export class SVGOptions implements SVGShapeOptions {
   }
 
   private defaultCreateGeometry(shapes?: Shape | Shape[], curveSegments?: number): BufferGeometry {
-    return new ShapeGeometry(shapes)
+    return new ShapeGeometry(shapes, curveSegments)
   }
 
   private pathids = new Map<string, ShapePathEx>([])
