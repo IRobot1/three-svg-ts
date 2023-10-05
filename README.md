@@ -10,3 +10,14 @@ Demo using [three-svg-js](https://github.com/IRobot1/three-svg-ts/tree/master/pr
 * shows JSON equivelent to SVG document. Can be saved to .json file
 
 ![image](./src/assets/demo.png)
+
+## Installation
+
+Download or clone repo.  
+
+```
+npm install
+ng serve -o
+```
+
+Angular is only used to demo the library. The library does not depend on Angular.
