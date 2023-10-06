@@ -1,6 +1,6 @@
 # three-svg-js
 
-![npm](https://img.shields.io/npm/v/three-svg-js)
+[![NPM Package][npm]][npm-url]
 
 threejs classes to display SVG as geometry, parse SVG and building geometry with SVG like methods. Its similar to [SVGLoader](https://threejs.org/docs/index.html?q=svgload#examples/en/loaders/SVGLoader) but with more features and programmatic control
 
@@ -68,15 +68,6 @@ This is equivalent to the original SVG
   <text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text>
 </svg>
 ```
-
-<svg version="1.1" width="300" height="200" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100%" height="100%" fill="red" />
-  <circle cx="150" cy="100" r="80" fill="green" />
-  <text x="150" y="125" font-size="60" text-anchor="middle" fill="white">SVG</text>
-</svg>
-
-![SVG](./src/assets/getting-started.svg)
-
 
 ## Adding to ThreeJS scene
 
@@ -192,4 +183,6 @@ The library has been checked against a wide range of SVG content including
 * [Circle Flags Repo](https://github.com/HatScripts/circle-flags/tree/gh-pages/flags)
 * [SVG Repo](https://www.svgrepo.com/)
 * [SVG Viewer](https://www.svgviewer.dev/)
-* 
+
+[npm]: https://img.shields.io/npm/v/three-svg-js
+[npm-url]: https://www.npmjs.com/package/three-svg-js
