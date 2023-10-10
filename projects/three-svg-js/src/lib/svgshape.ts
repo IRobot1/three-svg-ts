@@ -235,6 +235,20 @@ export class SVGShape extends GroupShape {
     return box.getSize(center)
   }
 
+  centerOnViewBox(): Vector3 {
+    const box = new Box3()
+    box.expandByPoint(new Vector3())
+    box.expandByPoint(new Vector3(this.svg.width, this.svg.height, 0).multiply(this.scale))
+
+    const center = new Vector3()
+    box.getCenter(center)
+
+    this.translateX(-center.x)
+    this.translateY(-center.y)
+
+    return box.getSize(center)
+  }
+
   private loadElements(group: GroupShape, elements: Array<ShapeTypes>) {
     elements.forEach(item => {
       if (item.rect) group.rect(item.rect)
