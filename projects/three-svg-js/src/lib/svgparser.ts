@@ -271,9 +271,10 @@ export class SVGParser {
     schema.options.height = SVGShapeUtils.parseFloatWithUnits(node.getAttribute('height'));
 
     const viewbox = node.getAttribute('viewBox')
-    if (viewbox)
-      // remove [] and convert to array of numbers
-      schema.options.viewBox = viewbox.substring(1, viewbox.length - 1).split(' ').map(x => +x)
+    if (viewbox) 
+      // convert to array of numbers
+      schema.options.viewBox = viewbox.split(' ').map(x => +x)
+    
   }
 
   parseGroupNode(node: Element, parent: Array<ShapeTypes>): GroupShapeType {
