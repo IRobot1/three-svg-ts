@@ -58,7 +58,11 @@ export class SVGOptions implements SVGShapeOptions {
 
     if (options.width !== undefined) this.width = options.width
     if (options.height !== undefined) this.height = options.height
-    if (options.viewBox !== undefined) this.viewBox = options.viewBox
+    if (options.viewBox !== undefined) {
+      this.viewBox = options.viewBox
+      this.width = this.viewBox[2]
+      this.height = this.viewBox[3]
+    }
     if (options.zfix !== undefined) this.zfix = options.zfix
     if (options.createGeometry !== undefined) this.createGeometry = options.createGeometry
     if (options.createStrokeMaterial !== undefined) this.createStrokeMaterial = options.createStrokeMaterial
@@ -212,18 +216,22 @@ export class SVGShape extends GroupShape {
     return schema
   }
 
-  center(): Box3 {
+  //
+  // optionally translate to the center of the shape and return the size of the bounding box
+  //
+  center(translate = true): Vector3 {
     const box = new Box3()
     box.setFromObject(this)
 
     const center = new Vector3()
     box.getCenter(center)
 
-    this.translateX(-center.x)
-    this.translateY(-center.y)
+    if (translate) {
+      this.translateX(-center.x)
+      this.translateY(-center.y)
+    }
 
-    box.getSize(center)
-    return box
+    return box.getSize(center)
   }
 
   private loadElements(group: GroupShape, elements: Array<ShapeTypes>) {

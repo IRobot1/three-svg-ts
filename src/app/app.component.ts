@@ -120,10 +120,8 @@ export class AppComponent implements AfterViewInit {
     }
 
     svgshape.scale.set(0.01, -0.01, 0.01)
-    const box = svgshape.center()
+    const size = svgshape.center()
 
-    const size = new Vector3()
-    box.getSize(size)
     const max = Math.max(Math.abs(size.x), Math.abs(size.y))
     // adjust camera so object fits into fov
     this.app.camera.position.z = max

@@ -1,55 +1,5 @@
 import { Matrix4, Mesh, Vector3 } from "three";
 
-// Units
-const units = ["mm", "cm", "in", "pt", "pc", "px"];
-
-// Conversion: [ fromUnit ][ toUnit ] (-1 means dpi dependent)
-const unitConversion: any = {
-  mm: {
-    mm: 1,
-    cm: 0.1,
-    in: 1 / 25.4,
-    pt: 72 / 25.4,
-    pc: 6 / 25.4,
-    px: -1
-  },
-  cm: {
-    mm: 10,
-    cm: 1,
-    in: 1 / 2.54,
-    pt: 72 / 2.54,
-    pc: 6 / 2.54,
-    px: -1
-  },
-  in: {
-    mm: 25.4,
-    cm: 2.54,
-    in: 1,
-    pt: 72,
-    pc: 6,
-    px: -1
-  },
-  pt: {
-    mm: 25.4 / 72,
-    cm: 2.54 / 72,
-    in: 1 / 72,
-    pt: 1,
-    pc: 6 / 72,
-    px: -1
-  },
-  pc: {
-    mm: 25.4 / 6,
-    cm: 2.54 / 6,
-    in: 1 / 6,
-    pt: 72 / 6,
-    pc: 1,
-    px: -1
-  },
-  px: {
-    px: 1
-  }
-};
-
 export type PathCommandType = 'M' | 'H' | 'V' | 'L' | 'C' | 'S' | 'Q' | 'T' | 'm' | 'h' | 'v' | 'l' | 'c' | 's' | 'q' | 't' | 'A' | 'a' | 'Z' | 'z'
 
 export interface PathCommand {
@@ -61,42 +11,15 @@ export class SVGShapeUtils {
   static parseFloatWithUnits(length: string | number | undefined | null, size = 0): number | undefined {
     if (!length) return undefined;
 
-    let theUnit = "px";
-
     let value = length.toString();
     if (typeof length === "string") {
       if (length.endsWith("%")) {
-        value = (size * parseFloat(length) / 100).toString();
+        return size * parseFloat(length) / 100
       } else {
-        for (let i = 0, n = units.length; i < n; i++) {
-          const u = units[i];
-
-          if (length.endsWith(u)) {
-            theUnit = u;
-            value = length.substring(0, length.length - u.length);
-            break;
-          }
-        }
+        return parseFloat(value)
       }
     }
-
-    let scale = undefined;
-
-    if (theUnit !== "px") {
-      // Conversion scale from  pixels to inches, then to default units
-
-      scale = unitConversion["in"]["px"] / 90;
-    } else {
-      scale = unitConversion[theUnit]["px"];
-
-      if (scale < 0) {
-        // Conversion scale to pixels
-
-        scale = unitConversion[theUnit]["in"] * 90;
-      }
-    }
-
-    return scale * parseFloat(value);
+    else return <number>length
   }
 
   static parsePath(d: string): Array<PathCommand> {
