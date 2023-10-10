@@ -98,7 +98,10 @@ export class AppComponent implements AfterViewInit {
   }
   updateCanvas(svg: string) {
     const svgshape = new SVGShape(this.options)
-    const schema = svgshape.loadSVG(svg)
+    const log = (message: any, ...optionalParams: any[]) => {
+      console.warn(message, ...optionalParams)
+    }
+    const schema = svgshape.loadSVG(svg, log)
     console.warn(schema)
     const timer = setTimeout(() => {
       this.jsoncode = JSON.stringify(schema, undefined, 1)

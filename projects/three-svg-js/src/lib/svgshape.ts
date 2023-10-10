@@ -204,8 +204,9 @@ export class SVGShape extends GroupShape {
     super(new SVGOptions(options), options)
   }
 
-  loadSVG(text: string): SVGSchema {
+  loadSVG(text: string, log?: (message: any, ...optionalParams: any[]) => void): SVGSchema {
     const parser = new SVGParser()
+    if (log) parser.log = log
     const schema = parser.parse(text)
     if (schema.options) {
       schema.options.createFillMaterial = this.svg.createFillMaterial
