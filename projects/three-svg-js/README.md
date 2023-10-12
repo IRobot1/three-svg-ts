@@ -184,5 +184,28 @@ The library has been checked against a wide range of SVG content including
 * [SVG Repo](https://www.svgrepo.com/)
 * [SVG Viewer](https://www.svgviewer.dev/)
 
+
+## Known Limitations / Not Supported
+
+The following SVG features are not supported by SVGLoader or this library
+* clipPath
+* mask
+* pattern
+* filter effect
+* animate
+* set
+* animateColor
+* animateTransform
+* title
+* image
+* SVG fonts
+
+
+* fill-rule="evenodd"
+* gradientUnits="useSpaceOnUse"
+* stroke-dasharray
+* rotateONAxis, skewX and skewY transforms
+* nested `<use>`
+
 [npm]: https://img.shields.io/npm/v/three-svg-js
 [npm-url]: https://www.npmjs.com/package/three-svg-js
