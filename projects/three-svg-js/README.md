@@ -2,7 +2,7 @@
 
 [![NPM Package][npm]][npm-url]
 
-threejs classes to display SVG as geometry, parse SVG and building geometry with SVG like methods. Its similar to [SVGLoader](https://threejs.org/docs/index.html?q=svgload#examples/en/loaders/SVGLoader) but with more features and programmatic control
+Three.js classes to display SVG as geometry, parse SVG and building geometry with SVG like methods. Its similar to [SVGLoader](https://threejs.org/docs/index.html?q=svgload#examples/en/loaders/SVGLoader) but with more features and programmatic control
 
 # Features
 
@@ -17,6 +17,10 @@ threejs classes to display SVG as geometry, parse SVG and building geometry with
 `npm install three three-svg-js`
 
 `npm install @types/three --save-dev`
+
+# Demo
+
+[Live Demo](https://threesvgjs.z9.web.core.windows.net/) 
 
 # Usage
 

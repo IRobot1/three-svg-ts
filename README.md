@@ -1,6 +1,6 @@
 # three-svg-ts
 
-Demo using [three-svg-js](https://github.com/IRobot1/three-svg-ts/tree/master/projects/three-svg-js) library for working with SVG content in a threejs scene.  
+three-svg-js is a library for working with SVG content in a threejs scene.  
 
 * provides drop down list of SVG examples.
 * shows live preview of how the SVG looks in a threejs scene
@@ -11,9 +11,21 @@ Demo using [three-svg-js](https://github.com/IRobot1/three-svg-ts/tree/master/pr
 
 ![image](./src/assets/demo.png)
 
-## Installation
+This library is still under active development. Updates and improvements may have breaking changes.
 
-Download or clone repo.  
+[Live Demo](https://threesvgjs.z9.web.core.windows.net/)
+
+## Installing the SVG Library
+
+To install [three-svg-js](https://github.com/IRobot1/three-svg-ts/tree/master/projects/three-svg-js) library 
+
+```
+npm install three-svg-js
+```
+
+## Development
+
+Download or clone this repo, then
 
 ```
 npm install
