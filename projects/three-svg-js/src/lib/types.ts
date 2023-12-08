@@ -144,6 +144,7 @@ export class EllipseParams implements PresentationAttributes {
 }
 
 export type TextAnchorType = 'start' | 'middle' | 'end'
+export type TextAlignmentType = 'hanging' | 'middle' | 'baseline'
 
 export class TextParams implements PresentationAttributes {
   content?: string;
@@ -158,6 +159,8 @@ export class TextParams implements PresentationAttributes {
 
   textPath?: string;
   textSpacing?: number;
+
+  textAlignment?: TextAlignmentType
 
   // style attributes
   font?: Font;

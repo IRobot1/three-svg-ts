@@ -93,6 +93,7 @@ export class GroupShape extends BaseShape  {
   text(params: TextParams): this {
     this.inheritParams(params)
     if (!params.textAnchor) params.textAnchor = 'start'
+    if (!params.textAlignment) params.textAlignment = 'middle'
 
     const shape = new TextShape(this.svg, this, params)
     this.addShape(shape)

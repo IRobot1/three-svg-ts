@@ -50,7 +50,7 @@ export class AppComponent implements AfterViewInit {
   scene!: Scene
 
   constructor(private httpClient: HttpClient) { }
- 
+
   ngAfterViewInit(): void {
     this.app = new ThreeJSApp({}, this.test.nativeElement)
 
@@ -84,9 +84,9 @@ export class AppComponent implements AfterViewInit {
     const loader = new FontLoader();
     loader.load('assets/helvetiker_regular.typeface.json', (font: Font) => {
       this.font = font
+      this.updateCanvas(this.svgcode)
     })
 
-    this.updateCanvas(this.svgcode)
 
   }
 

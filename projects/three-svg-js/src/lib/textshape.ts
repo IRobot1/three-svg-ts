@@ -2,7 +2,7 @@ import { Font } from "three/examples/jsm/loaders/FontLoader";
 import { BaseShape } from "./baseshape";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGOptions } from "./svgshape";
-import { PresentationAttributes, TextAnchorType, TextParams } from "./types";
+import { PresentationAttributes, TextAlignmentType, TextAnchorType, TextParams } from "./types";
 import { BufferGeometry, Color, Mesh, SRGBColorSpace, Vector3 } from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { GroupShape } from "./groupshape";
@@ -26,6 +26,7 @@ export class TextShape extends BaseShape implements Text {
     this.text = params.content
     this.font = params.font
     this.textAnchor = params.textAnchor
+    this.textAlignment = params.textAlignment
     this.batch = false
 
     this.name = 'text-fill'
@@ -137,6 +138,14 @@ export class TextShape extends BaseShape implements Text {
     }
   }
 
+  private _textAlignment: TextAlignmentType | undefined
+  get textAlignment(): TextAlignmentType | undefined { return this._textAlignment }
+  set textAlignment(newvalue: TextAlignmentType | undefined) {
+    if (newvalue != this._textAlignment) {
+      this._textAlignment = newvalue
+      if (!this.batch) this.update()
+    }
+  }
 
   update() {
     if (!this.text || !this.font) return
@@ -151,17 +160,38 @@ export class TextShape extends BaseShape implements Text {
       const size = new Vector3()
       geometry.boundingBox!.getSize(size)
 
+      let x = 0
+      let y = 0
       switch (this.textAnchor) {
         case 'start':
-          geometry.translate(size.x / 2, 0, 0)
+          x = size.x / 2
           break;
         case 'middle':
           // already centered
           break;
         case 'end':
-          geometry.translate(-size.x / 2, 0, 0)
+          x = -size.x / 2
+          break;
+        default:
+          console.warn('Unhandled text anchor', this.textAnchor)
           break;
       }
+
+      switch (this.textAlignment) {
+        case 'hanging':
+          y = -size.y
+          break;
+        case 'middle':
+          y = -size.y / 2
+          break;
+        case 'baseline':
+          // already on baseline
+          break;
+        default:
+          console.warn('Unhandled text alignment', this.textAlignment)
+          break;
+      }
+      geometry.translate(x, y, 0)
 
       this.geometry = geometry
       this.position.y = this.y - size.y / 2

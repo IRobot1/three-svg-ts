@@ -1,7 +1,7 @@
 import { GroupShapeType, SVGSchema, ShapeTypes } from "./schema";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGShapeOptions } from "./svgshape";
-import { CircleParams, EllipseParams, GradientStop, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RadialGradient, RectParams, TextParams } from "./types";
+import { CircleParams, EllipseParams, GradientStop, LineParams, LinearGradient, PathParams, PolygonParams, PolylineParams, PresentationAttributes, RadialGradient, RectParams, TextAlignmentType, TextParams } from "./types";
 
 export class SVGParser {
 
@@ -367,6 +367,7 @@ export class SVGParser {
     text.y = node.getAttribute('y') || 0
     text.dx = node.getAttribute('dx') || 0
     text.dy = node.getAttribute('dy') || 0
+    text.textAlignment = <TextAlignmentType>node.getAttribute('alignment-baseline') || 'middle'
 
     elements.push({ text })
     return text
