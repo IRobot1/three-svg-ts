@@ -228,7 +228,28 @@ export class SVGParser {
     addStyle('stop-color', 'stopColor');
     addStyle('stop-opacity', 'stopOpacity');
 
+    if (node.hasAttribute('style')) {
+      const styleObject = this.parseStyleAttribute(node.getAttribute('style'));
+      style['fill'] = styleObject['fill'] || addStyle('fill', 'fill');
+      style['stroke'] = styleObject['stroke'] || addStyle('stroke', 'stroke');
+      style['fillOpacity'] = styleObject['fill-opacity'] || addStyle('fill-opacity', 'fillOpacity');
+      style['opacity'] = styleObject['opacity'] || addStyle('opacity', 'opacity');
+    }
+
     return style;
+  }
+
+  parseStyleAttribute(styleAttribute: string | undefined | null) {
+    const styleObject: any = {};
+    if (styleAttribute) {
+      styleAttribute.split(';').forEach(function (style) {
+        const parts = style.split(':');
+        if (parts.length === 2) {
+          styleObject[parts[0].trim()] = parts[1].trim();
+        }
+      });
+    }
+    return styleObject;
   }
 
   parseCSSStylesheet(node: any, stylesheets: any) {
@@ -271,10 +292,10 @@ export class SVGParser {
     schema.options.height = SVGShapeUtils.parseFloatWithUnits(node.getAttribute('height'));
 
     const viewbox = node.getAttribute('viewBox')
-    if (viewbox) 
+    if (viewbox)
       // convert to array of numbers
       schema.options.viewBox = viewbox.split(' ').map(x => +x)
-    
+
   }
 
   parseGroupNode(node: Element, parent: Array<ShapeTypes>): GroupShapeType {

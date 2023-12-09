@@ -1,13 +1,13 @@
-import { Box3, BufferAttribute, BufferGeometry, Float32BufferAttribute, Material, Mesh, MeshBasicMaterial, SRGBColorSpace, Shape, Vector3 } from "three";
+import { Box3, BufferAttribute, BufferGeometry, Float32BufferAttribute, Material, Mesh, MeshBasicMaterial, SRGBColorSpace, Shape, Vector3, DoubleSide } from "three";
 import { PresentationAttributes } from "./types";
 import { SVGShapeUtils } from "./shapeutils";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { SVGOptions } from "./svgshape";
 
-export type ShapeType = 'circle' | 'ellipse' | 'group' | 'line' | 'path' | 'polygon' | 'polyline' | 'rect' | 'text' 
+export type ShapeType = 'circle' | 'ellipse' | 'group' | 'line' | 'path' | 'polygon' | 'polyline' | 'rect' | 'text'
 
 export abstract class BaseShape extends Mesh {
-  
+
   constructor(readonly shapetype: ShapeType, protected svg: SVGOptions, public params: PresentationAttributes) {
     super()
   }
@@ -45,6 +45,7 @@ export abstract class BaseShape extends Mesh {
     if (this.params.strokeOpacity !== undefined) opacity = this.params.strokeOpacity
 
     const material = this.svg.createStrokeMaterial() as MeshBasicMaterial
+    material.side = DoubleSide;
     material.color.setStyle(color, SRGBColorSpace);
     if (opacity < 1) {
       material.transparent = true
@@ -63,6 +64,7 @@ export abstract class BaseShape extends Mesh {
     if (this.params.fillOpacity !== undefined) opacity = this.params.fillOpacity
 
     const material = this.svg.createFillMaterial() as MeshBasicMaterial
+    material.side = DoubleSide;
     if (this.params.fill === 'transparent') {
       material.transparent = true;
       material.opacity = 0;
@@ -74,7 +76,7 @@ export abstract class BaseShape extends Mesh {
         const texture = this.svg.getGradientById(id)
         if (texture) material.map = texture
       }
-      else 
+      else
         material.color.setStyle(this.params.fill, SRGBColorSpace);
 
       if (opacity < 1) {
@@ -88,9 +90,9 @@ export abstract class BaseShape extends Mesh {
   protected renderStroke(shape: Shape, divisions = 12): BufferGeometry {
     let strokeWidth = SVGShapeUtils.parseFloatWithUnits(this.params.strokeWidth || 0);
     if (!strokeWidth && (this.params.fill == 'none' || this.params.fill == 'transparent')) strokeWidth = 1
-   
+
     if (!strokeWidth && this.params.stroke) strokeWidth = 1
-    
+
     if (strokeWidth) {
       const style = SVGLoader.getStrokeStyle(strokeWidth, this.params.stroke, this.params.strokeLineJoin, this.params.strokeLineCap, this.params.strokeMiterLimit)
       if (this.params.strokeLineCap == 'round') divisions *= 2;
