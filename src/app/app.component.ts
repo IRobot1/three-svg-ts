@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ThreeJSApp } from './threejs-app';
-import { AmbientLight, Color, ExtrudeGeometry, PointLight, Scene, Shape, Vector3 } from 'three';
+import { AmbientLight, Color, ExtrudeGeometry, Mesh, PointLight, Scene, Shape, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { SVGShape, SVGShapeOptions } from 'three-svg-js';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
@@ -151,11 +151,31 @@ export class AppComponent implements AfterViewInit {
 
     // Start a new timeout after 1 second
     this.timeoutId = setTimeout(() => {
-      this.scene.children.length = 0
+      if (this.svgshape) {
+        this.scene.remove(this.svgshape)
+        this.disposeSVGShape(this.svgshape)
+        this.svgshape = undefined
+      }
       this.updateCanvas(svg)
       clearTimeout(this.timeoutId);
     }, 500);
 
+  }
+
+  private disposeSVGShape(shape: SVGShape) {
+    shape.traverse(object => {
+      if (object instanceof Mesh) {
+        object.geometry.dispose()
+
+        const material = object.material
+        if (Array.isArray(material)) {
+          material.forEach(mat => mat.dispose())
+        }
+        else {
+          material.dispose()
+        }
+      }
+    })
   }
 
   filename: string | undefined
@@ -197,8 +217,7 @@ export class AppComponent implements AfterViewInit {
 
   loadExample(example: string) {
     this.filename = example
-    const headers = new HttpHeaders();
-    headers.set('Accept', 'image/svg+xml');
+    const headers = new HttpHeaders().set('Accept', 'image/svg+xml');
     this.httpClient.get('./assets/' + example, { headers, responseType: 'text' }).subscribe(content => {
       this.svgcode = content as string
     })
