@@ -23,12 +23,15 @@ export abstract class BaseShape extends Mesh {
     const b3 = new Box3().setFromBufferAttribute(pos);
     const b3size = new Vector3();
     b3.getSize(b3size);
+    // guard against zero-size bounding boxes to avoid NaN UVs
+    const width = b3size.x || 1;
+    const height = b3size.y || 1;
     const uv = [];
     for (let i = 0; i < pos.count; i++) {
       const x = pos.getX(i);
       const y = pos.getY(i);
-      const u = (x - b3.min.x) / b3size.x;
-      const v = (y - b3.min.y) / b3size.y;
+      const u = (x - b3.min.x) / width;
+      const v = (y - b3.min.y) / height;
       uv.push(u, v);
     }
     geometry.setAttribute("uv", new Float32BufferAttribute(uv, 2));

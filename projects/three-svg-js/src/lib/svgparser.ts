@@ -8,6 +8,11 @@ export class SVGParser {
   log(message: any, ...optionalParams: any[]) { }
 
   parse(text: string | ArrayBuffer): SVGSchema {
+    // Accept ArrayBuffer by decoding to string
+    let xmlText: string;
+    if (text instanceof ArrayBuffer) xmlText = new TextDecoder().decode(text);
+    else xmlText = text as string;
+
     const options: SVGShapeOptions = {
       fillOpacity: 1,
       strokeOpacity: 1,
@@ -271,9 +276,10 @@ export class SVGParser {
     schema.options.height = SVGShapeUtils.parseFloatWithUnits(node.getAttribute('height'));
 
     const viewbox = node.getAttribute('viewBox')
-    if (viewbox) 
-      // convert to array of numbers
-      schema.options.viewBox = viewbox.split(' ').map(x => +x)
+    if (viewbox) {
+      // convert to array of numbers; accept commas and multiple spaces
+      schema.options.viewBox = viewbox.trim().split(/[,\s]+/).filter(Boolean).map(x => +x)
+    }
     
   }
 
@@ -407,7 +413,12 @@ export class SVGParser {
   parseGradientStopNode(node: Element, gradient: LinearGradient): GradientStop {
     const stop: GradientStop = {}
 
-    stop.offset = node.getAttribute('offset') || 0
+    const rawOffset = node.getAttribute('offset') || '0'
+    if (rawOffset.endsWith('%'))
+      stop.offset = (parseFloat(rawOffset) || 0) / 100
+    else
+      stop.offset = parseFloat(rawOffset) || 0
+
     stop.stopColor = node.getAttribute('stop-color') || undefined
 
     gradient.stops.push(stop)
