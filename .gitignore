@@ -40,3 +40,10 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+.vs/slnx.sqlite
+.vs/tasks.vs.json
+.vs/VSWorkspaceState.json
+.vs/three-svg-ts/FileContentIndex/6c4f1f00-6f75-4bd9-bf1f-de6cea5e3943.vsidx
+.vs/three-svg-ts/config/applicationhost.config
+.vs/three-svg-ts/v17/.wsuo
+.vs/three-svg-ts/v17/DocumentLayout.json
