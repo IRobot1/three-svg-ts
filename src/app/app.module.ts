@@ -8,14 +8,13 @@ import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
-    AppComponent,
-
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    MonacoEditorModule.forRoot()
+    MonacoEditorModule.forRoot(),
+    AppComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,4 +1,8 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { ThreeJSApp } from './threejs-app';
 import { AmbientLight, Color, ExtrudeGeometry, PointLight, Scene, Shape, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -13,6 +17,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, FormsModule, HttpClientModule, MonacoEditorModule],
   templateUrl: './app.component.html',
 })
 export class AppComponent implements AfterViewInit {
