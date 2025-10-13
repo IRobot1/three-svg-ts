@@ -4,7 +4,7 @@ import { SVGShapeUtils } from "./shapeutils";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { SVGOptions } from "./svgshape";
 
-export type ShapeType = 'circle' | 'ellipse' | 'group' | 'line' | 'path' | 'polygon' | 'polyline' | 'rect' | 'text' 
+export type ShapeType = 'circle' | 'ellipse' | 'group' | 'line' | 'path' | 'polygon' | 'polyline' | 'rect' | 'text' | 'image'
 
 export abstract class BaseShape extends Mesh {
   
@@ -74,8 +74,14 @@ export abstract class BaseShape extends Mesh {
       if (this.params.fill.startsWith('url(#')) {
         const id = this.params.fill.substring(5).replace(')', '')
         material.color.setStyle('white', SRGBColorSpace);
-        const texture = this.svg.getGradientById(id)
-        if (texture) material.map = texture
+        // prefer gradients, then patterns/images
+        const gradientTexture = this.svg.getGradientById(id)
+        if (gradientTexture) material.map = gradientTexture
+        else {
+          const imageTexture = this.svg.getImageById(id)
+          if (imageTexture) material.map = imageTexture
+          // Note: pattern rasterization may be implemented later; for now map to image if present
+        }
       }
       else 
         material.color.setStyle(this.params.fill, SRGBColorSpace);

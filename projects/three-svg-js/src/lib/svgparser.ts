@@ -142,6 +142,40 @@ export class SVGParser {
         schema.gradients.push(stylesheets.gradient)
         break;
 
+      case 'pattern': {
+        // store pattern definition on stylesheets by id so fills can reference url(#id)
+        const id = node.getAttribute('id') || ''
+        const pattern: any = { id }
+        pattern.width = node.getAttribute('width') || undefined
+        pattern.height = node.getAttribute('height') || undefined
+        pattern.patternUnits = node.getAttribute('patternUnits') || undefined
+        pattern.patternContentUnits = node.getAttribute('patternContentUnits') || undefined
+        pattern.patternTransform = node.getAttribute('patternTransform') || undefined
+        // capture nested content as raw node for later rasterization
+        pattern.node = node.cloneNode(true) as Element
+  stylesheets['#' + id] = stylesheets['#' + id] || {}
+  stylesheets['#' + id].pattern = pattern
+  if (!(schema as any).patterns) (schema as any).patterns = []
+  ;(schema as any).patterns.push(pattern)
+      }
+        break;
+
+      case 'image': {
+        // simple image element - store href and positioning info on stylesheets so consumer can load it
+        const href = node.getAttributeNS('http://www.w3.org/1999/xlink', 'href') || node.getAttribute('href') || ''
+        const img: any = {}
+        img.href = href
+        img.x = node.getAttribute('x') || undefined
+        img.y = node.getAttribute('y') || undefined
+        img.width = node.getAttribute('width') || undefined
+        img.height = node.getAttribute('height') || undefined
+        img.preserveAspectRatio = node.getAttribute('preserveAspectRatio') || undefined
+        img.transform = node.getAttribute('transform') || undefined
+  if (!(schema as any).images) (schema as any).images = []
+  ;(schema as any).images.push(img)
+      }
+        break;
+
       case 'stop': {
         const stop = this.parseGradientStopNode(node, stylesheets.gradient);
         this.parseStyle(node, stop, stylesheets);
@@ -157,7 +191,6 @@ export class SVGParser {
       case 'animateColor':
       case 'animateTransform':
       case 'title':
-      case 'image':
         this.log(node.nodeName + ' not implemented')
         break;
       default:

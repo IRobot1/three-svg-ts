@@ -20,6 +20,8 @@ export interface ShapeTypes {
 export interface SVGSchema {
   options?: SVGShapeOptions
   gradients?: Array<LinearGradient | RadialGradient>
+  patterns?: Array<any>
+  images?: Array<any>
   elements: Array<ShapeTypes>
 }
 

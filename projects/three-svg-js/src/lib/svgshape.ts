@@ -14,6 +14,7 @@ import { EllipseShape } from "./ellipseshape";
 import { CircleShape } from "./circleshape";
 import { ShapePathEx } from "./shapepathex";
 import { SVGParser } from "./svgparser";
+import { ImageShape } from "./imageshape";
 
 export interface SVGShapeOptions extends PresentationAttributes {
   width?: number;
@@ -99,6 +100,35 @@ export class SVGOptions implements SVGShapeOptions {
   }
   getGradientById(id: string): Texture | undefined {
     return this.gradients.get(id)
+  }
+
+  private images = new Map<string, Texture>([]);
+  addImageId(id: string, texture: Texture) {
+    this.images.set(id, texture)
+  }
+  getImageById(id: string): Texture | undefined {
+    return this.images.get(id)
+  }
+
+  // Load an image URL (or data URL) into a cached CanvasTexture
+  loadImageTexture(id: string, href: string, crossOrigin?: string): Promise<Texture | undefined> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      if (crossOrigin) img.crossOrigin = crossOrigin;
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = img.width
+        canvas.height = img.height
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+        ctx.drawImage(img, 0, 0)
+        const texture = new CanvasTexture(canvas)
+        texture.colorSpace = SRGBColorSpace;
+        this.images.set(id, texture)
+        resolve(texture)
+      }
+      img.onerror = () => resolve(undefined)
+      img.src = href
+    })
   }
 
   linearGradient(params: LinearGradient): this {
@@ -370,7 +400,42 @@ export class SVGShape extends GroupShape {
           this.svg.radialGradient(gradient)
       })
     }
+    // load patterns and images (simple support)
+    if ((schema as any).patterns) {
+      (schema as any).patterns.forEach((p: any) => {
+        // attempt to find an <image> child in the pattern and preload it with the pattern id
+        const node: Element = p.node
+        const imgNode = node.querySelector('image')
+        if (imgNode) {
+          const href = imgNode.getAttributeNS('http://www.w3.org/1999/xlink', 'href') || imgNode.getAttribute('href') || ''
+          if (href) this.svg.loadImageTexture(p.id, href)
+        }
+      })
+    }
+    if ((schema as any).images) {
+      (schema as any).images.forEach((img: any, idx: number) => {
+        const id = img.id || ('image-' + idx)
+        if (img.href) {
+          this.svg.loadImageTexture(id, img.href)
+        }
+      })
+    }
     this.loadElements(this, schema.elements)
+
+    // create ImageShape instances for standalone images (non-fill) so they render in scene
+    if ((schema as any).images) {
+      const images = (schema as any).images as Array<any>
+      images.forEach((img: any, idx: number) => {
+        const x = img.x ? SVGShapeUtils.parseFloatWithUnits(img.x, this.svg.width) : 0
+        const y = img.y ? SVGShapeUtils.parseFloatWithUnits(img.y, this.svg.height) : 0
+        const w = img.width ? SVGShapeUtils.parseFloatWithUnits(img.width, this.svg.width) : 100
+        const h = img.height ? SVGShapeUtils.parseFloatWithUnits(img.height, this.svg.height) : 100
+        const id = img.id || ('image-' + idx)
+        // create an ImageShape with params
+        const imageShape = new ImageShape(this.svg as any, this, { href: img.href, x: x, y: y, width: w, height: h, elementId: id/*, preserveAspectRatio: img.preserveAspectRatio, transform: img.transform */})
+        this.addShape(imageShape as any)
+      })
+    }
   }
 
   saveSchema(): SVGSchema {
