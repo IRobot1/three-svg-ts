@@ -155,7 +155,7 @@ export class TextShape extends BaseShape implements Text {
       this.updatePath(this.textPath, this.font, this.fontSize, this.textSpacing, this.text)
     }
     else {
-      const geometry = new TextGeometry(this.text, { font: this.font, height: 0, size: this.fontSize * 0.8 })
+      const geometry = new TextGeometry(this.text, { font: this.font, depth: 0, size: this.fontSize * 0.8 })
       geometry.center() // center and compute bounding box
       const size = new Vector3()
       geometry.boundingBox!.getSize(size)
@@ -218,7 +218,7 @@ export class TextShape extends BaseShape implements Text {
       let charWidth = size / 3
       let geometry: BufferGeometry | undefined;
       if (char !== ' ') {
-        geometry = new TextGeometry(char, { font: font, size: size, height: 0 });
+        geometry = new TextGeometry(char, { font: font, size: size, depth: 0 });
         geometry.computeBoundingBox();
         const bbox = geometry.boundingBox!;
         charWidth = bbox.max.x - bbox.min.x;
